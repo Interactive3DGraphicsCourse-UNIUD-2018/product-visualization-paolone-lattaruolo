@@ -21,34 +21,158 @@
 		</head>
 	<body>
 
+		<script type="text/x-glsl" id="vertex">
+		varying vec3 vNormal;
+		varying vec3 vPosition;
+
+		void main() {
+			vec4 vPos = modelViewMatrix * vec4( position, 1.0 );
+			vPosition = vPos.xyz;
+			vNormal = normalMatrix * normal;
+			gl_Position = projectionMatrix * vPos;
+		}
+		</script>
+
+		<script type="text/x-glsl" id="fragment">
+		varying vec3 vNormal;
+		varying vec3 vPosition;
+		uniform vec3 pointLightPosition; // in world space
+		uniform vec3 pointLightPosition2; // in world space
+		uniform vec3 clight;
+		uniform vec3 cspec;
+		uniform vec3 cdiff;
+		uniform float roughness;
+		const float PI = 3.14159;
+
+		vec3 FSchlick(float lDoth) {
+			return (cspec + (vec3(1.0)-cspec)*pow(1.0 - lDoth,5.0));
+		}
+
+		float DGGX(float nDoth, float alpha) {
+			float alpha2 = alpha*alpha;
+			float d = nDoth*nDoth*(alpha2-1.0)+1.0;
+			return (  alpha2 / (PI*d*d));
+		}
+
+		float G1(float dotProduct, float k) {
+			return (dotProduct / (dotProduct*(1.0-k) + k) );
+		}
+
+		float GSmith(float nDotv, float nDotl) {
+			float k = roughness*roughness;
+			return G1(nDotl,k)*G1(nDotv,k);
+		}
+
+		void main() {
+
+			// Luce 1
+			vec4 lPosition = viewMatrix * vec4( pointLightPosition, 1.0 );
+			vec3 l = normalize(lPosition.xyz - vPosition.xyz);
+			vec3 n = normalize( vNormal );  // interpolation destroys normalization, so we have to normalize
+			vec3 v = normalize( -vPosition);
+			vec3 h = normalize( v + l);
+			// small quantity to prevent divisions by 0
+			float nDotl = max(dot( n, l),0.000001);
+			float lDoth = max(dot( l , h ),0.000001);
+			float nDoth = max(dot( n, h ),0.000001);
+			float vDoth = max(dot( v, h ),0.000001);
+			float nDotv = max(dot( n, v ),0.000001);
+			vec3 fresnel = FSchlick(lDoth);
+			vec3 BRDF = (vec3(1.0)-fresnel)*cdiff/PI + fresnel*GSmith(nDotv,nDotl)*DGGX(nDoth,roughness*roughness)/
+			(4.0*nDotl*nDotv);
+
+			// Luce 2
+				vec4 lPosition2 = viewMatrix * vec4( pointLightPosition2, 1.0 );
+				vec3 l2 = normalize(lPosition2.xyz - vPosition.xyz);
+				vec3 n2 = normalize( vNormal );  // interpolation destroys normalization, so we have to normalize
+				vec3 v2 = normalize( -vPosition );
+				vec3 h2 = normalize( v + l2 );
+				// small quantity to prevent divisions by 0
+				float nDotl2 = max(dot( n2, l2),0.000001);
+				float lDoth2 = max(dot( l2 , h2 ),0.000001);
+				float nDoth2 = max(dot( n2, h2 ),0.000001);
+				float vDoth2 = max(dot( v2, h2 ),0.000001);
+				float nDotv2 = max(dot( n2, v2 ),0.000001);
+				vec3 fresnel2 = FSchlick(lDoth2);
+				vec3 BRDF2 = (vec3(1.0)-fresnel2)*cdiff/PI + fresnel2*GSmith(nDotv2,nDotl2)*DGGX(nDoth2,roughness*roughness)/
+				(4.0*nDotl2*nDotv2);
+
+
+			vec3 outRadiance = PI* clight * (nDotl * BRDF + nDotl2 * BRDF2);
+			// gamma encode the final value
+			gl_FragColor = vec4(pow( outRadiance, vec3(1.0/2.2)), 1.0);
+		}
+		</script>
+
+
 		<script>
 
-			var scene, renderer, camera, stats;
-
-			function Start()
-      {
 				scene = new THREE.Scene();
 				camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-				renderer = new THREE.WebGLRenderer();
+				renderer = new THREE.WebGLRenderer( { antialias: true } );
 				renderer.setSize( window.innerWidth, window.innerHeight );
 				renderer.setClearColor( 0xf0f0f0 );
 				document.body.appendChild( renderer.domElement );
 
 				controls = new THREE.OrbitControls(camera);
-				controls.addEventListener( 'change', Render );
+				controls.addEventListener( 'change', render );
 
 				var loader = new THREE.GLTFLoader();
 
-				//light
-				var light = new THREE.PointLight( 0xffffff, 1,0 );
-				var lightAmbientale = new THREE.AmbientLight( 0x404040 );
-				light.position.set(0,0,0);
-				light.castShadow =true;
+				// default: white, 1.0 intensity
+				var lightParameters = {
+					red: 1.0,
+					green: 1.0,
+					blue: 1.0,
+					intensity: 1.0,
+				}
+
+				// default: red plastic
+				var materialParameters = {
+					cdiff_red: 0.7,
+					cdiff_green: 0.7,
+					cdiff_blue: 0.6,
+					cspec_red: 0.56,
+					cspec_green: 0.56,
+					cspec_blue: 0.57,
+					roughness: 0.5
+				}
+
+				var uniforms = {
+
+					cspec:	{ type: "v3", value: new THREE.Vector3() },
+					cdiff:	{ type: "v3", value: new THREE.Vector3() },
+					roughness: {type: "f", value: 0.5},
+					pointLightPosition:	{ type: "v3", value: new THREE.Vector3() },
+					pointLightPosition2:	{ type: "v3", value: new THREE.Vector3() },
+					clight:	{ type: "v3", value: new THREE.Vector3() },
+				};
+
+				vs = document.getElementById("vertex").textContent;
+				fs = document.getElementById("fragment").textContent;
+
+				// //light
+				// var light = new THREE.PointLight( 0xffffff, 1,0 );
+				// var lightAmbientale = new THREE.AmbientLight( 0x404040 );
+				// light.position.set(0,0,0);
+				// light.castShadow =true;
 
 				stats = new Stats();
 				stats.domElement.style.position = 'absolute';
 				stats.domElement.style.top = '0px';
 				document.body.appendChild( stats.domElement );
+
+				var lightMesh = new THREE.Mesh( new THREE.SphereGeometry( 1, 16, 16), new THREE.MeshBasicMaterial ({color: 0xffff00, wireframe:true}));
+				lightMesh.position.set( 0, 10.0, -10 );
+				uniforms.pointLightPosition.value = new THREE.Vector3(lightMesh.position.x,
+					lightMesh.position.y,
+					lightMesh.position.z);
+
+					var lightMesh2 = new THREE.Mesh( new THREE.SphereGeometry( 1, 16, 16), new THREE.MeshBasicMaterial ({color: 0xffff00, wireframe:true}));
+					lightMesh2.position.set( -10, 10.0, -10 );
+					uniforms.pointLightPosition2.value = new THREE.Vector3(lightMesh2.position.x,
+						lightMesh2.position.y,
+						lightMesh2.position.z);
 
 				////THREE.DRACOLoader.setDecoderPath( '/examples/js/libs/draco' );
 				////loader.setDRACOLoader( new THREE.DRACOLoader() );
@@ -82,20 +206,8 @@
 				// 	}
 				// );
 
-				light.position.set(0,500,0);
-				var telaio = creaTelaio(0xff0000);
-				scene.add(telaio,light,lightAmbientale);
-				camera.position.z = 10;
-        }
+				//light.position.set(0,500,0);
 
-
-			function Render()
-      {
-				   requestAnimationFrame(Render);
-			     stats.update();
-					 //controls.update();
-				   renderer.render(scene, camera);
-			}
 
 			function creaBici()
 			{
@@ -117,10 +229,10 @@
 				var geometryDavanti3 = new THREE.CylinderGeometry( 0.2, 0.2, 0.5, 32 );
 				var texture = new THREE.TextureLoader().load( image);
 				if(image==undefined){
-						material = new THREE.MeshLambertMaterial({color:colore});
+						material = new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
 				}
 				else{
-					material = new THREE.MeshLambertMaterial({map:texture});
+					material = new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
 				}
 				var cylinder1 = new THREE.Mesh( geometryInMezzo1, material );
 				var cylinder2 = new THREE.Mesh( geometryInMezzo2, material );
@@ -190,8 +302,74 @@
 				//TODO
 			}
 
-			Start();
-			Render();
+			function init() {
+
+				renderer.gammaInput = true;
+				renderer.gammaOutput = true;
+				renderer.setClearColor( 0xf0f0f0 );
+
+				var telaio = creaTelaio(0xff0000);
+				telaio.position.set(0,0,-20);
+				scene.add(telaio,lightMesh, lightMesh2);
+				camera.position.z = 10;
+
+				document.body.appendChild( renderer.domElement );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+				controls.addEventListener( 'change', render );
+				controls.minDistance = 1;
+				controls.maxDistance = 100;
+				//controls.maxPolarAngle = Math.PI / 2;
+				controls.enablePan = false;
+				controls.target.copy( telaio.position );
+				controls.update();
+
+				window.addEventListener( 'resize', onResize, false );
+
+
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				document.body.appendChild( stats.domElement );
+
+			}
+
+			function onResize() {
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				camera.aspect = ( window.innerWidth / window.innerHeight );
+				camera.updateProjectionMatrix();
+
+			}
+
+			function update() {
+				requestAnimationFrame( update );
+				stats.update();
+				render();
+			}
+
+			function render() {
+				updateUniforms();
+				renderer.render( scene, camera );
+			}
+
+			function updateUniforms() {
+
+				uniforms.cspec.value = new THREE.Vector3(materialParameters.cspec_red,
+					materialParameters.cspec_green,materialParameters.cspec_blue);
+					uniforms.cdiff.value = new THREE.Vector3(materialParameters.cdiff_red,
+						materialParameters.cdiff_green,materialParameters.cdiff_blue);
+						uniforms.roughness.value = materialParameters.roughness>0.0?materialParameters.roughness:0.01;
+						uniforms.clight.value = new THREE.Vector3(
+							lightParameters.red * lightParameters.intensity,
+							lightParameters.green * lightParameters.intensity,
+							lightParameters.blue * lightParameters.intensity);
+						}
+
+
+						init();
+						update();
+						render();
 		</script>
 	</body>
 </html>
