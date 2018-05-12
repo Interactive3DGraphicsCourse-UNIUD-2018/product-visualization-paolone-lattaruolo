@@ -1,0 +1,197 @@
+<html>
+	<head>
+		<title>Load OBJ File</title>
+		<style>
+		body {
+			font-family: Monospace;
+			background-color: #f0f0f0;
+			margin: 0px;
+			overflow: hidden;
+		}
+
+		canvas {
+			width: 100%;
+			height: 100%;
+		}
+		</style>
+		<script src="lib/three.min.js"></script>
+		<script src="lib/stats.min.js"></script>
+		<script src="lib/GLTFLoader.js"></script>
+		<script src="lib/OrbitControls.js"></script>
+		</head>
+	<body>
+
+		<script>
+
+			var scene, renderer, camera, stats;
+
+			function Start()
+      {
+				scene = new THREE.Scene();
+				camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+				renderer = new THREE.WebGLRenderer();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.setClearColor( 0xf0f0f0 );
+				document.body.appendChild( renderer.domElement );
+
+				controls = new THREE.OrbitControls(camera);
+				controls.addEventListener( 'change', Render );
+
+				var loader = new THREE.GLTFLoader();
+
+				//light
+				var light = new THREE.PointLight( 0xffffff, 1,0 );
+				var lightAmbientale = new THREE.AmbientLight( 0x404040 );
+				light.position.set(0,0,0);
+				light.castShadow =true;
+
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				document.body.appendChild( stats.domElement );
+
+				////THREE.DRACOLoader.setDecoderPath( '/examples/js/libs/draco' );
+				////loader.setDRACOLoader( new THREE.DRACOLoader() );
+				//// Load a glTF resource
+				// loader.load(
+				// 	// resource URL
+				// 	'object/scene.gltf',
+				// 	// called when the resource is loaded
+				// 	function ( gltf ) {
+        //
+				// 		scene.add( gltf.scene );
+        //
+				// 		gltf.animations; // Array<THREE.AnimationClip>
+				// 		gltf.scene; // THREE.Scene
+				// 		gltf.scenes; // Array<THREE.Scene>
+				// 		gltf.cameras; // Array<THREE.Camera>
+				// 		gltf.asset; // Object
+        //
+				// 	},
+				// 	// called when loading is in progresses
+				// 	function ( xhr ) {
+        //
+				// 		console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+        //
+				// 	},
+				// 	// called when loading has errors
+				// 	function ( error ) {
+        //
+				// 		console.log( 'An error happened' );
+        //
+				// 	}
+				// );
+
+				light.position.set(0,500,0);
+				var telaio = creaTelaio(0xff0000);
+				scene.add(telaio,light,lightAmbientale);
+				camera.position.z = 10;
+        }
+
+
+			function Render()
+      {
+				   requestAnimationFrame(Render);
+			     stats.update();
+					 //controls.update();
+				   renderer.render(scene, camera);
+			}
+
+			function creaBici()
+			{
+				//TODO
+			}
+
+			function creaTelaio(colore,image)
+			{
+				//TODO
+				var pivotTelaio = new THREE.Object3D();
+				var geometryDietro1 = new THREE.CylinderGeometry( 0.05, 0.05, 7, 32 );
+				var geometryDietro2 = new THREE.CylinderGeometry( 0.05, 0.05, 6.6, 32 );
+				var geometryInMezzo1 = new THREE.CylinderGeometry( 0.2, 0.2, 10, 32 );
+				var geometryInMezzo2 = new THREE.CylinderGeometry( 0.2, 0.2, 10.3, 32 );
+				var geometryInMezzo3 = new THREE.CylinderGeometry( 0.2, 0.2, 6, 32 );
+				var geometryInMezzo4 = new THREE.CylinderGeometry( 0.2, 0.2, 2, 32 );
+				var geometryDavanti1 = new THREE.CylinderGeometry( 0.3, 0.2, 2, 32 );
+				var geometryDavanti2 = new THREE.CylinderGeometry( 0.05, 0.05, 4, 32 );
+				var geometryDavanti3 = new THREE.CylinderGeometry( 0.2, 0.2, 0.5, 32 );
+				var texture = new THREE.TextureLoader().load( image);
+				if(image==undefined){
+						material = new THREE.MeshLambertMaterial({color:colore});
+				}
+				else{
+					material = new THREE.MeshLambertMaterial({map:texture});
+				}
+				var cylinder1 = new THREE.Mesh( geometryInMezzo1, material );
+				var cylinder2 = new THREE.Mesh( geometryInMezzo2, material );
+				var cylinder3 = new THREE.Mesh( geometryInMezzo3, material );
+				var cylinder4 = new THREE.Mesh( geometryInMezzo4, material );
+				var cylinder5 = new THREE.Mesh( geometryDietro1, material );
+				var cylinder6 = new THREE.Mesh( geometryDietro1, material );
+				var cylinder7 = new THREE.Mesh( geometryDietro2, material );
+				var cylinder8 = new THREE.Mesh( geometryDietro2, material );
+				var cylinder9 = new THREE.Mesh( geometryDavanti1, material );
+				var cylinder10 = new THREE.Mesh( geometryDavanti3, material );
+				var cylinder11 = new THREE.Mesh( geometryDavanti2, material );
+				var cylinder12 = new THREE.Mesh( geometryDavanti2, material );
+				cylinder1.position.set(0,10,0);
+				cylinder1.rotation.set(Math.PI*90/180,0,0);
+				cylinder2.position.set(0,7.3,-0.6);
+				cylinder2.rotation.set(Math.PI*120/180,0,0);
+				cylinder3.position.set(0,7.5,4.5);
+				cylinder3.rotation.set(Math.PI*10/180,0,0);
+				cylinder4.position.set(0,10.9,5);
+				cylinder5.position.set(0.1,7,7.7);
+				cylinder5.rotation.set(Math.PI*305/180,0,0);
+				cylinder6.position.set(-0.1,7,7.7);
+				cylinder6.rotation.set(Math.PI*305/180,0,0);
+				cylinder7.position.set(0.1,5,7.3);
+				cylinder7.rotation.set(Math.PI*90/180,0,0);
+				cylinder8.position.set(-0.1,5,7.3);
+				cylinder8.rotation.set(Math.PI*90/180,0,0);
+				cylinder9.position.set(0,10,-5);
+				cylinder10.position.set(0,9,-5);
+				cylinder10.rotation.set(Math.PI*90/180,0,Math.PI*90/180);
+				cylinder11.position.set(0.1,7,-5);
+				cylinder12.position.set(-0.1,7,-5);
+				pivotTelaio.add(cylinder1,cylinder2,cylinder3,cylinder4,cylinder5,cylinder6,
+												cylinder7,cylinder8,cylinder9,cylinder10,cylinder11,
+												cylinder12);
+				return pivotTelaio;
+			}
+
+			function creaRuote()
+			{
+				//TODO
+			}
+
+			function creaManubrio()
+			{
+				//TODO
+			}
+
+			function creaPedali()
+			{
+				//TODO
+			}
+
+			function creaCatena()
+			{
+				//TODO
+			}
+
+			function creaFanale()
+			{
+				//TODO
+			}
+
+			function creaSellino()
+			{
+				//TODO
+			}
+
+			Start();
+			Render();
+		</script>
+	</body>
+</html>
