@@ -1,264 +1,244 @@
 <html>
-	<head>
-		<title>Load OBJ File</title>
-		<style>
-		body {
-			font-family: Monospace;
-			background-color: #f0f0f0;
-			margin: 0px;
-			overflow: hidden;
-		}
+<head>
+	<title>Bici</title>
+	<style>
+	body {
+		font-family: Monospace;
+		background-color: #f0f0f0;
+		margin: 0px;
+		overflow: hidden;
+	}
 
-		canvas {
-			width: 100%;
-			height: 100%;
-		}
-		</style>
-		<script src="lib/three.min.js"></script>
-		<script src="lib/stats.min.js"></script>
-		<script src="lib/GLTFLoader.js"></script>
-		<script src="lib/OrbitControls.js"></script>
-		</head>
-	<body>
+	canvas {
+		width: 100%;
+		height: 100%;
+	}
+	</style>
+	<script src="lib/three.min.js"></script>
+	<script src="lib/stats.min.js"></script>
+	<script src="lib/GLTFLoader.js"></script>
+	<script src="lib/OrbitControls.js"></script>
+</head>
+<body>
+	<script>
 
-		<script>
-
-				var materialTelaio;
-				scene = new THREE.Scene();
-				camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-				renderer = new THREE.WebGLRenderer( { antialias: true } );
-				renderer.setSize( window.innerWidth, window.innerHeight );
-				renderer.setClearColor( 0xf0f0f0 );
-				document.body.appendChild( renderer.domElement );
-
-				controls = new THREE.OrbitControls(camera);
-				controls.addEventListener( 'change', render );
-
-				// default: white, 1.0 intensity
-				var lightParameters = {
-
-					red: 1.0,
-					green: 1.0,
-					blue: 1.0,
-					intensity: 1.0,
-				}
-
-				// Metal
-				var materialParameters = {
-
-					cdiff_red: 0.7,
-					cdiff_green: 0.7,
-					cdiff_blue: 0.6,
-					cspec_red: 0.56,
-					cspec_green: 0.56,
-					cspec_blue: 0.57,
-					roughness: 0.8
-				}
-
-				var uniforms = {
-
-					cspec:	{ type: "v3", value: new THREE.Vector3() },
-					cdiff:	{ type: "v3", value: new THREE.Vector3() },
-					roughness: {type: "f", value: 0.5},
-					pointLightPosition:	{ type: "v3", value: new THREE.Vector3() },
-					pointLightPosition2:	{ type: "v3", value: new THREE.Vector3() },
-					clight:	{ type: "v3", value: new THREE.Vector3() },
-				};
-
-				ShaderLoader("lib/Shader/Telaio/vertexTelaio.vert", "lib/Shader/Telaio/fragmentTelaio.frag",
-				     materialTelaio = new THREE.ShaderMaterial({
-				      uniforms: uniforms,
-				      vertexShader: vertexTelaio,
-				      fragmentShader: fragmentTelaio
-				});
+	function ShaderLoader(vertex_url, fragment_url, onLoad, onProgress, onError) {
+		var vertex_loader = new THREE.FileLoader(THREE.DefaultLoadingManager);
+		vertex_loader.setResponseType('text');
+		vertex_loader.load(vertex_url, function (vertex_text) {
+			var fragment_loader = new THREE.FileLoader(THREE.DefaultLoadingManager);
+			fragment_loader.setResponseType('text');
+			fragment_loader.load(fragment_url, function (fragment_text) {
+				onLoad(vertex_text, fragment_text);
 			});
+		}, onProgress, onError);
+	}
 
-				var geo = new THREE.BoxGeometry(2,2,2);
-				var cubo = new THREE.Mesh(geo, materialTelaio);
+	scene = new THREE.Scene();
+	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+	renderer = new THREE.WebGLRenderer( { antialias: true } );
+	renderer.setSize( window.innerWidth, window.innerHeight );
+	renderer.setClearColor( 0xf0f0f0 );
+	document.body.appendChild( renderer.domElement );
 
-				stats = new Stats();
-				stats.domElement.style.position = 'absolute';
-				stats.domElement.style.top = '0px';
-				document.body.appendChild( stats.domElement );
+	// default: white, 1.0 intensity
+	var lightParameters = {
 
-				var lightMesh = new THREE.Mesh( new THREE.SphereGeometry( 1, 16, 16), new THREE.MeshBasicMaterial ({color: 0xffff00, wireframe:true}));
-				lightMesh.position.set( 0, 10.0, -10 );
-				uniforms.pointLightPosition.value = new THREE.Vector3(lightMesh.position.x,
-					lightMesh.position.y,
-					lightMesh.position.z);
+		red: 1.0,
+		green: 1.0,
+		blue: 1.0,
+		intensity: 1.0,
+	}
 
-					var lightMesh2 = new THREE.Mesh( new THREE.SphereGeometry( 1, 16, 16), new THREE.MeshBasicMaterial ({color: 0xffff00, wireframe:true}));
-					lightMesh2.position.set( -10, 10.0, -10 );
-					uniforms.pointLightPosition2.value = new THREE.Vector3(lightMesh2.position.x,
-						lightMesh2.position.y,
-						lightMesh2.position.z);
+	// Metal
+	var materialParameters = {
 
-			function creaBici()
-			{
-				//TODO
-			}
+		cdiff_red: 0.7,
+		cdiff_green: 0.7,
+		cdiff_blue: 0.6,
+		cspec_red: 0.56,
+		cspec_green: 0.56,
+		cspec_blue: 0.57,
+		roughness: 0.8
+	}
 
-			function creaTelaio()
-			{
-				//TODO
-				var pivotTelaio = new THREE.Object3D();
-				var geometryDietro1 = new THREE.CylinderGeometry( 0.05, 0.05, 7, 32 );
-				var geometryDietro2 = new THREE.CylinderGeometry( 0.05, 0.05, 6.6, 32 );
-				var geometryInMezzo1 = new THREE.CylinderGeometry( 0.2, 0.2, 10, 32 );
-				var geometryInMezzo2 = new THREE.CylinderGeometry( 0.2, 0.2, 10.3, 32 );
-				var geometryInMezzo3 = new THREE.CylinderGeometry( 0.2, 0.2, 6, 32 );
-				var geometryInMezzo4 = new THREE.CylinderGeometry( 0.2, 0.2, 2, 32 );
-				var geometryDavanti1 = new THREE.CylinderGeometry( 0.3, 0.2, 2, 32 );
-				var geometryDavanti2 = new THREE.CylinderGeometry( 0.05, 0.05, 4, 32 );
-				var geometryDavanti3 = new THREE.CylinderGeometry( 0.2, 0.2, 0.5, 32 );
+	var uniforms = {
 
-				var cylinder1 = new THREE.Mesh( geometryInMezzo1, materialTelaio );
-				var cylinder2 = new THREE.Mesh( geometryInMezzo2, materialTelaio  );
-				var cylinder3 = new THREE.Mesh( geometryInMezzo3, materialTelaio  );
-				var cylinder4 = new THREE.Mesh( geometryInMezzo4, materialTelaio  );
-				var cylinder5 = new THREE.Mesh( geometryDietro1, materialTelaio  );
-				var cylinder6 = new THREE.Mesh( geometryDietro1, materialTelaio  );
-				var cylinder7 = new THREE.Mesh( geometryDietro2, materialTelaio  );
-				var cylinder8 = new THREE.Mesh( geometryDietro2, materialTelaio  );
-				var cylinder9 = new THREE.Mesh( geometryDavanti1, materialTelaio  );
-				var cylinder10 = new THREE.Mesh( geometryDavanti3, materialTelaio  );
-				var cylinder11 = new THREE.Mesh( geometryDavanti2, materialTelaio  );
-				var cylinder12 = new THREE.Mesh( geometryDavanti2, materialTelaio  );
-				cylinder1.position.set(0,10,0);
-				cylinder1.rotation.set(Math.PI*90/180,0,0);
-				cylinder2.position.set(0,7.3,-0.6);
-				cylinder2.rotation.set(Math.PI*120/180,0,0);
-				cylinder3.position.set(0,7.5,4.5);
-				cylinder3.rotation.set(Math.PI*10/180,0,0);
-				cylinder4.position.set(0,10.9,5);
-				cylinder5.position.set(0.1,7,7.7);
-				cylinder5.rotation.set(Math.PI*305/180,0,0);
-				cylinder6.position.set(-0.1,7,7.7);
-				cylinder6.rotation.set(Math.PI*305/180,0,0);
-				cylinder7.position.set(0.1,5,7.3);
-				cylinder7.rotation.set(Math.PI*90/180,0,0);
-				cylinder8.position.set(-0.1,5,7.3);
-				cylinder8.rotation.set(Math.PI*90/180,0,0);
-				cylinder9.position.set(0,10,-5);
-				cylinder10.position.set(0,9,-5);
-				cylinder10.rotation.set(Math.PI*90/180,0,Math.PI*90/180);
-				cylinder11.position.set(0.1,7,-5);
-				cylinder12.position.set(-0.1,7,-5);
-				pivotTelaio.add(cylinder1,cylinder2,cylinder3,cylinder4,cylinder5,cylinder6,
-												cylinder7,cylinder8,cylinder9,cylinder10,cylinder11,
-												cylinder12);
-				return pivotTelaio;
-			}
+		cspec:	{ type: "v3", value: new THREE.Vector3() },
+		cdiff:	{ type: "v3", value: new THREE.Vector3() },
+		roughness: {type: "f", value: 0.5},
+		pointLightPosition:	{ type: "v3", value: new THREE.Vector3() },
+		pointLightPosition2:	{ type: "v3", value: new THREE.Vector3() },
+		clight:	{ type: "v3", value: new THREE.Vector3() },
+	};
 
-			function creaRuote()
-			{
-				//TODO
-			}
+	stats = new Stats();
+	stats.domElement.style.position = 'absolute';
+	stats.domElement.style.top = '0px';
+	document.body.appendChild( stats.domElement );
 
-			function creaManubrio()
-			{
-				//TODO
-			}
+	ShaderLoader("lib/Shader/Telaio/vertexTelaio.vert", "lib/Shader/Telaio/fragmentTelaio.frag",
+	function (vertexTelaio, fragmentTelaio) {
+		materialTelaio = new THREE.ShaderMaterial({uniforms: uniforms,	vertexShader: vertexTelaio,	fragmentShader: fragmentTelaio });
 
-			function creaPedali()
-			{
-				//TODO
-			}
+	var lightMesh = new THREE.Mesh( new THREE.SphereGeometry( 1, 16, 16), new THREE.MeshBasicMaterial ({color: 0xffff00, wireframe:true}));
+	lightMesh.position.set( 0, 10.0, -10 );
+	uniforms.pointLightPosition.value = new THREE.Vector3(lightMesh.position.x, lightMesh.position.y, lightMesh.position.z);
 
-			function creaCatena()
-			{
-				//TODO
-			}
+	var lightMesh2 = new THREE.Mesh( new THREE.SphereGeometry( 1, 16, 16), new THREE.MeshBasicMaterial ({color: 0xffff00, wireframe:true}));
+	lightMesh2.position.set( -10, 10.0, -10 );
+	uniforms.pointLightPosition2.value = new THREE.Vector3(lightMesh2.position.x, lightMesh2.position.y, lightMesh2.position.z);
 
-			function creaFanale()
-			{
-				//TODO
-			}
+	telaio = creaTelaio();
+	telaio.position.set(0,0,-20);
+	scene.add(telaio, lightMesh, lightMesh2);
+	camera.position.z = 10;
 
-			function creaSellino()
-			{
-				//TODO
-			}
+	function creaBici()
+	{
+		//TODO
+	}
 
-			function ShaderLoader(vertex_url, fragment_url, onLoad, onProgress, onError) {
-    	var vertex_loader = new THREE.FileLoader(THREE.DefaultLoadingManager);
-    	vertex_loader.setResponseType('text');
-    	vertex_loader.load(vertex_url, function (vertex_text) {
-      var fragment_loader = new THREE.FileLoader(THREE.DefaultLoadingManager);
-      fragment_loader.setResponseType('text');
-      fragment_loader.load(fragment_url, function (fragment_text) {
-        onLoad(vertex_text, fragment_text);
-      	});
-			}, onProgress, onError);
+	function creaTelaio()
+	{
+		//TODO
+		var pivotTelaio = new THREE.Object3D();
+		var geometryDietro1 = new THREE.CylinderGeometry( 0.05, 0.05, 7, 32 );
+		var geometryDietro2 = new THREE.CylinderGeometry( 0.05, 0.05, 6.6, 32 );
+		var geometryInMezzo1 = new THREE.CylinderGeometry( 0.2, 0.2, 10, 32 );
+		var geometryInMezzo2 = new THREE.CylinderGeometry( 0.2, 0.2, 10.3, 32 );
+		var geometryInMezzo3 = new THREE.CylinderGeometry( 0.2, 0.2, 6, 32 );
+		var geometryInMezzo4 = new THREE.CylinderGeometry( 0.2, 0.2, 2, 32 );
+		var geometryDavanti1 = new THREE.CylinderGeometry( 0.3, 0.2, 2, 32 );
+		var geometryDavanti2 = new THREE.CylinderGeometry( 0.05, 0.05, 4, 32 );
+		var geometryDavanti3 = new THREE.CylinderGeometry( 0.2, 0.2, 0.5, 32 );
+
+		var cylinder1 = new THREE.Mesh( geometryInMezzo1, materialTelaio );
+		var cylinder2 = new THREE.Mesh( geometryInMezzo2, materialTelaio  );
+		var cylinder3 = new THREE.Mesh( geometryInMezzo3, materialTelaio  );
+		var cylinder4 = new THREE.Mesh( geometryInMezzo4, materialTelaio  );
+		var cylinder5 = new THREE.Mesh( geometryDietro1, materialTelaio  );
+		var cylinder6 = new THREE.Mesh( geometryDietro1, materialTelaio  );
+		var cylinder7 = new THREE.Mesh( geometryDietro2, materialTelaio  );
+		var cylinder8 = new THREE.Mesh( geometryDietro2, materialTelaio  );
+		var cylinder9 = new THREE.Mesh( geometryDavanti1, materialTelaio  );
+		var cylinder10 = new THREE.Mesh( geometryDavanti3, materialTelaio  );
+		var cylinder11 = new THREE.Mesh( geometryDavanti2, materialTelaio  );
+		var cylinder12 = new THREE.Mesh( geometryDavanti2, materialTelaio  );
+		cylinder1.position.set(0,10,0);
+		cylinder1.rotation.set(Math.PI*90/180,0,0);
+		cylinder2.position.set(0,7.3,-0.6);
+		cylinder2.rotation.set(Math.PI*120/180,0,0);
+		cylinder3.position.set(0,7.5,4.5);
+		cylinder3.rotation.set(Math.PI*10/180,0,0);
+		cylinder4.position.set(0,10.9,5);
+		cylinder5.position.set(0.1,7,7.7);
+		cylinder5.rotation.set(Math.PI*305/180,0,0);
+		cylinder6.position.set(-0.1,7,7.7);
+		cylinder6.rotation.set(Math.PI*305/180,0,0);
+		cylinder7.position.set(0.1,5,7.3);
+		cylinder7.rotation.set(Math.PI*90/180,0,0);
+		cylinder8.position.set(-0.1,5,7.3);
+		cylinder8.rotation.set(Math.PI*90/180,0,0);
+		cylinder9.position.set(0,10,-5);
+		cylinder10.position.set(0,9,-5);
+		cylinder10.rotation.set(Math.PI*90/180,0,Math.PI*90/180);
+		cylinder11.position.set(0.1,7,-5);
+		cylinder12.position.set(-0.1,7,-5);
+		pivotTelaio.add(cylinder1,cylinder2,cylinder3,cylinder4,cylinder5,cylinder6, cylinder7,cylinder8,cylinder9,cylinder10,cylinder11,
+						cylinder12);
+			return pivotTelaio;
 		}
 
-			function init() {
+		function creaRuote()
+		{
+			//TODO
+		}
 
-				renderer.gammaInput = true;
-				renderer.gammaOutput = true;
-				renderer.setClearColor( 0xf0f0f0 );
+		function creaManubrio()
+		{
+			//TODO
+		}
 
-				var telaio = creaTelaio();
-				telaio.position.set(0,0,-20);
-				scene.add(cubo, telaio, lightMesh, lightMesh2);
-				camera.position.z = 10;
+		function creaPedali()
+		{
+			//TODO
+		}
 
-				document.body.appendChild( renderer.domElement );
-				renderer.setPixelRatio( window.devicePixelRatio );
-				renderer.setSize( window.innerWidth, window.innerHeight );
+		function creaCatena()
+		{
+			//TODO
+		}
 
-				controls.addEventListener( 'change', render );
-				controls.minDistance = 1;
-				controls.maxDistance = 100;
-				//controls.maxPolarAngle = Math.PI / 2;
-				controls.enablePan = false;
-				controls.target.copy( telaio.position );
-				controls.update();
+		function creaFanale()
+		{
+			//TODO
+		}
 
-				window.addEventListener( 'resize', onResize, false );
+		function creaSellino()
+		{
+			//TODO
+		}
 
+		function init() {
 
-				stats.domElement.style.position = 'absolute';
-				stats.domElement.style.top = '0px';
-				document.body.appendChild( stats.domElement );
+			renderer.gammaInput = true;
+			renderer.gammaOutput = true;
+			renderer.setClearColor( 0xf0f0f0 );
 
-			}
+			document.body.appendChild( renderer.domElement );
+			renderer.setPixelRatio( window.devicePixelRatio );
+			renderer.setSize( window.innerWidth, window.innerHeight );
 
-			function onResize() {
+			controls = new THREE.OrbitControls(camera);
+			controls.addEventListener( 'change', render );
+			controls.addEventListener( 'change', render );
+			controls.minDistance = 1;
+			controls.maxDistance = 100;
+			//controls.maxPolarAngle = Math.PI / 2;
+			controls.enablePan = false;
+			controls.target.copy( telaio.position );
+			controls.update();
 
-				renderer.setSize( window.innerWidth, window.innerHeight );
-				camera.aspect = ( window.innerWidth / window.innerHeight );
-				camera.updateProjectionMatrix();
+			window.addEventListener( 'resize', onResize, false );
 
-			}
+			stats.domElement.style.position = 'absolute';
+			stats.domElement.style.top = '0px';
+			document.body.appendChild( stats.domElement );
+		}
 
-			function update() {
-				requestAnimationFrame( update );
-				stats.update();
-				render();
-			}
+		function onResize() {
 
-			function render() {
-				updateUniforms();
-				renderer.render( scene, camera );
-			}
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			camera.aspect = ( window.innerWidth / window.innerHeight );
+			camera.updateProjectionMatrix();
+		}
 
-			function updateUniforms() {
+		function update() {
+			requestAnimationFrame( update );
+			stats.update();
+			render();
+		}
 
-				uniforms.cspec.value = new THREE.Vector3(materialParameters.cspec_red,
-					materialParameters.cspec_green,materialParameters.cspec_blue);
-					uniforms.cdiff.value = new THREE.Vector3(materialParameters.cdiff_red,
-						materialParameters.cdiff_green,materialParameters.cdiff_blue);
-						uniforms.roughness.value = materialParameters.roughness>0.0?materialParameters.roughness:0.01;
-						uniforms.clight.value = new THREE.Vector3(
-							lightParameters.red * lightParameters.intensity,
-							lightParameters.green * lightParameters.intensity,
-							lightParameters.blue * lightParameters.intensity);
-						}
+		var render = function () {
+			updateUniforms();
+			renderer.render( scene, camera );
+		};
 
-						init();
-						update();
-						render();
+		function updateUniforms() {
+
+			uniforms.cspec.value = new THREE.Vector3(materialParameters.cspec_red, materialParameters.cspec_green,materialParameters.cspec_blue);
+			uniforms.cdiff.value = new THREE.Vector3(materialParameters.cdiff_red, materialParameters.cdiff_green,materialParameters.cdiff_blue);
+			uniforms.roughness.value = materialParameters.roughness>0.0?materialParameters.roughness:0.01;
+			uniforms.clight.value = new THREE.Vector3( lightParameters.red * lightParameters.intensity, lightParameters.green * lightParameters.intensity,
+				lightParameters.blue * lightParameters.intensity);
+		}
+
+	  init();
+		update();
+	  render();
+		});
+
 		</script>
 	</body>
 </html>
