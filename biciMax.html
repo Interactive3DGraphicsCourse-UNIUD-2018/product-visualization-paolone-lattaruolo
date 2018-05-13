@@ -82,84 +82,143 @@
 		materialTelaio = new THREE.ShaderMaterial({uniforms: uniforms,	vertexShader: vertexTelaio,	fragmentShader: fragmentTelaio });
 
 	var lightMesh = new THREE.Mesh( new THREE.SphereGeometry( 1, 16, 16), new THREE.MeshBasicMaterial ({color: 0xffff00, wireframe:true}));
-	lightMesh.position.set( 0, 10.0, 0 );
+	lightMesh.position.set( 0, 0, 5 );
 	uniforms.pointLightPosition.value = new THREE.Vector3(lightMesh.position.x, lightMesh.position.y, lightMesh.position.z);
 
 	var lightMesh2 = new THREE.Mesh( new THREE.SphereGeometry( 1, 16, 16), new THREE.MeshBasicMaterial ({color: 0xffff00, wireframe:true}));
-	lightMesh2.position.set( -10, 10.0, 0 );
+	lightMesh2.position.set( -10, 0, 5 );
 	uniforms.pointLightPosition2.value = new THREE.Vector3(lightMesh2.position.x, lightMesh2.position.y, lightMesh2.position.z);
 
-	bici = creaBici();
+	bici = creaBici(1);
 	scene.add(bici, lightMesh, lightMesh2);
 	camera.position.z = 10;
 
-	function creaBici()
+	function creaBici(mul)
 	{
-		pivotBici = new THREE.Object3D();
-		telaio = creaTelaio();
-		manubrio = creaManubrio();
-		pivotBici.add(telaio, manubrio);
-		pivotBici.position.set(15, -10, -10);
+		//TODO
+		var pivotBici = new THREE.Object3D();
+		var telaio = creaTelaio(0xff0000,mul);
+		var ruotaDietro = creaRuota(3.5,0x000000,mul);
+		var ruotaDavanti = creaRuota(3.5,0x000000,mul);
+		var manubrio = creaManubrio();
+		ruotaDietro.position.set(0,5,8.4);
+		ruotaDietro.rotation.set(0,Math.PI*90/180,0);
+		ruotaDavanti.position.set(0,5,-5);
+		ruotaDavanti.rotation.set(0,Math.PI*90/180,0);
+		pivotBici.add(telaio,manubrio,ruotaDietro,ruotaDavanti);
+		pivotBici.position.set(0,-30,0);
 		pivotBici.rotation.set(0,Math.PI*90/180,0);
+
 		return pivotBici;
 	}
 
-	function creaTelaio()
+	function creaTelaio(colore,mul,image)
 	{
-		//TODO
 		var pivotTelaio = new THREE.Object3D();
-		var geometryDietro1 = new THREE.CylinderGeometry( 0.05, 0.05, 7, 32 );
-		var geometryDietro2 = new THREE.CylinderGeometry( 0.05, 0.05, 6.6, 32 );
-		var geometryInMezzo1 = new THREE.CylinderGeometry( 0.2, 0.2, 10, 32 );
-		var geometryInMezzo2 = new THREE.CylinderGeometry( 0.2, 0.2, 10.3, 32 );
-		var geometryInMezzo3 = new THREE.CylinderGeometry( 0.2, 0.2, 6, 32 );
-		var geometryInMezzo4 = new THREE.CylinderGeometry( 0.2, 0.2, 2, 32 );
-		var geometryDavanti1 = new THREE.CylinderGeometry( 0.3, 0.2, 2, 32 );
-		var geometryDavanti2 = new THREE.CylinderGeometry( 0.05, 0.05, 4, 32 );
-		var geometryDavanti3 = new THREE.CylinderGeometry( 0.2, 0.2, 0.5, 32 );
+		var geometryDietro1 = new THREE.CylinderGeometry( 0.05*mul, 0.05*mul, 5.6*mul, 32 );
+		var geometryDietro2 = new THREE.CylinderGeometry( 0.05*mul, 0.05*mul, 4.75*mul, 32 );
+		var geometryInMezzo1 = new THREE.CylinderGeometry( 0.2*mul, 0.2*mul, 10*mul, 32 );
+		var geometryInMezzo2 = new THREE.CylinderGeometry( 0.2*mul, 0.2*mul, 10.3*mul, 32 );
+		var geometryInMezzo3 = new THREE.CylinderGeometry( 0.2*mul, 0.2*mul, 6*mul, 32 );
+		var geometryInMezzo4 = new THREE.CylinderGeometry( 0.2*mul, 0.2*mul, 2*mul, 32 );
+		var geometryDavanti1 = new THREE.CylinderGeometry( 0.3*mul, 0.2*mul, 2*mul, 32 );
+		var geometryDavanti2 = new THREE.CylinderGeometry( 0.05*mul, 0.05*mul, 4*mul, 32 );
+		var geometryDavanti3 = new THREE.CylinderGeometry( 0.2*mul, 0.2*mul, 0.5*mul, 32 );
 
 		var cylinder1 = new THREE.Mesh( geometryInMezzo1, materialTelaio );
-		var cylinder2 = new THREE.Mesh( geometryInMezzo2, materialTelaio  );
-		var cylinder3 = new THREE.Mesh( geometryInMezzo3, materialTelaio  );
-		var cylinder4 = new THREE.Mesh( geometryInMezzo4, materialTelaio  );
-		var cylinder5 = new THREE.Mesh( geometryDietro1, materialTelaio  );
-		var cylinder6 = new THREE.Mesh( geometryDietro1, materialTelaio  );
-		var cylinder7 = new THREE.Mesh( geometryDietro2, materialTelaio  );
-		var cylinder8 = new THREE.Mesh( geometryDietro2, materialTelaio  );
-		var cylinder9 = new THREE.Mesh( geometryDavanti1, materialTelaio  );
-		var cylinder10 = new THREE.Mesh( geometryDavanti3, materialTelaio  );
-		var cylinder11 = new THREE.Mesh( geometryDavanti2, materialTelaio  );
-		var cylinder12 = new THREE.Mesh( geometryDavanti2, materialTelaio  );
-		cylinder1.position.set(0,10,0);
+		var cylinder2 = new THREE.Mesh( geometryInMezzo2, materialTelaio );
+		var cylinder3 = new THREE.Mesh( geometryInMezzo3, materialTelaio );
+		var cylinder4 = new THREE.Mesh( geometryInMezzo4, materialTelaio );
+		var cylinder5 = new THREE.Mesh( geometryDietro1, materialTelaio );
+		var cylinder6 = new THREE.Mesh( geometryDietro1, materialTelaio );
+		var cylinder7 = new THREE.Mesh( geometryDietro2, materialTelaio );
+		var cylinder8 = new THREE.Mesh( geometryDietro2, materialTelaio );
+		var cylinder9 = new THREE.Mesh( geometryDavanti1, materialTelaio );
+		var cylinder10 = new THREE.Mesh( geometryDavanti3, materialTelaio );
+		var cylinder11 = new THREE.Mesh( geometryDavanti2, materialTelaio );
+		var cylinder12 = new THREE.Mesh( geometryDavanti2, materialTelaio );
+		cylinder1.position.set(0,10*mul,0);
 		cylinder1.rotation.set(Math.PI*90/180,0,0);
-		cylinder2.position.set(0,7.3,-0.6);
+		cylinder2.position.set(0,7.3*mul,-0.6*mul);
 		cylinder2.rotation.set(Math.PI*120/180,0,0);
-		cylinder3.position.set(0,7.5,4.5);
+		cylinder3.position.set(0,7.5*mul,4.5*mul);
 		cylinder3.rotation.set(Math.PI*10/180,0,0);
-		cylinder4.position.set(0,10.9,5);
-		cylinder5.position.set(0.1,7,7.7);
-		cylinder5.rotation.set(Math.PI*305/180,0,0);
-		cylinder6.position.set(-0.1,7,7.7);
-		cylinder6.rotation.set(Math.PI*305/180,0,0);
-		cylinder7.position.set(0.1,5,7.3);
+		cylinder4.position.set(0,10.9*mul,5*mul);
+		cylinder5.position.set(0.1*mul,7*mul,6.7*mul);
+		cylinder5.rotation.set(Math.PI*315/180,0,0);
+		cylinder6.position.set(-0.1*mul,7*mul,6.7*mul);
+		cylinder6.rotation.set(Math.PI*315/180,0,0);
+		cylinder7.position.set(0.1*mul,5*mul,6.4*mul);
 		cylinder7.rotation.set(Math.PI*90/180,0,0);
-		cylinder8.position.set(-0.1,5,7.3);
+		cylinder8.position.set(-0.1*mul,5*mul,6.4*mul);
 		cylinder8.rotation.set(Math.PI*90/180,0,0);
-		cylinder9.position.set(0,10,-5);
-		cylinder10.position.set(0,9,-5);
+		cylinder9.position.set(0,10*mul,-5*mul);
+		cylinder10.position.set(0,9*mul,-5*mul);
 		cylinder10.rotation.set(Math.PI*90/180,0,Math.PI*90/180);
-		cylinder11.position.set(0.1,7,-5);
-		cylinder12.position.set(-0.1,7,-5);
-		pivotTelaio.add(cylinder1,cylinder2,cylinder3,cylinder4,cylinder5,cylinder6, cylinder7,cylinder8,cylinder9,cylinder10,cylinder11,
-						cylinder12);
-		pivotTelaio.position.set(0,0,-20);
-			return pivotTelaio;
-		}
+		cylinder11.position.set(0.1*mul,7*mul,-5*mul);
+		cylinder12.position.set(-0.1*mul,7*mul,-5*mul);
+		pivotTelaio.add(cylinder1,cylinder2,cylinder3,cylinder4,cylinder5,cylinder6,
+										cylinder7,cylinder8,cylinder9,cylinder10,cylinder11,
+										cylinder12);
+		return pivotTelaio;
+	}
 
-		function creaRuote()
-		{
-			//TODO
+	function creaRuota(ray,colore,mul,image)
+	{
+		//ray max= 3.5
+		//TODO
+		var pivotRuota = new THREE.Object3D();
+		var geometryGomma = new THREE.TorusGeometry( ray, 0.05, 16, 100 );
+		var geometryRaggio = new THREE.CubeGeometry(0.01,0.3,ray);
+		var geometryCerchione = new THREE.TorusGeometry( ray-0.05, 0.05, 16, 100 );
+		var geometryCerchione1 = new THREE.TorusGeometry( ray-0.10, 0.05, 16, 100 );
+		var geometryCerchione2 = new THREE.TorusGeometry( ray-0.15, 0.05, 16, 100 );
+		var texture = new THREE.TextureLoader().load( image);
+		var materialGomma,materialCerchione,materialRaggio;
+		materialCerchione = new THREE.MeshLambertMaterial({color:0xffff00});
+		materialRaggio = new THREE.MeshLambertMaterial({color:0x111111});
+		if(image==undefined){
+				materialGomma = new THREE.MeshLambertMaterial({color:colore});
 		}
+		else{
+			materialGomma = new THREE.MeshLambertMaterial({map:texture});
+			materialCerchione = new THREE.MeshLambertMaterial({map:texture});
+		}
+		var gomma = new THREE.Mesh( geometryGomma, materialGomma );
+		var cerchione = new THREE.Mesh(geometryCerchione,materialCerchione);
+		var cerchione1 = new THREE.Mesh(geometryCerchione1,materialCerchione);
+		var cerchione2 = new THREE.Mesh(geometryCerchione2,materialCerchione);
+		var raggio1 = new THREE.Mesh(geometryRaggio,materialRaggio);
+		var raggio2 = new THREE.Mesh(geometryRaggio,materialRaggio);
+		var raggio3 = new THREE.Mesh(geometryRaggio,materialRaggio);
+		var raggio4 = new THREE.Mesh(geometryRaggio,materialRaggio);
+		var raggio5 = new THREE.Mesh(geometryRaggio,materialRaggio);
+		var pivotRaggio1 = new THREE.Object3D();
+		var pivotRaggio2 = new THREE.Object3D();
+		var pivotRaggio3 = new THREE.Object3D();
+		var pivotRaggio4 = new THREE.Object3D();
+		var pivotRaggio5 = new THREE.Object3D();
+		raggio1.position.set(0,ray/2,0);
+		raggio1.rotation.set(Math.PI*90/180,0,Math.PI*90/180);
+		raggio2.position.set(0,ray/2,0);
+		raggio2.rotation.set(Math.PI*90/180,0,Math.PI*90/180);
+		pivotRaggio2.rotation.set(0,0,Math.PI*72/180);
+		raggio3.position.set(0,ray/2,0);
+		raggio3.rotation.set(Math.PI*90/180,0,Math.PI*90/180);
+		pivotRaggio3.rotation.set(0,0,Math.PI*144/180);
+		raggio4.position.set(0,ray/2,0);
+		raggio4.rotation.set(Math.PI*90/180,0,Math.PI*90/180);
+		pivotRaggio4.rotation.set(0,0,Math.PI*216/180);
+		raggio5.position.set(0,ray/2,0);
+		raggio5.rotation.set(Math.PI*90/180,0,Math.PI*90/180);
+		pivotRaggio5.rotation.set(0,0,Math.PI*288/180);
+		pivotRaggio2.add(raggio2);
+		pivotRaggio3.add(raggio3);
+		pivotRaggio4.add(raggio4);
+		pivotRaggio5.add(raggio5);
+		pivotRuota.add( gomma,cerchione,cerchione1,cerchione2,raggio1,pivotRaggio2,pivotRaggio3,pivotRaggio4,pivotRaggio5 );
+		return pivotRuota;
+	}
 
 		function creaManubrio()
 		{
@@ -182,7 +241,7 @@
 			manubrioLatoSx.rotation.set(0,0,Math.PI*90/180);
 
 			pivotManubrio.add(manubrioCentrale, manubrioLatoDx, manubrioLatoSx, manubrioSotto);
-			pivotManubrio.position.set(0,12,-25);
+			pivotManubrio.position.set(0,12,-5);
 			return pivotManubrio;
 		}
 
@@ -208,7 +267,7 @@
 
 		function creaBorraccia()
 		{
-			
+
 		}
 
 		function init() {
@@ -228,7 +287,7 @@
 			controls.maxDistance = 100;
 			//controls.maxPolarAngle = Math.PI / 2;
 			controls.enablePan = false;
-			controls.target.copy( telaio.position );
+			controls.target.copy( bici.position );
 			controls.update();
 
 			window.addEventListener( 'resize', onResize, false );
