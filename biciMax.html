@@ -23,6 +23,7 @@
 
 		<script>
 
+				var materialTelaio;
 				scene = new THREE.Scene();
 				camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 				renderer = new THREE.WebGLRenderer( { antialias: true } );
@@ -65,15 +66,13 @@
 				};
 
 				ShaderLoader("lib/Shader/Telaio/vertexTelaio.vert", "lib/Shader/Telaio/fragmentTelaio.frag",
-				  function (vertex, fragment) {
-				     var materialTelaio = new THREE.ShaderMaterial({
+				  function (vertexTelaio, fragmentTelaio) {
+				     materialTelaio = new THREE.ShaderMaterial({
 				      uniforms: uniforms,
-				      vertexShader: vertex,
-				      fragmentShader: fragment
+				      vertexShader: vertexTelaio,
+				      fragmentShader: fragmentTelaio
 				});
 			});
-
-			materialTelaio.needsUpdate = true;
 
 				stats = new Stats();
 				stats.domElement.style.position = 'absolute';
