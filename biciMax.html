@@ -82,21 +82,26 @@
 		materialTelaio = new THREE.ShaderMaterial({uniforms: uniforms,	vertexShader: vertexTelaio,	fragmentShader: fragmentTelaio });
 
 	var lightMesh = new THREE.Mesh( new THREE.SphereGeometry( 1, 16, 16), new THREE.MeshBasicMaterial ({color: 0xffff00, wireframe:true}));
-	lightMesh.position.set( 0, 10.0, -10 );
+	lightMesh.position.set( 0, 10.0, 0 );
 	uniforms.pointLightPosition.value = new THREE.Vector3(lightMesh.position.x, lightMesh.position.y, lightMesh.position.z);
 
 	var lightMesh2 = new THREE.Mesh( new THREE.SphereGeometry( 1, 16, 16), new THREE.MeshBasicMaterial ({color: 0xffff00, wireframe:true}));
-	lightMesh2.position.set( -10, 10.0, -10 );
+	lightMesh2.position.set( -10, 10.0, 0 );
 	uniforms.pointLightPosition2.value = new THREE.Vector3(lightMesh2.position.x, lightMesh2.position.y, lightMesh2.position.z);
 
-	telaio = creaTelaio();
-	telaio.position.set(0,0,-20);
-	scene.add(telaio, lightMesh, lightMesh2);
+	bici = creaBici();
+	scene.add(bici, lightMesh, lightMesh2);
 	camera.position.z = 10;
 
 	function creaBici()
 	{
-		//TODO
+		pivotBici = new THREE.Object3D();
+		telaio = creaTelaio();
+		manubrio = creaManubrio();
+		pivotBici.add(telaio, manubrio);
+		pivotBici.position.set(15, -10, -10);
+		pivotBici.rotation.set(0,Math.PI*90/180,0);
+		return pivotBici;
 	}
 
 	function creaTelaio()
@@ -147,6 +152,7 @@
 		cylinder12.position.set(-0.1,7,-5);
 		pivotTelaio.add(cylinder1,cylinder2,cylinder3,cylinder4,cylinder5,cylinder6, cylinder7,cylinder8,cylinder9,cylinder10,cylinder11,
 						cylinder12);
+		pivotTelaio.position.set(0,0,-20);
 			return pivotTelaio;
 		}
 
@@ -157,7 +163,27 @@
 
 		function creaManubrio()
 		{
-			//TODO
+			var pivotManubrio = new THREE.Object3D();
+			var Dx = new THREE.CylinderGeometry( 0.2, 0.2, 1, 32 );
+			var Sx = new THREE.CylinderGeometry( 0.2, 0.2, 1, 32 );
+			var Centro = new THREE.CylinderGeometry( 0.1, 0.1, 4, 32 );
+			var sotto = new THREE.CylinderGeometry( 0.2, 0.3, 1, 32 );
+
+			var manubrioCentrale = new THREE.Mesh( Centro, materialTelaio );
+			var manubrioLatoDx = new THREE.Mesh( Dx, materialTelaio  );
+			var manubrioLatoSx = new THREE.Mesh( Sx, materialTelaio  );
+			var manubrioSotto = new THREE.Mesh( sotto, materialTelaio  );
+
+			manubrioLatoDx.position.set(2,0,0);
+			manubrioLatoSx.position.set(-2,0,0);
+			manubrioSotto.position.set(0, -0.5, 0);
+			manubrioCentrale.rotation.set(0,0,Math.PI*90/180);
+			manubrioLatoDx.rotation.set(0,0,Math.PI*90/180);
+			manubrioLatoSx.rotation.set(0,0,Math.PI*90/180);
+
+			pivotManubrio.add(manubrioCentrale, manubrioLatoDx, manubrioLatoSx, manubrioSotto);
+			pivotManubrio.position.set(0,12,-25);
+			return pivotManubrio;
 		}
 
 		function creaPedali()
