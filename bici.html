@@ -53,34 +53,34 @@
 				//THREE.DRACOLoader.setDecoderPath( '/examples/js/libs/draco' );
 				//loader.setDRACOLoader( new THREE.DRACOLoader() );
 				// Load a glTF resource
-				 loader.load(
-				 	// resource URL
-				 	'object/scene.gltf',
-				 	// called when the resource is loaded
-					function ( gltf ) {
-
-						scene.add( gltf.scene );
-
-						gltf.animations; // Array<THREE.AnimationClip>
-						gltf.scene; // THREE.Scene
-						gltf.scenes; // Array<THREE.Scene>
-						gltf.cameras; // Array<THREE.Camera>
-						gltf.asset; // Object
-
-					},
-					// called when loading is in progresses
-					function ( xhr ) {
-
-						console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
-
-					},
-					// called when loading has errors
-					function ( error ) {
-						console.log(error);
-						console.log( 'An error happened' );
-
-					}
-				);
+				//  loader.load(
+				//  	// resource URL
+				//  	'object/scene.gltf',
+				//  	// called when the resource is loaded
+				// 	function ( gltf ) {
+        //
+				// 		scene.add( gltf.scene );
+        //
+				// 		gltf.animations; // Array<THREE.AnimationClip>
+				// 		gltf.scene; // THREE.Scene
+				// 		gltf.scenes; // Array<THREE.Scene>
+				// 		gltf.cameras; // Array<THREE.Camera>
+				// 		gltf.asset; // Object
+        //
+				// 	},
+				// 	// called when loading is in progresses
+				// 	function ( xhr ) {
+        //
+				// 		console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+        //
+				// 	},
+				// 	// called when loading has errors
+				// 	function ( error ) {
+				// 		console.log(error);
+				// 		console.log( 'An error happened' );
+        //
+				// 	}
+				// );
 
 				light.position.set(0,500,0);
 				var bici = creaBici(1);
@@ -104,11 +104,13 @@
 				var telaio = creaTelaio(0xff0000,mul);
 				var ruotaDietro = creaRuota(3.5,0x000000,mul);
 				var ruotaDavanti = creaRuota(3.5,0x000000,mul);
+				var fanale = creaFanale();
+				fanale.position.set(0,10,-5.5);
 				ruotaDietro.position.set(0,5,8.4);
 				ruotaDietro.rotation.set(0,Math.PI*90/180,0);
 				ruotaDavanti.position.set(0,5,-5);
 				ruotaDavanti.rotation.set(0,Math.PI*90/180,0);
-				pivotBici.add(telaio,ruotaDietro,ruotaDavanti);
+				pivotBici.add(telaio,ruotaDietro,ruotaDavanti,fanale);
 				return pivotBici;
 			}
 
@@ -246,7 +248,23 @@
 			function creaFanale()
 			{
 				//TODO
-				//latheGeometry
+				var pivotFanale = new THREE.Object3D();
+				var points = [];
+				for ( var i = 0; i < 10; i ++ ) {
+					points.push( new THREE.Vector2( Math.sin( i * 0.2 ) * 10 + 5, ( i - 5 ) * 2 ) );
+				}
+				var geometry = new THREE.LatheBufferGeometry( points );
+				var material = new THREE.MeshLambertMaterial( { color: 0x222222,side:THREE.DoubleSide } );
+				var lathe = new THREE.Mesh( geometry, material );
+				var geometryVetro = new THREE.CircleGeometry( 0.44, 32 );
+				var materialVetro = new THREE.MeshLambertMaterial( { color: 0xffff00,side: THREE.BackSide } );
+				//fanale mettere trasparenza ecc...
+				var vetro = new THREE.Mesh( geometryVetro, materialVetro );
+				vetro.position.set(0,0,-0.24);
+				lathe.scale.set(0.03,0.03,0.03);
+				lathe.rotation.set(-Math.PI*90/180,0,0);
+				pivotFanale.add( lathe,vetro );
+				return pivotFanale;
 			}
 
 			function creaSellino()
