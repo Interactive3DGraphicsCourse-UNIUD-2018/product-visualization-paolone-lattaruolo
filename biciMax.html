@@ -74,6 +74,9 @@
 				});
 			});
 
+				var geo = new THREE.BoxGeometry(2,2,2);
+				var cubo = new THREE.Mesh(geo, materialTelaio);
+
 				stats = new Stats();
 				stats.domElement.style.position = 'absolute';
 				stats.domElement.style.top = '0px';
@@ -198,7 +201,7 @@
 
 				var telaio = creaTelaio();
 				telaio.position.set(0,0,-20);
-				scene.add(telaio, lightMesh, lightMesh2);
+				scene.add(cubo, telaio, lightMesh, lightMesh2);
 				camera.position.z = 10;
 
 				document.body.appendChild( renderer.domElement );
