@@ -1,0 +1,598 @@
+{
+  "accessors": [
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 892,
+      "max": [
+        69.329452514648438,
+        69.21527099609375,
+        65.914306640625
+      ],
+      "min": [
+        -69.329452514648438,
+        1.2842025756835938,
+        -70.371490478515625
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 10704,
+      "componentType": 5126,
+      "count": 892,
+      "max": [
+        0.99451291561126709,
+        1,
+        0.97448712587356567
+      ],
+      "min": [
+        -0.99451279640197754,
+        -0.90608304738998413,
+        -0.99999290704727173
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 3,
+      "componentType": 5126,
+      "count": 892,
+      "max": [
+        0.95824158191680908,
+        0.97257357835769653,
+        0.56611037254333496,
+        1
+      ],
+      "min": [
+        -0.96471720933914185,
+        -0.56582158803939819,
+        -0.99561291933059692,
+        1
+      ],
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 892,
+      "max": [
+        0.87194430828094482,
+        0.47826239466667175
+      ],
+      "min": [
+        0.4521382749080658,
+        0.023061662912368774
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "componentType": 5125,
+      "count": 4896,
+      "max": [
+        891
+      ],
+      "min": [
+        0
+      ],
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 21408,
+      "componentType": 5126,
+      "count": 1333,
+      "max": [
+        69.31005859375,
+        16.387924194335938,
+        70.479911804199219
+      ],
+      "min": [
+        -69.310066223144531,
+        -69.215263366699219,
+        -70.345771789550781
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 37404,
+      "componentType": 5126,
+      "count": 1333,
+      "max": [
+        0.99527007341384888,
+        0.92146825790405273,
+        1
+      ],
+      "min": [
+        -0.99527019262313843,
+        -1,
+        -0.99985224008560181
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 3,
+      "byteOffset": 14272,
+      "componentType": 5126,
+      "count": 1333,
+      "max": [
+        1,
+        0.51801782846450806,
+        0.89341437816619873,
+        1
+      ],
+      "min": [
+        -0.97200274467468262,
+        -0.95929723978042603,
+        -0.99792212247848511,
+        1
+      ],
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 7136,
+      "componentType": 5126,
+      "count": 1333,
+      "max": [
+        0.42153584957122803,
+        0.67253690958023071
+      ],
+      "min": [
+        0.00037464499473571777,
+        0.021333873271942139
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 19584,
+      "componentType": 5125,
+      "count": 7416,
+      "max": [
+        1332
+      ],
+      "min": [
+        0
+      ],
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 53400,
+      "componentType": 5126,
+      "count": 1014,
+      "max": [
+        69.326622009277344,
+        21.3292236328125,
+        65.914306640625
+      ],
+      "min": [
+        -69.326622009277344,
+        -21.311264038085938,
+        -70.226371765136719
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 65568,
+      "componentType": 5126,
+      "count": 1014,
+      "max": [
+        0.99994957447052002,
+        1,
+        0.99956399202346802
+      ],
+      "min": [
+        -0.99994969367980957,
+        -1,
+        -0.99990975856781006
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 3,
+      "byteOffset": 35600,
+      "componentType": 5126,
+      "count": 1014,
+      "max": [
+        0.99998766183853149,
+        0.55008465051651001,
+        0.999991774559021,
+        1
+      ],
+      "min": [
+        -0.99991822242736816,
+        -0.56817638874053955,
+        -0.9999997615814209,
+        1
+      ],
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 17800,
+      "componentType": 5126,
+      "count": 1014,
+      "max": [
+        0.98575359582901001,
+        0.61743998527526855
+      ],
+      "min": [
+        0.052808329463005066,
+        0.52724111080169678
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 49248,
+      "componentType": 5125,
+      "count": 5280,
+      "max": [
+        1013
+      ],
+      "min": [
+        0
+      ],
+      "type": "SCALAR"
+    }
+  ],
+  "asset": {
+    "extras": {
+      "author": "balmsukong (https://sketchfab.com/balmsukong)",
+      "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+      "source": "https://sketchfab.com/models/6ca6ba3cfbb1411f8622640e2c96738e",
+      "title": "Pokeball"
+    },
+    "generator": "Sketchfab-3.22.12",
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 70368,
+      "byteOffset": 0,
+      "name": "floatBufferViews",
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 25912,
+      "byteOffset": 70368,
+      "byteStride": 8,
+      "name": "floatBufferViews",
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 77736,
+      "byteOffset": 96280,
+      "byteStride": 12,
+      "name": "floatBufferViews",
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 51824,
+      "byteOffset": 174016,
+      "byteStride": 16,
+      "name": "floatBufferViews",
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 225840,
+      "uri": "scene.bin"
+    }
+  ],
+  "images": [
+    {
+      "uri": "textures/Black_mat_metallicRoughness.png"
+    },
+    {
+      "uri": "textures/Black_mat_normal.png"
+    },
+    {
+      "uri": "textures/Black_mat_baseColor.png"
+    },
+    {
+      "uri": "textures/White_mat_metallicRoughness.png"
+    },
+    {
+      "uri": "textures/White_mat_normal.png"
+    },
+    {
+      "uri": "textures/White_mat_baseColor.png"
+    },
+    {
+      "uri": "textures/Red_mat_metallicRoughness.png"
+    },
+    {
+      "uri": "textures/Red_mat_normal.png"
+    },
+    {
+      "uri": "textures/Red_mat_baseColor.png"
+    }
+  ],
+  "materials": [
+    {
+      "doubleSided": true,
+      "emissiveFactor": [
+        0,
+        0,
+        0
+      ],
+      "name": "Red_mat",
+      "normalTexture": {
+        "index": 7,
+        "scale": 1,
+        "texCoord": 0
+      },
+      "occlusionTexture": {
+        "index": 6,
+        "strength": 1,
+        "texCoord": 0
+      },
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "baseColorTexture": {
+          "index": 8,
+          "texCoord": 0
+        },
+        "metallicFactor": 0,
+        "roughnessFactor": 0.2334222561
+      }
+    },
+    {
+      "doubleSided": true,
+      "emissiveFactor": [
+        0,
+        0,
+        0
+      ],
+      "name": "White_mat",
+      "normalTexture": {
+        "index": 4,
+        "scale": 1,
+        "texCoord": 0
+      },
+      "occlusionTexture": {
+        "index": 3,
+        "strength": 1,
+        "texCoord": 0
+      },
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "baseColorTexture": {
+          "index": 5,
+          "texCoord": 0
+        },
+        "metallicFactor": 0.86756859760000005,
+        "roughnessFactor": 0.17244664630000001
+      }
+    },
+    {
+      "doubleSided": true,
+      "emissiveFactor": [
+        0,
+        0,
+        0
+      ],
+      "name": "Black_mat",
+      "normalTexture": {
+        "index": 1,
+        "scale": 1,
+        "texCoord": 0
+      },
+      "occlusionTexture": {
+        "index": 0,
+        "strength": 1,
+        "texCoord": 0
+      },
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "baseColorTexture": {
+          "index": 2,
+          "texCoord": 0
+        },
+        "metallicFactor": 0,
+        "roughnessFactor": 0.20903201220000001
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Pokeball_Red_mat_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 1,
+            "POSITION": 0,
+            "TANGENT": 2,
+            "TEXCOORD_0": 3
+          },
+          "indices": 4,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "Pokeball_White_mat_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 6,
+            "POSITION": 5,
+            "TANGENT": 7,
+            "TEXCOORD_0": 8
+          },
+          "indices": 9,
+          "material": 1,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "Pokeball_Black_mat_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 11,
+            "POSITION": 10,
+            "TANGENT": 12,
+            "TEXCOORD_0": 13
+          },
+          "indices": 14,
+          "material": 2,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "children": [
+        1
+      ],
+      "name": "RootNode (gltf orientation matrix)",
+      "rotation": [
+        -0.70710678118654746,
+        -0,
+        -0,
+        0.70710678118654757
+      ]
+    },
+    {
+      "children": [
+        2
+      ],
+      "name": "RootNode (model correction matrix)"
+    },
+    {
+      "children": [
+        3
+      ],
+      "matrix": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        -1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "name": "ba793546d24348b9a301f4287f47e1eb.fbx"
+    },
+    {
+      "children": [
+        4
+      ],
+      "name": "RootNode"
+    },
+    {
+      "children": [
+        5,
+        6,
+        7
+      ],
+      "name": "Pokeball"
+    },
+    {
+      "mesh": 0,
+      "name": "Pokeball_Red_mat_0"
+    },
+    {
+      "mesh": 1,
+      "name": "Pokeball_White_mat_0"
+    },
+    {
+      "mesh": 2,
+      "name": "Pokeball_Black_mat_0"
+    }
+  ],
+  "samplers": [
+    {
+      "magFilter": 9729,
+      "minFilter": 9987,
+      "wrapS": 10497,
+      "wrapT": 10497
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "OSG_Scene",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "source": 0
+    },
+    {
+      "sampler": 0,
+      "source": 1
+    },
+    {
+      "sampler": 0,
+      "source": 2
+    },
+    {
+      "sampler": 0,
+      "source": 3
+    },
+    {
+      "sampler": 0,
+      "source": 4
+    },
+    {
+      "sampler": 0,
+      "source": 5
+    },
+    {
+      "sampler": 0,
+      "source": 6
+    },
+    {
+      "sampler": 0,
+      "source": 7
+    },
+    {
+      "sampler": 0,
+      "source": 8
+    }
+  ]
+}
+
