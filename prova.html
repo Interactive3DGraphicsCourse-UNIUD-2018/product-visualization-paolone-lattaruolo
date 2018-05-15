@@ -34,7 +34,7 @@
 	<body>
 
 		<div id="info">
-			<a href="https://github.com/robertoranon/int3D" target="_blank">Interactive 3D Graphics 2017 code</a> - normal mapping<br />
+			<a href="https://github.com/robertoranon/int3D" target="_blank">NON VA UN CAZZO DIO CANE<br />
 		</div>
 		<script src="lib/three.min.js"></script>
 		<script src="lib/stats.min.js"></script>
@@ -54,24 +54,17 @@
 
 				renderer.setClearColor( 0xf0f0f0 );
 
-				camera.position.set( 0, 0, 10 );
+				camera.position.set( 0, 0, -10);
 				var light = new THREE.AmbientLight( 0x404040 ); // soft white light
 				var ourMaterial = new THREE.MeshLambertMaterial({ color: 0xffff00 });
 				var loader = new THREE.GLTFLoader();
 				// Load a glTF resource
 				loader.load(
 					// resource URL
-					'object/Sunglass/sunglass.gltf',
+					'object/oggettoX/scene.gltf',
 					// called when the resource is loaded
 					function ( gltf ) {
-
 						scene.add( gltf.scene );
-
-						gltf.animations; // Array<THREE.AnimationClip>
-						gltf.scene; // THREE.Scene
-						gltf.scenes; // Array<THREE.Scene>
-						gltf.cameras; // Array<THREE.Camera>
-						gltf.asset; // Object
 					},
 
 						function ( xhr ) {
@@ -86,8 +79,6 @@
 
 						}
 					);
-
-				scene.add( camera, light );
 
 				document.body.appendChild( renderer.domElement );
 				renderer.setPixelRatio( window.devicePixelRatio );
