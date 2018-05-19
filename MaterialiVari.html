@@ -504,7 +504,7 @@ vec3 perturbNormal2Arb( vec3 eye_pos, vec3 surf_norm ) {
 
 	// default: red plastic
 	var materialParameters = {
-		cdiff_red: 0.7,
+		cdiff_red: 0.0,
 		cdiff_green: 0.0,
 		cdiff_blue: 0.0,
 		cspec_red: 1.022,
@@ -596,10 +596,10 @@ vec3 perturbNormal2Arb( vec3 eye_pos, vec3 surf_norm ) {
 	var geometrySfera1 = new THREE.SphereGeometry(4, 32, 32);
 	var cube = new THREE.BoxGeometry(5,5,5);
 
-	var sfera1 = new THREE.Mesh(cube, ourMaterial);
-	var sfera2 = new THREE.Mesh(cube, ourMaterial2);
-	var sfera3 = new THREE.Mesh(cube, ourMaterial3);
-	var sfera4 = new THREE.Mesh(cube, ourMaterial4);
+	var sfera1 = new THREE.Mesh(geometrySfera1, ourMaterial);
+	var sfera2 = new THREE.Mesh(geometrySfera1, ourMaterial2);
+	var sfera3 = new THREE.Mesh(geometrySfera1, ourMaterial3);
+	var sfera4 = new THREE.Mesh(geometrySfera1, ourMaterial4);
 
 
 	sfera1.position.set(0,10,0);

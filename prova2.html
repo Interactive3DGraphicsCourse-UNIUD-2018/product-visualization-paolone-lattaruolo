@@ -1,106 +1,499 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<title>three.js webgl - glTF loader</title>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		<style>
-			body {
-				font-family: Monospace;
-				background-color: #000;
-				color: #fff;
-				margin: 0px;
-				overflow: hidden;
-			}
-			#info {
-				color: #fff;
-				position: absolute;
-				top: 10px;
-				width: 100%;
-				text-align: center;
-				z-index: 100;
-				display:block;
-			}
-			#info a {
-				color: #75ddc1;
-				font-weight: bold;
-			}
-		</style>
-	</head>
+<head>
+	<title>Project</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<style>
+	body {
+		background-color: #f0f0f0;
+		margin: 0px;
+		overflow: hidden;
+	}
 
-	<body>
-		<div id="info">
-			<a href="http://threejs.org" target="_blank" rel="noopener">three.js</a> - GLTFLoader<br />
-			Battle Damaged Sci-fi Helmet by
-			<a href="https://sketchfab.com/theblueturtle_" target="_blank" rel="noopener">theblueturtle_</a><br />
-		</div>
+	#info {
+		position: absolute;
+		top: 0px; width: 100%;
+		color: #222;
+		padding: 5px;
+		font-family: Monospace;
+		font-size: 13px;
+		text-align: center;
+	}
 
-    <script src="lib/three.min.js"></script>
-		<script src="lib/stats.min.js"></script>
-		<script src="lib/OrbitControls.js"></script>
-		<script src="lib/dat.gui.min.js"></script>
-		<script src="lib/GLTFLoader.js"></script>
-    <script src="lib/Detector.js"></script>
+	a {
+		color: #000;
+		text-decoration: none;
+	}
 
-		<script>
-			if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
-			var container, stats, controls;
-			var camera, scene, renderer, light;
-			init();
-			animate();
-			function init() {
-				container = document.createElement( 'div' );
-				document.body.appendChild( container );
-				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.25, 20 );
-				camera.position.set( -1.8, 0.9, 2.7 );
-				controls = new THREE.OrbitControls( camera );
-				controls.target.set( 0, -0.2, -0.2 );
-				controls.update();
-				// envmap
-				var path = 'texture/Bridge2/';
-				var format = '.jpg';
-				var envMap = new THREE.CubeTextureLoader().load( [
-					path + 'posx' + format, path + 'negx' + format,
-					path + 'posy' + format, path + 'negy' + format,
-					path + 'posz' + format, path + 'negz' + format
-				] );
-				scene = new THREE.Scene();
-				scene.background = envMap;
-				light = new THREE.HemisphereLight( 0xbbbbff, 0x444422 );
-				light.position.set( 0, 1, 0 );
-				scene.add( light );
-				// model
-				var loader = new THREE.GLTFLoader();
-				loader.load( 'object/Sunglass/sunglass.gltf', function ( gltf ) {
-					gltf.scene.traverse( function ( child ) {
-						if ( child.isMesh ) {
-							child.material.envMap = envMap;
-						}
-					} );
-					scene.add( gltf.scene );
-				} );
-				renderer = new THREE.WebGLRenderer( { antialias: true } );
-				renderer.setPixelRatio( window.devicePixelRatio );
-				renderer.setSize( window.innerWidth, window.innerHeight );
-				renderer.gammaOutput = true;
-				container.appendChild( renderer.domElement );
-				window.addEventListener( 'resize', onWindowResize, false );
-				// stats
-				stats = new Stats();
-				container.appendChild( stats.dom );
-			}
-			function onWindowResize() {
-				camera.aspect = window.innerWidth / window.innerHeight;
-				camera.updateProjectionMatrix();
-				renderer.setSize( window.innerWidth, window.innerHeight );
-			}
-			//
-			function animate() {
-				requestAnimationFrame( animate );
-				renderer.render( scene, camera );
-				stats.update();
-			}
-		</script>
+	a:hover {
+		color: #0080ff;
+	}
+	</style>
+</head>
+<body>
 
-	</body>
-</html>
+	<script src="lib/three.min.js"></script>
+	<script src="lib/stats.min.js"></script>
+	<script src="lib/OrbitControls.js"></script>
+	<script src="lib/dat.gui.min.js"></script>
+	<script src="lib/GLTFLoader.js"></script>
+
+	<!-- shader combinato: lambertian + microfacet; ORO -->
+	<script type="text/x-glsl" id="vertex">
+	varying vec3 vNormal;
+	varying vec3 vPosition;
+
+	void main() {
+		vec4 vPos = modelViewMatrix * vec4( position, 1.0 );
+		vPosition = vPos.xyz;
+		vNormal = normalMatrix * normal;
+		gl_Position = projectionMatrix * vPos;
+	}
+</script>
+
+<script type="text/x-glsl" id="fragment">
+varying vec3 vNormal;
+varying vec3 vPosition;
+uniform vec3 pointLightPosition; // in world space
+uniform vec3 pointLightPosition2; // in world space
+uniform vec3 clight;
+uniform vec3 cspec;
+uniform vec3 cdiff;
+uniform float roughness;
+const float PI = 3.14159;
+
+vec3 FSchlick(float lDoth) {
+	return (cspec + (vec3(1.0)-cspec)*pow(1.0 - lDoth,5.0));
+}
+
+float DGGX(float nDoth, float alpha) {
+	float alpha2 = alpha*alpha;
+	float d = nDoth*nDoth*(alpha2-1.0)+1.0;
+	return (  alpha2 / (PI*d*d));
+}
+
+float G1(float dotProduct, float k) {
+	return (dotProduct / (dotProduct*(1.0-k) + k) );
+}
+
+float GSmith(float nDotv, float nDotl) {
+	float k = roughness*roughness;
+	return G1(nDotl,k)*G1(nDotv,k);
+}
+
+void main() {
+
+	// Luce 1
+	vec4 lPosition = viewMatrix * vec4( pointLightPosition, 1.0 );
+	vec3 l = normalize(lPosition.xyz - vPosition.xyz);
+	vec3 n = normalize( vNormal );  // interpolation destroys normalization, so we have to normalize
+	vec3 v = normalize( -vPosition);
+	vec3 h = normalize( v + l);
+	// small quantity to prevent divisions by 0
+	float nDotl = max(dot( n, l),0.000001);
+	float lDoth = max(dot( l , h ),0.000001);
+	float nDoth = max(dot( n, h ),0.000001);
+	float vDoth = max(dot( v, h ),0.000001);
+	float nDotv = max(dot( n, v ),0.000001);
+	vec3 fresnel = FSchlick(lDoth);
+	vec3 BRDF = (vec3(1.0)-fresnel)*cdiff/PI + fresnel*GSmith(nDotv,nDotl)*DGGX(nDoth,roughness*roughness)/
+	(4.0*nDotl*nDotv);
+
+	// Luce 2
+	vec4 lPosition2 = viewMatrix * vec4( pointLightPosition2, 1.0 );
+	vec3 l2 = normalize(lPosition2.xyz - vPosition.xyz);
+	vec3 n2 = normalize( vNormal );  // interpolation destroys normalization, so we have to normalize
+	vec3 v2 = normalize( -vPosition );
+	vec3 h2 = normalize( v + l2 );
+	// small quantity to prevent divisions by 0
+	float nDotl2 = max(dot( n2, l2),0.000001);
+	float lDoth2 = max(dot( l2 , h2 ),0.000001);
+	float nDoth2 = max(dot( n2, h2 ),0.000001);
+	float vDoth2 = max(dot( v2, h2 ),0.000001);
+	float nDotv2 = max(dot( n2, v2 ),0.000001);
+	vec3 fresnel2 = FSchlick(lDoth2);
+	vec3 BRDF2 = (vec3(1.0)-fresnel2)*cdiff/PI + fresnel2*GSmith(nDotv2,nDotl2)*DGGX(nDoth2,roughness*roughness)/
+	(4.0*nDotl2*nDotv2);
+
+
+	vec3 outRadiance = PI* clight * (nDotl * BRDF + nDotl2 * BRDF2);
+	// gamma encode the final value
+	gl_FragColor = vec4(pow( outRadiance, vec3(1.0/2.2)), 1.0);
+}
+</script>
+
+<script type="text/x-glsl" id="vertexTexture1">
+varying vec3 vNormal;
+varying vec3 vPosition;
+varying vec2 uVv;
+
+void main() {
+	vec4 vPos = modelViewMatrix * vec4( position, 1.0 );
+	vPosition = vPos.xyz;
+	vNormal = normalMatrix * normal;
+	uVv = uv;
+	gl_Position = projectionMatrix * vPos;
+}
+</script>
+
+<script type="text/x-glsl" id="fragmentTexture1">
+varying vec3 vNormal;
+varying vec3 vPosition;
+varying vec2 uVv;
+uniform vec3 pointLightPosition; // in world space
+uniform vec3 pointLightPosition2; // in world space
+uniform vec3 clight;
+uniform sampler2D specularMap;
+uniform sampler2D diffuseMap;
+uniform sampler2D roughnessMap;
+uniform sampler2D normalMap;
+uniform vec2 normalScale;
+uniform vec2 textureRepeat;
+vec3 cdiff;
+vec3 cspec;
+float roughness;
+const float PI = 3.14159;
+
+vec3 FSchlick(float lDoth) {
+	return (cspec + (vec3(1.0)-cspec)*pow(1.0 - lDoth,5.0));
+}
+
+float DGGX(float nDoth, float alpha) {
+	float alpha2 = alpha*alpha;
+	float d = nDoth*nDoth*(alpha2-1.0)+1.0;
+	return (  alpha2 / (PI*d*d));
+}
+
+float G1(float dotProduct, float k) {
+	return (dotProduct / (dotProduct*(1.0-k) + k) );
+}
+
+float GSmith(float nDotv, float nDotl) {
+	float k = roughness*roughness;
+	return G1(nDotl,k)*G1(nDotv,k);
+}
+
+#extension GL_OES_standard_derivatives : enable
+
+vec3 perturbNormal2Arb( vec3 eye_pos, vec3 surf_norm ) {
+
+vec3 q0 = dFdx( eye_pos.xyz );
+vec3 q1 = dFdy( eye_pos.xyz );
+vec2 st0 = dFdx( uVv.st );
+vec2 st1 = dFdy( uVv.st );
+
+vec3 S = normalize(  q0 * st1.t - q1 * st0.t );
+vec3 T = normalize( -q0 * st1.s + q1 * st0.s );
+vec3 N =  surf_norm ;
+
+vec3 mapN = normalize(texture2D( normalMap, uVv ).xyz * 2.0 - 1.0);
+mapN.xy = normalScale * mapN.xy;
+mat3 tsn = mat3( S, T, N );
+return normalize( tsn * mapN );
+
+}
+
+void main() {
+	vec4 lPosition = viewMatrix * vec4( pointLightPosition, 1.0 );
+	vec3 l = normalize(lPosition.xyz - vPosition.xyz);
+	vec3 n = perturbNormal2Arb( vPosition, normalize( vNormal ));
+	vec3 v = normalize( -vPosition);
+	vec3 h = normalize( v + l);
+	// small quantity to prevent divisions by 0
+	float nDotl = max(dot( n, l ),0.000001);
+	float lDoth = max(dot( l, h ),0.000001);
+	float nDoth = max(dot( n, h ),0.000001);
+	float vDoth = max(dot( v, h ),0.000001);
+	float nDotv = max(dot( n, v ),0.000001);
+
+	cdiff = texture2D( diffuseMap, uVv*textureRepeat ).rgb;
+	// texture in sRGB, linearize
+	cdiff = pow( cdiff, vec3(2.2));
+	cspec = texture2D( specularMap, uVv*textureRepeat ).rgb;
+	// texture in sRGB, linearize
+	cspec = pow( cspec, vec3(2.2));
+	roughness = texture2D( roughnessMap, uVv*textureRepeat).r; // no need to linearize roughness map
+
+	vec3 fresnel = FSchlick(lDoth);
+	vec3 BRDF = (vec3(1.0)-fresnel)*cdiff/PI + fresnel*GSmith(nDotv,nDotl)*DGGX(nDoth,roughness*roughness)/
+	(4.0*nDotl*nDotv);
+
+	// Luce 2
+		vec4 lPosition2 = viewMatrix * vec4( pointLightPosition2, 1.0 );
+		vec3 l2 = normalize(lPosition2.xyz - vPosition.xyz);
+		vec3 n2 = perturbNormal2Arb( vPosition, normalize( vNormal ));
+		vec3 v2 = normalize( -vPosition );
+		vec3 h2 = normalize( v + l2 );
+		// small quantity to prevent divisions by 0
+		float nDotl2 = max(dot( n2, l2),0.000001);
+		float lDoth2 = max(dot( l2 , h2 ),0.000001);
+		float nDoth2 = max(dot( n2, h2 ),0.000001);
+		float vDoth2 = max(dot( v2, h2 ),0.000001);
+		float nDotv2 = max(dot( n2, v2 ),0.000001);
+		vec3 fresnel2 = FSchlick(lDoth2);
+		vec3 BRDF2 = (vec3(1.0)-fresnel2)*cdiff/PI + fresnel2*GSmith(nDotv2,nDotl2)*DGGX(nDoth2,roughness*roughness)/
+		(4.0*nDotl2*nDotv2);
+		vec3 outRadiance = PI* clight * (nDotl * BRDF + nDotl2 * BRDF2);
+		// gamma encode the final value
+		gl_FragColor = vec4(pow( outRadiance, vec3(1.0/2.2)), 1.0);
+}
+</script>
+
+<script>
+
+var stats, controls;
+var camera, scene, renderer, light;
+// default: white, 1.0 intensity
+var lightParameters = {
+	red: 1.0,
+	green: 1.0,
+	blue: 1.0,
+	intensity: 4.0,
+}
+
+// default: red plastic
+var materialParameters = {
+	cdiff_red: 0.0,
+	cdiff_green: 0.0,
+	cdiff_blue: 0.0,
+	cspec_red: 1.022,
+	cspec_green: 0.782,
+	cspec_blue: 0.344,
+	roughness: 0.8
+}
+
+var textureParameters = {
+	material:"Metallo1",
+	repeatS: 1.0,
+	repeatT: 1.0,
+	normalScale: 0.0,
+}
+
+// Texture per sfera con lastra di ferro
+var diffuseMap = loadTexture( "texture/Metallo1/" + textureParameters.material + "Base_Color.png" );
+var specularMap = loadTexture( "texture/Metallo1/" + textureParameters.material + "_Specular.png" );
+var roughnessMap = loadTexture( "texture/Metallo1/" + textureParameters.material + "_Roughness.png" );
+var normalMap = loadTexture( "texture/Metallo1/" + textureParameters.material + "_Normal.png" );
+
+var uniforms = {
+	specularMap: { type: "t", value: specularMap},
+	diffuseMap:	{ type: "t", value: diffuseMap},
+	roughnessMap:	{ type: "t", value: roughnessMap},
+	normalMap:	{ type: "t", value: normalMap},
+	normalScale: {type: "v2", value: new THREE.Vector2(0.5,0.5)},
+	textureRepeat: { type: "v2", value: new THREE.Vector2(1,1) },
+
+	cspec:	{ type: "v3", value: new THREE.Vector3() },
+	cdiff:	{ type: "v3", value: new THREE.Vector3() },
+	roughness: {type: "f", value: 0.5},
+
+	pointLightPosition:	{ type: "v3", value: new THREE.Vector3() },
+	pointLightPosition2:	{ type: "v3", value: new THREE.Vector3() },
+	clight:	{ type: "v3", value: new THREE.Vector3() },
+};
+
+function loadTexture(file) {
+	var texture = new THREE.TextureLoader().load( file , function ( texture ) {
+
+		texture.minFilter = THREE.LinearMipMapLinearFilter;
+		texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+		texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+		texture.offset.set( 0, 0 );
+		texture.needsUpdate = true;
+		render();
+	} )
+	return texture;
+}
+
+vs = document.getElementById("vertex").textContent;
+fs = document.getElementById("fragment").textContent;
+
+vs2 = document.getElementById("vertexTexture1").textContent;
+fs2 = document.getElementById("fragmentTexture1").textContent;
+
+function init() {
+
+	camera = new THREE.PerspectiveCamera( 35, window.innerWidth / window.innerHeight, 1, 1000 );
+	camera.position.set( 0, 0, -25 );
+	controls = new THREE.OrbitControls( camera );
+	controls.target.set( 0, -0.2, -0.2 );
+	controls.update();
+	scene = new THREE.Scene();
+	renderer = new THREE.WebGLRenderer( { antialias: true } );
+	renderer.setPixelRatio( window.devicePixelRatio );
+	renderer.setSize( window.innerWidth, window.innerHeight );
+	renderer.gammaInput = true;
+	renderer.gammaOutput = true;
+	renderer.setClearColor( 0xf0f0f0 );
+	renderer.gammaOutput = true;
+	window.addEventListener( 'resize', onWindowResize, false );
+	// stats
+	stats = new Stats();
+	document.body.appendChild( renderer.domElement );
+	document.body.appendChild( stats.domElement );
+	// model
+	var loader = new THREE.GLTFLoader();
+	loader.load( 'object/OggettoAndrea/scene.gltf', function ( gltf ) {
+
+		//  ---------------------------------- GESTIONE MATERIALI OGGETTO COMPLETO ---------------------------------  //
+		// gltf.scene.traverse( function ( child ) {
+		//
+		// 	if(child.isMesh){
+		// 		child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
+		// 	}
+		// });
+
+		// --------------------------    GESTIONE MATERIALI POKEBALL ------------------------------------------------ //
+		gltf.scene.children[0].children[0].children[0].children[0].children[0].children[0].traverse( function ( child ) {
+
+			if(child.isMesh){
+				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
+			}
+		});
+
+		gltf.scene.children[0].children[0].children[0].children[0].children[0].children[1].traverse( function ( child ) {
+
+			if(child.isMesh){
+				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
+			}
+		});
+
+		gltf.scene.children[0].children[0].children[0].children[0].children[0].children[2].traverse( function ( child ) {
+
+			if(child.isMesh){
+				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
+			}
+		});
+
+		//------------------------   		GESTIONE MATERIALI PC CASE   ----------------------------------------------- //
+		// gltf.scene.children[0].children[0].children[0].children[0].traverse( function ( child ) {
+		//
+		// 	if(child.isMesh){
+		// 		child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
+		// 	}
+		// });
+
+		// gltf.scene.children[0].children[0].children[0].children[1].traverse( function ( child ) {
+		//
+		// 	if(child.isMesh){
+		// 		child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
+		// 	}
+		// });
+		//
+		// gltf.scene.children[0].children[0].children[0].children[2].traverse( function ( child ) {
+		//
+		// 	if(child.isMesh){
+		// 		child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
+		// 	}
+		// });
+		//
+		// gltf.scene.children[0].children[0].children[0].children[3].traverse( function ( child ) {
+		//
+		// 	if(child.isMesh){
+		// 		child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
+		// 	}
+		// });
+		//
+		// gltf.scene.children[0].children[0].children[0].children[4].traverse( function ( child ) {
+		//
+		// 	if(child.isMesh){
+		// 		child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
+		// 	}
+		// });
+		//
+		// gltf.scene.children[0].children[0].children[0].children[5].traverse( function ( child ) {
+		//
+		// 	if(child.isMesh){
+		// 		child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
+		// 	}
+		// });
+		//
+		// gltf.scene.children[0].children[0].children[0].children[6].traverse( function ( child ) {
+		//
+		// 	if(child.isMesh){
+		// 		child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
+		// 	}
+		// });
+		//
+		// gltf.scene.children[0].children[0].children[0].children[7].traverse( function ( child ) {
+		//
+		// 	if(child.isMesh){
+		// 		child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
+		// 	}
+		// });
+		//
+		// gltf.scene.children[0].children[0].children[0].children[8].traverse( function ( child ) {
+		//
+		// 	if(child.isMesh){
+		// 		child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
+		// 	}
+		// });
+		//
+		// gltf.scene.children[0].children[0].children[0].children[9].traverse( function ( child ) {
+		//
+		// 	if(child.isMesh){
+		// 		child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
+		// 	}
+		// });
+
+		// console.log(gltf.scene);
+		console.log(gltf.scene.children[0].children[0].children[0].children[0].children[0]);
+		gltf.scene.scale.multiplyScalar( 0.05 );
+		gltf.scene.position.set(0,0,0);
+		scene.add( gltf.scene );
+	} );
+
+	var lightMesh = new THREE.Mesh( new THREE.SphereGeometry( 1, 16, 16), new THREE.MeshBasicMaterial ({color: 0xffff00, wireframe:true}));
+	lightMesh.position.set( -10, 10.0, 0 );
+	uniforms.pointLightPosition.value = new THREE.Vector3(lightMesh.position.x,
+		lightMesh.position.y,
+		lightMesh.position.z);
+
+		var lightMesh2 = new THREE.Mesh( new THREE.SphereGeometry( 1, 16, 16), new THREE.MeshBasicMaterial ({color: 0xffff00, wireframe:true}));
+		lightMesh2.position.set( 10, -10, 0);
+		lightMesh2.rotation.set( 90*Math.PI/180, 0, 0 );
+		uniforms.pointLightPosition2.value = new THREE.Vector3(lightMesh2.position.x,
+			lightMesh2.position.y,
+			lightMesh2.position.z);
+
+			scene.add( lightMesh, lightMesh2 );
+
+		}
+
+		function onWindowResize() {
+			camera.aspect = window.innerWidth / window.innerHeight;
+			camera.updateProjectionMatrix();
+			renderer.setSize( window.innerWidth, window.innerHeight );
+		}
+		//
+		function update() {
+			requestAnimationFrame( update );
+			stats.update();
+			render();
+		}
+
+		function render() {
+			updateUniforms();
+			renderer.render( scene, camera );
+		}
+
+		function updateUniforms() {
+
+			uniforms.cspec.value = new THREE.Vector3(materialParameters.cspec_red,
+				materialParameters.cspec_green,materialParameters.cspec_blue);
+				uniforms.cdiff.value = new THREE.Vector3(materialParameters.cdiff_red,
+					materialParameters.cdiff_green,materialParameters.cdiff_blue);
+					uniforms.roughness.value = materialParameters.roughness>0.0?materialParameters.roughness:0.01;
+					uniforms.clight.value = new THREE.Vector3(
+						lightParameters.red * lightParameters.intensity,
+						lightParameters.green * lightParameters.intensity,
+						lightParameters.blue * lightParameters.intensity);
+					}
+
+					init();
+					update();
+					render();
+					</script>
+				</body>
+				</html>
