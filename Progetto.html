@@ -249,7 +249,7 @@ var lightParameters = {
 	red: 1.0,
 	green: 1.0,
 	blue: 1.0,
-	intensity: 4.0,
+	intensity: 1.0,
 }
 
 // default: red plastic
@@ -260,21 +260,28 @@ var materialParameters = {
 	cspec_red: 1.022,
 	cspec_green: 0.782,
 	cspec_blue: 0.344,
-	roughness: 0.8
+	roughness: 0.5
 }
 
 var textureParameters = {
 	material:"Metallo1",
+	material2: "TessutoBianco",
 	repeatS: 1.0,
 	repeatT: 1.0,
 	normalScale: 0.0,
 }
 
-// Texture per sfera con lastra di ferro
-var diffuseMap = loadTexture( "texture/Metallo1/" + textureParameters.material + "Base_Color.png" );
-var specularMap = loadTexture( "texture/Metallo1/" + textureParameters.material + "_Specular.png" );
-var roughnessMap = loadTexture( "texture/Metallo1/" + textureParameters.material + "_Roughness.png" );
-var normalMap = loadTexture( "texture/Metallo1/" + textureParameters.material + "_Normal.png" );
+// Texture metallo
+// var diffuseMap = loadTexture( "texture/Metallo1/" + textureParameters.material + "Base_Color.png" );
+// var specularMap = loadTexture( "texture/Metallo1/" + textureParameters.material + "_Specular.png" );
+// var roughnessMap = loadTexture( "texture/Metallo1/" + textureParameters.material + "_Roughness.png" );
+// var normalMap = loadTexture( "texture/Metallo1/" + textureParameters.material + "_Normal.png" );
+
+// Texture TessutoBianco
+var diffuseMap = loadTexture( "texture/TessutoBianco/" + textureParameters.material2 + "_Base_Color.png" );
+var specularMap = loadTexture( "texture/TessutoBianco/" + textureParameters.material2 + "_Specular.png" );
+var roughnessMap = loadTexture( "texture/TessutoBianco/" + textureParameters.material2 + "_Roughness.png" );
+var normalMap = loadTexture( "texture/TessutoBianco/" + textureParameters.material2 + "_Normal.png" );
 
 var uniforms = {
 	specularMap: { type: "t", value: specularMap},
@@ -334,37 +341,37 @@ function init() {
 	document.body.appendChild( stats.domElement );
 	// model
 	var loader = new THREE.GLTFLoader();
-	loader.load( 'object/OggettoAndrea/scene.gltf', function ( gltf ) {
+	loader.load( 'object/PCcase/scene.gltf', function ( gltf ) {
 
 		//  ---------------------------------- GESTIONE MATERIALI OGGETTO COMPLETO ---------------------------------  //
-		// gltf.scene.traverse( function ( child ) {
-		//
-		// 	if(child.isMesh){
-		// 		child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
-		// 	}
-		// });
-
-		// --------------------------    GESTIONE MATERIALI POKEBALL ------------------------------------------------ //
-		gltf.scene.children[0].children[0].children[0].children[0].children[0].children[0].traverse( function ( child ) {
-
-			if(child.isMesh){
-				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
-			}
-		});
-
-		gltf.scene.children[0].children[0].children[0].children[0].children[0].children[1].traverse( function ( child ) {
-
-			if(child.isMesh){
-				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
-			}
-		});
-
-		gltf.scene.children[0].children[0].children[0].children[0].children[0].children[2].traverse( function ( child ) {
+		gltf.scene.traverse( function ( child ) {
 
 			if(child.isMesh){
 				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
 			}
 		});
+
+		// --------------------------    GESTIONE MATERIALI POKEBALL ------------------------------------------------ //
+		// gltf.scene.children[0].children[0].children[0].children[0].children[0].children[0].traverse( function ( child ) {
+		//
+		// 	if(child.isMesh){
+		// 		child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
+		// 	}
+		// });
+		//
+		// gltf.scene.children[0].children[0].children[0].children[0].children[0].children[1].traverse( function ( child ) {
+		//
+		// 	if(child.isMesh){
+		// 		child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
+		// 	}
+		// });
+		//
+		// gltf.scene.children[0].children[0].children[0].children[0].children[0].children[2].traverse( function ( child ) {
+		//
+		// 	if(child.isMesh){
+		// 		child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
+		// 	}
+		// });
 
 		//------------------------   		GESTIONE MATERIALI PC CASE   ----------------------------------------------- //
 		// gltf.scene.children[0].children[0].children[0].children[0].traverse( function ( child ) {
@@ -373,7 +380,7 @@ function init() {
 		// 		child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
 		// 	}
 		// });
-
+		//
 		// gltf.scene.children[0].children[0].children[0].children[1].traverse( function ( child ) {
 		//
 		// 	if(child.isMesh){
@@ -405,14 +412,14 @@ function init() {
 		// gltf.scene.children[0].children[0].children[0].children[5].traverse( function ( child ) {
 		//
 		// 	if(child.isMesh){
-		// 		child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
+		// 		child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
 		// 	}
 		// });
 		//
 		// gltf.scene.children[0].children[0].children[0].children[6].traverse( function ( child ) {
 		//
 		// 	if(child.isMesh){
-		// 		child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
+		// 		child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
 		// 	}
 		// });
 		//

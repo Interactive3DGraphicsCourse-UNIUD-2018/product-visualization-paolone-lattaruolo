@@ -1,0 +1,188 @@
+body {
+
+  background-color: #FFF;
+  margin: 0 auto;
+  background-size: cover;
+}
+
+header {
+  background-color: #e3dfde;
+  border: 2px solid #ffffff;
+  border-bottom: 4px solid #808080;
+  border-radius: 10px;
+  text-align: center;
+  width: 99%;
+  height: 120px;
+}
+
+li {
+  color: #000000;
+  font-family: "Georgia";
+  font-size: 15px;
+  padding-left: 20px;
+  font-weight: 10;
+  letter-spacing: 0px;
+  text-align: center;
+  text-transform: capitalize;
+  padding-left: 200px;
+  padding-right: 200px;
+}
+
+h1, p {
+  text-align: center;
+  position: relative;
+  bottom: 200px;
+}
+
+h1 {
+  color: #000000;
+  font-family: 'Oswald', sans-serif;
+  font-size: 15px;
+  font-weight: 100;
+  text-transform: uppercase;
+  width: 100%;
+}
+
+h2 {
+  color: black;
+  font-family: 'Varela Round', sans-serif;
+  font-size: 12px;
+  margin-left: 20px;
+  margin-top: : 0px;
+  text-align: left;
+  padding-top: 0px;
+  padding-bottom: 20px;
+  font-weight: 100;
+}
+
+h3 {
+  color: #466995;
+  font-family: 'Oswald', sans-serif;
+  font-size: 12px;
+  text-align: center;
+  text-transform: uppercase;
+  padding: 30px;
+}
+
+h4 {
+  color: black;
+  font-family: 'Georgia', sans-serif;
+  font-size: 15px;
+  letter-spacing: 1px;
+  text-align: left;
+  text-transform: capitalize;
+  margin-left: 20px;
+  padding-bottom: 0px;
+  height: 0px;
+  font-weight: 50;
+}
+
+p {
+  color: #000000;
+  font-family: 'Varela Round', sans-serif;
+  font-size: 10px;
+}
+
+footer {
+  background-color: #DBE9EE;
+  text-align: center;
+}
+img{
+  position: absolute;
+  max-width: 450px;
+  max-height: 400px;
+  left: 750px;
+  bottom: 130px;
+  border: 2px solid white;
+  border-radius: 5px;
+}
+
+.Pubblicità {
+  border: 5px solid #ffffff;
+  border-radius: 10px;
+  padding: 0px;
+  text-align: center;
+  width: 99%;
+}
+
+.TitoloModello {
+  text-align: left;
+}
+
+.TitoloModello h4, h2{
+  position: relative;
+  bottom: 20px;
+}
+
+.Modello{
+  background-color: #f0f0f0;
+  margin: 0px;
+  overflow: hidden;
+}
+
+.Referenze{
+  margin: 0px;
+  border-radius: 5px;
+  padding: 10px;
+  left: 20px;
+}
+
+.Referenze li{
+  font-family: 'Georgia', sans-serif;
+  background-color: hsl(36, 100%, 55%);
+  border: 2px solid #ffffff;
+  border-bottom: 2px solid #808080;
+  border-top: 2px solid #808080;
+  border-radius: 5px;
+  color: black;
+  height: 20px;
+  margin: 3px;
+  text-align: center;
+  padding: 5px;
+  width: 18%;
+  display: inline-block;
+}
+
+.logoAziendale1 img{
+  position: relative;
+  max-width: 100px;
+  max-height: 100px;
+  padding: 2px;
+  top: 8px;
+  left: -500px;
+  border: 0px;
+}
+
+.logoAziendale2 img{
+  position: relative;
+  max-width: 100px;
+  max-height: 100px;
+  padding: 2px;
+  top: -100px;
+  left: 500px;
+  border: 0px;
+}
+
+.contatti {
+  bottom: 300px;
+}
+
+.contatti img{
+  position: relative;
+  max-width: 50px;
+  max-height: 50px;
+  padding-left: 30px;
+  left: 460px;
+  bottom: 30px;
+  border: 2px solid white;
+  border-radius: 5px;
+  display: inline-block;
+}
+
+iframe {
+  position: relative;
+  bottom: 30px;
+  margin-left: 10px;
+  width: 720px;
+  height: 480px;
+}
