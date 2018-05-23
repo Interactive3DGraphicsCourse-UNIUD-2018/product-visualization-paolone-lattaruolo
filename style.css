@@ -1,8 +1,7 @@
 body {
 
-  background-color: #FFF;
+  background-color:  hsl(0, 0%, 95%);
   margin: 0 auto;
-  background-size: cover;
 }
 
 header {
@@ -10,9 +9,60 @@ header {
   border: 2px solid #ffffff;
   border-bottom: 4px solid #808080;
   border-radius: 10px;
-  text-align: center;
-  width: 99%;
   height: 120px;
+  position: relative;
+}
+
+h1 {
+  position:absolute;
+  color: #000000;
+  font-family: 'Oswald', sans-serif;
+  font-size: 15px;
+  font-weight: 100;
+  text-transform: uppercase;
+  top:5px;
+}
+
+h2 {
+  position:absolute;
+  color: black;
+  font-family: 'Varela Round', sans-serif;
+  font-size: 12px;
+  top: 35px;
+  text-transform: uppercase;
+}
+
+h3 {
+  position:absolute;
+  color: #466995;
+  font-family: 'Oswald', sans-serif;
+  font-size: 12px;
+  text-transform: uppercase;
+  top: 60px;
+}
+
+h1, h2, h3 {
+  text-align: center;
+  left: 300px;
+  width: 540px;
+}
+
+h4 {
+  position:absolute;
+  color: #466995;
+  font-family: 'Oswald', sans-serif;
+}
+
+h5 {
+  position:absolute;
+  color: #466995;
+  font-family: 'Oswald', sans-serif;
+}
+
+h6 {
+  position:absolute;
+  color: #466995;
+  font-family: 'Oswald', sans-serif;
 }
 
 li {
@@ -28,73 +78,60 @@ li {
   padding-right: 200px;
 }
 
-h1, p {
-  text-align: center;
-  position: relative;
-  bottom: 200px;
-}
-
-h1 {
-  color: #000000;
-  font-family: 'Oswald', sans-serif;
-  font-size: 15px;
-  font-weight: 100;
-  text-transform: uppercase;
-  width: 100%;
-}
-
-h2 {
-  color: black;
-  font-family: 'Varela Round', sans-serif;
-  font-size: 12px;
-  margin-left: 20px;
-  margin-top: : 0px;
-  text-align: left;
-  padding-top: 0px;
-  padding-bottom: 20px;
-  font-weight: 100;
-}
-
-h3 {
-  color: #466995;
-  font-family: 'Oswald', sans-serif;
-  font-size: 12px;
-  text-align: center;
-  text-transform: uppercase;
-  padding: 30px;
-}
-
-h4 {
-  color: black;
-  font-family: 'Georgia', sans-serif;
-  font-size: 15px;
-  letter-spacing: 1px;
-  text-align: left;
-  text-transform: capitalize;
-  margin-left: 20px;
-  padding-bottom: 0px;
-  height: 0px;
-  font-weight: 50;
-}
-
-p {
-  color: #000000;
-  font-family: 'Varela Round', sans-serif;
-  font-size: 10px;
-}
-
-footer {
-  background-color: #DBE9EE;
-  text-align: center;
-}
 img{
-  position: absolute;
-  max-width: 450px;
-  max-height: 400px;
-  left: 750px;
-  bottom: 130px;
-  border: 2px solid white;
+  border: 0px solid white;
   border-radius: 5px;
+}
+
+#logo1{
+  position: absolute;
+  left:100px;
+  width: 120px;
+}
+
+#logo2{
+  position: absolute;
+  left:950px;
+  width: 120px;
+}
+
+#bandieraItaliana{
+  position: absolute;
+  max-width: 40px;
+  max-height: 40px;
+  top: 25px;
+  left:300px;
+}
+
+#commerce {
+  position: absolute;
+  width: 400px;
+  left: 750px;
+}
+
+#facebook{
+  position: absolute;
+  max-width: 40px;
+  max-height: 40px;
+  left: 20px;
+}
+
+#instagram{
+  position: absolute;
+  max-width: 40px;
+  max-height: 40px;
+  left: 70px;
+}
+
+#twitter{
+  position: absolute;
+  max-width: 40px;
+  max-height: 40px;
+  left: 120px;
+}
+
+#facebook, #instagram, #twitter{
+  top: 50px;
 }
 
 .Pubblicità {
@@ -106,25 +143,33 @@ img{
 }
 
 .TitoloModello {
-  text-align: left;
-}
-
-.TitoloModello h4, h2{
   position: relative;
-  bottom: 20px;
+  height: 50px;
+  width: 400px;
 }
 
-.Modello{
-  background-color: #f0f0f0;
-  margin: 0px;
-  overflow: hidden;
+.TitoloModello h4, .TitoloModello h5{
+  position: absolute;
+  text-align: left;
+  left: 5px;
+}
+
+.TitoloModello h4 {
+    bottom: 10px;
+    font-size: 15px;
+    text-transform: uppercase;
+}
+
+.TitoloModello h5 {
+  top:10px;
+  font-size: 12px;
 }
 
 .Referenze{
+  position: relative;
   margin: 0px;
   border-radius: 5px;
-  padding: 10px;
-  left: 20px;
+  left:40px;
 }
 
 .Referenze li{
@@ -139,50 +184,41 @@ img{
   margin: 3px;
   text-align: center;
   padding: 5px;
-  width: 18%;
+  width: 200px;
   display: inline-block;
 }
 
-.logoAziendale1 img{
-  position: relative;
-  max-width: 100px;
-  max-height: 100px;
-  padding: 2px;
-  top: 8px;
-  left: -500px;
-  border: 0px;
-}
-
-.logoAziendale2 img{
-  position: relative;
-  max-width: 100px;
-  max-height: 100px;
-  padding: 2px;
-  top: -100px;
-  left: 500px;
-  border: 0px;
-}
-
 .contatti {
-  bottom: 300px;
+  position: relative;
+  width: 300px;
+  height: 80px;
+  display: inline-block;
+  top: 550px;
+  left: 500px;
+}
+
+.contatti h6 {
+  position: absolute;
+  left: 45px;
+  bottom: 10px;
+  font-size: 15px;
 }
 
 .contatti img{
-  position: relative;
+  position: absolute;
   max-width: 50px;
   max-height: 50px;
   padding-left: 30px;
   left: 460px;
   bottom: 30px;
-  border: 2px solid white;
+  border: 0px solid white;
   border-radius: 5px;
-  display: inline-block;
 }
 
 iframe {
-  position: relative;
-  bottom: 30px;
+  position: absolute;
   margin-left: 10px;
   width: 720px;
   height: 480px;
+  top:250px;
 }
