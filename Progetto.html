@@ -347,7 +347,7 @@ function init() {
 		gltf.scene.traverse( function ( child ) {
 
 			if(child.isMesh){
-				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
+				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
 			}
 		});
 
@@ -446,7 +446,7 @@ function init() {
 
 		// console.log(gltf.scene);
 		console.log(gltf.scene.children[0].children[0].children[0].children[0].children[0]);
-		gltf.scene.scale.multiplyScalar( 0.05 );
+		gltf.scene.scale.multiplyScalar( 1 );
 		gltf.scene.position.set(0,0,0);
 		scene.add( gltf.scene );
 	} );
