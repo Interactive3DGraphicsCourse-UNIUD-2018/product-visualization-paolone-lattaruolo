@@ -341,7 +341,11 @@ function init() {
 	document.body.appendChild( stats.domElement );
 	// model
 	var loader = new THREE.GLTFLoader();
+<<<<<<< HEAD
 	loader.load( 'object/comodino/model.glb', function ( gltf ) {
+=======
+	loader.load( 'object/radio/scene.gltf', function ( gltf ) {
+>>>>>>> 7d4b9ebfaa234bd45b0da8a4ae375d2b7517b55c
 
 		//--------------------------    GESTIONE MATERIALI COMODINI ------------------------------------------------ //
 		gltf.scene.children[0].children[0].traverse( function ( child ) {
