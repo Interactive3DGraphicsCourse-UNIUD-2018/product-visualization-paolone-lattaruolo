@@ -2,6 +2,7 @@ body {
 
   background-color:  hsl(0, 0%, 95%);
   margin: 0 auto;
+  width: 100%;
 }
 
 header {
@@ -9,7 +10,8 @@ header {
   border: 2px solid #ffffff;
   border-bottom: 4px solid #808080;
   border-radius: 10px;
-  height: 120px;
+  height: 150px;
+  width: 100%;
   position: relative;
 }
 
@@ -17,18 +19,18 @@ h1 {
   position:absolute;
   color: #000000;
   font-family: 'Oswald', sans-serif;
-  font-size: 15px;
+  font-size: 100%;
   font-weight: 100;
   text-transform: uppercase;
-  top:5px;
+  top:10%;
 }
 
 h2 {
   position:absolute;
   color: black;
   font-family: 'Varela Round', sans-serif;
-  font-size: 12px;
-  top: 35px;
+  font-size: 100%;
+  top: 40%;
   text-transform: uppercase;
 }
 
@@ -36,15 +38,15 @@ h3 {
   position:absolute;
   color: #466995;
   font-family: 'Oswald', sans-serif;
-  font-size: 12px;
+  font-size: 100%;
   text-transform: uppercase;
-  top: 60px;
+  top: 60%;
 }
 
 h1, h2, h3 {
   text-align: center;
-  left: 300px;
-  width: 540px;
+  left: 25%;
+  width: 50%;
 }
 
 h4 {
@@ -81,18 +83,20 @@ li {
 img{
   border: 0px solid white;
   border-radius: 5px;
+  position:relative;
+
 }
 
 #logo1{
   position: absolute;
-  left:100px;
-  width: 120px;
+  left:8%;
+  width: 7%;
 }
 
 #logo2{
   position: absolute;
-  left:950px;
-  width: 120px;
+  left:85%;
+  width: 7%;
 }
 
 #bandieraItaliana{
@@ -151,40 +155,43 @@ img{
 .TitoloModello h4, .TitoloModello h5{
   position: absolute;
   text-align: left;
-  left: 5px;
+  left: 10px;
 }
 
 .TitoloModello h4 {
-    bottom: 10px;
+    bottom: 0px;
     font-size: 15px;
     text-transform: uppercase;
 }
 
 .TitoloModello h5 {
-  top:10px;
+  top:20px;
   font-size: 12px;
 }
 
 .Referenze{
   position: relative;
-  margin: 0px;
+  margin: 1px;
   border-radius: 5px;
-  left:40px;
+  left:0px;
+  width: 100%;
 }
 
 .Referenze li{
   font-family: 'Georgia', sans-serif;
-  background-color: hsl(36, 100%, 55%);
+  background-color: hsl(203, 100%, 50%);
   border: 2px solid #ffffff;
-  border-bottom: 2px solid #808080;
-  border-top: 2px solid #808080;
+  border-top: 2px solid hsl(203, 100%, 50%);
+  border-left: 2px solid hsl(203, 100%, 50%);
+  border-right: 2px solid hsl(203, 100%, 50%);
+  border-bottom: 2px solid hsl(268, 100%, 50%);
   border-radius: 5px;
   color: black;
-  height: 20px;
-  margin: 3px;
+  height: 25px;
+  margin: 0px;
   text-align: center;
-  padding: 5px;
-  width: 200px;
+  padding: 0px;
+  width: 19%;
   display: inline-block;
 }
 
