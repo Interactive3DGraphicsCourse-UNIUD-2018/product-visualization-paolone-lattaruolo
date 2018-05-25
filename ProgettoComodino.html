@@ -422,10 +422,11 @@ function init() {
 	} );
 
 	var lightMesh = new THREE.Mesh( new THREE.SphereGeometry( 1, 16, 16), new THREE.MeshBasicMaterial ({color: 0xffff00, wireframe:true}));
-	lightMesh.position.set( 0, 10.0, -5 );
+	lightMesh.position.set( 20, 10.0, 3 );
 	uniforms.pointLightPosition.value = new THREE.Vector3(lightMesh.position.x,
 		lightMesh.position.y,
 		lightMesh.position.z);
+		scene.add(lightMesh);
 		}
 
 		function onWindowResize() {
