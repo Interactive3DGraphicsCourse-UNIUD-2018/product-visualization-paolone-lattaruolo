@@ -208,10 +208,11 @@ void main() {
 </script>
 
 <script>
-var materialeCorpo,materialeCassetti;
 var stats, controls;
 var camera, scene, renderer, light;
-var uniforms,textureParameters,materialParameterts;
+var uniforms,textureParameters,materialParameters;
+var diffuseMap,specularMap, roughnessMap, normalMap,aoMap;
+var materialeCorpo = "LegnoEbano", materialeCassetti = "Oro";
 // default: white, 1.0 intensity
 var lightParameters = {
 	red: 1.0,
@@ -271,6 +272,7 @@ var textureParameters1 = {
 	repeatT: 3.0,
 	normalScale: 0.2,
 }
+
 // Texture metallo
 // var diffuseMap = loadTexture( "texture/Metallo2/" + textureParameters.material1 + "Base_Color.png" );
 // var specularMap = loadTexture( "texture/Metallo2/" + textureParameters.material1 + "_Specular.png" );
@@ -284,19 +286,28 @@ var textureParameters1 = {
 // var normalMap = loadTexture( "texture/Wood1/" + textureParameters.material3 + "_Normal.jpg" );
 
 // Texture legnoPino repeat wrapping 8-8
-var diffuseMapLegnoPino = loadTexture( "texture/legnoPino/" + textureParameters.material4 + "_Base_Color.png" );
-var specularMapLegnoPino = loadTexture( "texture/legnoPino/" + textureParameters.material4 + "_Specular.png" );
-var roughnessMapLegnoPino = loadTexture( "texture/legnoPino/" + textureParameters.material4 + "_Roughness.png" );
-var normalMapLegnoPino = loadTexture( "texture/legnoPino/" + textureParameters.material4 + "_Normal.png" );
-var aoMapLegnoPino = loadTexture( "texture/legnoPino/" + textureParameters.material4 + "_Ambient_Occlusion.png" );
+// var diffuseMapLegnoPino = loadTexture( "texture/legnoPino/" + textureParameters.material + "_Base_Color.png" );
+// var specularMapLegnoPino = loadTexture( "texture/legnoPino/" + textureParameters.material + "_Specular.png" );
+// var roughnessMapLegnoPino = loadTexture( "texture/legnoPino/" + textureParameters.material + "_Roughness.png" );
+// var normalMapLegnoPino = loadTexture( "texture/legnoPino/" + textureParameters.material + "_Normal.png" );
+// var aoMapLegnoPino = loadTexture( "texture/legnoPino/" + textureParameters.material + "_Ambient_Occlusion.png" );
+var diffuseMapLegnoPino = loadTexture( "texture/LegnoPino/LegnoPino_Base_Color.png" );
+var specularMapLegnoPino = loadTexture( "texture/LegnoPino/LegnoPino_Specular.png" );
+var roughnessMapLegnoPino = loadTexture( "texture/LegnoPino/LegnoPino_Roughness.png" );
+var normalMapLegnoPino = loadTexture( "texture/LegnoPino/LegnoPino_Normal.png" );
+var aoMapLegnoPino = loadTexture( "texture/LegnoPino/LegnoPino_Ambient_Occlusion.png" );
 
 // Texture legnoEbano repeat wrapping 3-3
-var diffuseMapLegnoEbano = loadTexture( "texture/LegnoEbano/" + textureParameters.material5 + "_Base_Color.jpg" );
-var specularMapLegnoEbano = loadTexture( "texture/LegnoEbano/" + textureParameters.material5 + "_Specular.jpg" );
-var roughnessMapLegnoEbano = loadTexture( "texture/LegnoEbano/" + textureParameters.material5 + "_Roughness.jpg" );
-var normalMapLegnoEbano = loadTexture( "texture/LegnoEbano/" + textureParameters.material5 + "_Normal.jpg" );
-var aoMapLegnoEbano = loadTexture( "texture/LegnoEbano/" + textureParameters.material5 + "_Ambient_Occlusion.jpg" );
-
+// var diffuseMapLegnoEbano = loadTexture( "texture/LegnoEbano/" + textureParameters.material + "_Base_Color.jpg" );
+// var specularMapLegnoEbano = loadTexture( "texture/LegnoEbano/" + textureParameters.material + "_Specular.jpg" );
+// var roughnessMapLegnoEbano = loadTexture( "texture/LegnoEbano/" + textureParameters.material + "_Roughness.jpg" );
+// var normalMapLegnoEbano = loadTexture( "texture/LegnoEbano/" + textureParameters.material + "_Normal.jpg" );
+// var aoMapLegnoEbano = loadTexture( "texture/LegnoEbano/" + textureParameters.material + "_Ambient_Occlusion.jpg" );
+var diffuseMapLegnoEbano = loadTexture( "texture/LegnoEbano/LegnoEbano_Base_Color.jpg" );
+var specularMapLegnoEbano = loadTexture( "texture/LegnoEbano/LegnoEbano_Specular.jpg" );
+var roughnessMapLegnoEbano = loadTexture( "texture/LegnoEbano/LegnoEbano_Roughness.jpg" );
+var normalMapLegnoEbano = loadTexture( "texture/LegnoEbano/LegnoEbano_Normal.jpg" );
+var aoMapLegnoEbano = loadTexture( "texture/LegnoEbano/LegnoEbano_Ambient_Occlusion.jpg" );
 // Texture TessutoBianco
 // var diffuseMap = loadTexture( "texture/TessutoBianco/" + textureParameters.material2 + "_Base_Color.png" );
 // var specularMap = loadTexture( "texture/TessutoBianco/" + textureParameters.material2 + "_Specular.png" );
@@ -314,11 +325,11 @@ var uniforms = {
 }
 
 var uniformLegnoPino = {
-	specularMap: { type: "t", value: specularMapLegnoPino},
-	diffuseMap:	{ type: "t", value: diffuseMapLegnoPino},
-	roughnessMap:	{ type: "t", value: roughnessMapLegnoPino},
-	normalMap:	{ type: "t", value: normalMapLegnoPino},
-	aoMap:	{ type: "t", value: aoMapLegnoPino},
+	specularMap: { type: "t", value: specularMap},
+	diffuseMap:	{ type: "t", value: diffuseMap},
+	roughnessMap:	{ type: "t", value: roughnessMap},
+	normalMap:	{ type: "t", value: normalMap},
+	aoMap:	{ type: "t", value: aoMap},
 	normalScale: {type: "v2", value: new THREE.Vector2(1,1)},
 	textureRepeat: { type: "v2", value: new THREE.Vector2(2,2) },
 
@@ -389,6 +400,8 @@ function init() {
 	document.body.appendChild( renderer.domElement );
 	document.body.appendChild( stats.domElement );
 	// model
+	scegliMateriali(materialeCorpo,materialeCassetti);//setta i parametri per gli shader
+
 	var loader = new THREE.GLTFLoader();
 	loader.load( 'object/comodino/model.glb', function ( gltf ) {
 
@@ -446,11 +459,18 @@ function init() {
 		scene.add( lightMesh );
 }
 
-function scegliMateriali(var corpo,var cassetti)
+function scegliMateriali(corpo, cassetti)
 {
 	//cassetti comprende anche i piedini
 	switch(corpo){
 		case "LegnoPino":
+
+			diffuseMap = diffuseMapLegnoPino;
+			specularMap = specularMapLegnoPino;
+			roughnessMap = roughnessMapLegnoPino;
+			normalMap = normalMapLegnoPino;
+			aoMap = aoMapLegnoPino;
+
 			uniforms = uniformLegnoPino;
 			textureParameters = {
 				material:"LegnoPino",
@@ -460,7 +480,14 @@ function scegliMateriali(var corpo,var cassetti)
 			};
 			break;
 		case "LegnoEbano":
-			uniforms=uniformsLengoEbano;
+
+			diffuseMap = diffuseMapLegnoEbano;
+			specularMap = specularMapLegnoEbano;
+			roughnessMap = roughnessMapLegnoEbano;
+			normalMap = normalMapLegnoEbano;
+			aoMap = aoMapLegnoEbano;
+
+			uniforms = uniformsLengoEbano;
 			textureParameters = {
 				material:"LegnoEbano",
 				repeatS: 3.0,
@@ -469,13 +496,13 @@ function scegliMateriali(var corpo,var cassetti)
 			};
 			break;
 		case "Titanio":
-			materialParameterts = materialParametersTitanio;
+			materialParameters = materialParametersTitanio;
 			break;
 		case "Oro":
-			materialParameterts = materialParametersOro;
+			materialParameters = materialParametersOro;
 			break;
 		case "Plastica":
-			materialParameterts = materialParametersPlastic;
+			materialParameters = materialParametersPlastic;
 			break;
 		default:
 		//legno pino
@@ -487,7 +514,59 @@ function scegliMateriali(var corpo,var cassetti)
 				normalScale: 0.2,
 			};
 	}
-	switch ()
+	switch (cassetti){
+		case "LegnoPino":
+
+			diffuseMap = diffuseMapLegnoPino;
+			specularMap = specularMapLegnoPino;
+			roughnessMap = roughnessMapLegnoPino;
+			normalMap = normalMapLegnoPino;
+			aoMap = aoMapLegnoPino;
+
+			uniforms = uniformLegnoPino;
+			textureParameters = {
+				material:"LegnoPino",
+				repeatS: 8.0,
+				repeatT: 8.0,
+				normalScale: 0.2,
+			};
+			break;
+		case "LegnoEbano":
+
+			diffuseMap = diffuseMapLegnoEbano;
+			specularMap = specularMapLegnoEbano;
+			roughnessMap = roughnessMapLegnoEbano;
+			normalMap = normalMapLegnoEbano;
+			aoMap = aoMapLegnoEbano;
+
+			uniforms=uniformsLengoEbano;
+			textureParameters = {
+				material:"LegnoEbano",
+				repeatS: 3.0,
+				repeatT: 3.0,
+				normalScale: 0.2,
+			};
+			break;
+		case "Titanio":
+			materialParameters = materialParametersTitanio;
+			break;
+		case "Oro":
+			materialParameters = materialParametersOro;
+			break;
+		case "Plastica":
+			materialParameters = materialParametersPlastic;
+			break;
+		default:
+		//legno pino
+			materialParameters = materialParametersPlastic;
+			uniforms = uniformLegnoPino;
+			textureParameters = {
+				material:"LegnoPino",
+				repeatS: 8.0,
+				repeatT: 8.0,
+				normalScale: 0.2,
+			};
+	}
 }
 
 		function onWindowResize() {
@@ -508,7 +587,6 @@ function scegliMateriali(var corpo,var cassetti)
 		}
 
 		function updateUniforms() {
-
 			uniforms.cspec.value = new THREE.Vector3(materialParameters.cspec_red,materialParameters.cspec_green,materialParameters.cspec_blue);
 
 			uniforms.cdiff.value = new THREE.Vector3(materialParameters.cdiff_red,materialParameters.cdiff_green,materialParameters.cdiff_blue);
