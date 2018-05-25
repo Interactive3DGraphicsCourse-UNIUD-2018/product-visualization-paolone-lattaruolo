@@ -21,6 +21,7 @@ h1 {
   font-size: 25px;
   font-weight: 100;
   text-transform: uppercase;
+  text-shadow: 1px 1px 2px white;
   top:10%;
   color: white;
 }
@@ -85,7 +86,6 @@ img{
   border: 0px solid white;
   border-radius: 5px;
   position:relative;
-
 }
 
 #logo1{
@@ -131,6 +131,21 @@ img{
   top: 50px;
 }
 
+#anteprimaComodino{
+  left: 60%;
+}
+
+#anteprimaComodino2{
+  left: 75%;
+}
+
+#anteprimaComodino, #anteprimaComodino2{
+  position: absolute;
+  width: 10%;
+  top: 700px;
+}
+
+
 .Pubblicità {
   border: 5px solid #ffffff;
   border-radius: 10px;
@@ -158,8 +173,11 @@ img{
 }
 
 .TitoloModello h5 {
-  top:20px;
-  font-size: 95%;
+  top:23px;
+  font-size: 100%;
+  font-family: 'Times New Roman', sans-serif;
+  color: #ffae00;
+  text-shadow: 1px 1px 2px black;
 }
 
 .Referenze{
