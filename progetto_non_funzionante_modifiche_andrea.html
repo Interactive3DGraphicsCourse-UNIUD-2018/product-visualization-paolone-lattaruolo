@@ -210,9 +210,12 @@ void main() {
 <script>
 var stats, controls;
 var camera, scene, renderer, light;
-var uniforms,textureParameters,materialParameters;
-var diffuseMap,specularMap, roughnessMap, normalMap,aoMap;
-var materialeCorpo = "LegnoPino", materialeCassetti = "Oro";
+var uniforms;
+var textureParametersCorpo,materialParametersCorpo;
+var diffuseMapCorpo,specularMapCorpo, roughnessMapCorpo, normalMapCorpo,aoMapCorpo;
+var textureParametersCassetti,materialParametersCassetti;
+var diffuseMapCassetti,specularMapCassetti, roughnessMapCassetti, normalMapCassetti,aoMapCassetti;
+var materialeCorpo = "Plastica", materialeCassetti = "Oro";
 var shaderCorpo, shaderCassetti;
 // default: white, 1.0 intensity
 var lightParameters = {
@@ -485,15 +488,15 @@ function scegliMateriali(corpo, cassetti)
 	switch(corpo){
 		case "LegnoPino":
 
-			diffuseMap = diffuseMapLegnoPino;
-			specularMap = specularMapLegnoPino;
-			roughnessMap = roughnessMapLegnoPino;
-			normalMap = normalMapLegnoPino;
-			aoMap = aoMapLegnoPino;
+			diffuseMapCorpo = diffuseMapLegnoPino;
+			specularMapCorpo = specularMapLegnoPino;
+			roughnessMapCorpo = roughnessMapLegnoPino;
+			normalMapCorpo = normalMapLegnoPino;
+			aoMapCorpo = aoMapLegnoPino;
 
 			uniforms = uniformLegnoPino;
 			shaderCorpo ="Texture";
-			textureParameters = {
+			textureParametersCorpo = {
 				material:"LegnoPino",
 				repeatS: 8.0,
 				repeatT: 8.0,
@@ -502,15 +505,15 @@ function scegliMateriali(corpo, cassetti)
 			break;
 		case "LegnoEbano":
 
-			diffuseMap = diffuseMapLegnoEbano;
-			specularMap = specularMapLegnoEbano;
-			roughnessMap = roughnessMapLegnoEbano;
-			normalMap = normalMapLegnoEbano;
-			aoMap = aoMapLegnoEbano;
+			diffuseMapCorpo = diffuseMapLegnoEbano;
+			specularMapCorpo = specularMapLegnoEbano;
+			roughnessMapCorpo = roughnessMapLegnoEbano;
+			normalMapCorpo = normalMapLegnoEbano;
+			aoMapCorpo = aoMapLegnoEbano;
 
 			uniforms = uniformsLengoEbano;
 			shaderCorpo ="Texture";
-			textureParameters = {
+			textureParametersCorpo = {
 				material:"LegnoEbano",
 				repeatS: 3.0,
 				repeatT: 3.0,
@@ -519,28 +522,28 @@ function scegliMateriali(corpo, cassetti)
 			break;
 		case "Titanio":
 			shaderCorpo ="Materiale";
-			materialParameters = materialParametersTitanio;
+			materialParametersCorpo = materialParametersTitanio;
 			break;
 		case "Oro":
 			shaderCorpo ="Materiale";
-			materialParameters = materialParametersOro;
+			materialParametersCorpo = materialParametersOro;
 			break;
 		case "Plastica":
 			shaderCorpo ="Materiale";
-			materialParameters = materialParametersPlastic;
+			materialParametersCorpo = materialParametersPlastic;
 			break;
 		default:
 		//legno pino
 
-			diffuseMap = diffuseMapLegnoPino;
-			specularMap = specularMapLegnoPino;
-			roughnessMap = roughnessMapLegnoPino;
-			normalMap = normalMapLegnoPino;
-			aoMap = aoMapLegnoPino;
+			diffuseMapCorpo = diffuseMapLegnoPino;
+			specularMapCorpo = specularMapLegnoPino;
+			roughnessMapCorpo = roughnessMapLegnoPino;
+			normalMapCorpo = normalMapLegnoPino;
+			aoMapCorpo = aoMapLegnoPino;
 
 			uniforms = uniformLegnoPino;
 			shaderCorpo ="Texture";
-			textureParameters = {
+			textureParametersCorpo = {
 				material:"LegnoPino",
 				repeatS: 8.0,
 				repeatT: 8.0,
@@ -550,15 +553,15 @@ function scegliMateriali(corpo, cassetti)
 	switch (cassetti){
 		case "LegnoPino":
 
-			diffuseMap = diffuseMapLegnoPino;
-			specularMap = specularMapLegnoPino;
-			roughnessMap = roughnessMapLegnoPino;
-			normalMap = normalMapLegnoPino;
-			aoMap = aoMapLegnoPino;
+			diffuseMapCassetti = diffuseMapLegnoPino;
+			specularMapCassetti = specularMapLegnoPino;
+			roughnessMapCassetti = roughnessMapLegnoPino;
+			normalMapCassetti = normalMapLegnoPino;
+			aoMapCassetti = aoMapLegnoPino;
 
 			uniforms = uniformLegnoPino;
 			shaderCassetti ="Texture";
-			textureParameters = {
+			textureParametersCassetti = {
 				material:"LegnoPino",
 				repeatS: 8.0,
 				repeatT: 8.0,
@@ -567,15 +570,15 @@ function scegliMateriali(corpo, cassetti)
 			break;
 		case "LegnoEbano":
 
-			diffuseMap = diffuseMapLegnoEbano;
-			specularMap = specularMapLegnoEbano;
-			roughnessMap = roughnessMapLegnoEbano;
-			normalMap = normalMapLegnoEbano;
-			aoMap = aoMapLegnoEbano;
+			diffuseMapCassetti = diffuseMapLegnoEbano;
+			specularMapCassetti = specularMapLegnoEbano;
+			roughnessMapCassetti = roughnessMapLegnoEbano;
+			normalMapCassetti = normalMapLegnoEbano;
+			aoMapCassetti = aoMapLegnoEbano;
 
-			uniforms=uniformsLengoEbano;
-			shaderCassetti ="Texture";
-			textureParameters = {
+			uniforms = uniformsLengoEbano;
+			shaderCassetti = "Texture";
+			textureParametersCassetti = {
 				material:"LegnoEbano",
 				repeatS: 3.0,
 				repeatT: 3.0,
@@ -584,28 +587,28 @@ function scegliMateriali(corpo, cassetti)
 			break;
 		case "Titanio":
 			shaderCassetti ="Materiale";
-			materialParameters = materialParametersTitanio;
+			materialParametersCassetti = materialParametersTitanio;
 			break;
 		case "Oro":
 			shaderCassetti ="Materiale";
-			materialParameters = materialParametersOro;
+			materialParametersCassetti = materialParametersOro;
 			break;
 		case "Plastica":
 			shaderCassetti ="Materiale";
-			materialParameters = materialParametersPlastic;
+			materialParametersCassetti = materialParametersPlastic;
 			break;
 		default:
 		//legno pino
 
-			diffuseMap = diffuseMapLegnoPino;
-			specularMap = specularMapLegnoPino;
-			roughnessMap = roughnessMapLegnoPino;
-			normalMap = normalMapLegnoPino;
-			aoMap = aoMapLegnoPino;
-			materialParameters = materialParametersPlastic;
+			diffuseMapCassetti = diffuseMapLegnoPino;
+			specularMapCassetti = specularMapLegnoPino;
+			roughnessMapCassetti = roughnessMapLegnoPino;
+			normalMapCassetti = normalMapLegnoPino;
+			aoMapCassetti = aoMapLegnoPino;
+			materialParametersCassetti = materialParametersPlastic;
 			uniforms = uniformLegnoPino;
 			shaderCassetti ="Texture";
-			textureParameters = {
+			textureParametersCassetti = {
 				material:"LegnoPino",
 				repeatS: 8.0,
 				repeatT: 8.0,
@@ -632,13 +635,6 @@ function scegliMateriali(corpo, cassetti)
 		}
 
 		function updateUniforms() {
-			if(shaderCorpo=="Materiale" || shaderCassetti=="Materiale"){
-				uniforms.cspec.value = new THREE.Vector3(materialParameters.cspec_red,materialParameters.cspec_green,materialParameters.cspec_blue);
-
-				uniforms.cdiff.value = new THREE.Vector3(materialParameters.cdiff_red,materialParameters.cdiff_green,materialParameters.cdiff_blue);
-
-				uniforms.roughness.value = materialParameters.roughness>0.0?materialParameters.roughness:0.01;
-			}
 			uniforms.clight.value = new THREE.Vector3(	lightParameters.red * lightParameters.intensity,
 																									lightParameters.green * lightParameters.intensity,
 																									lightParameters.blue * lightParameters.intensity);
@@ -647,16 +643,40 @@ function scegliMateriali(corpo, cassetti)
 							 ambientLightParameters.red * ambientLightParameters.intensity,
 							 ambientLightParameters.green * ambientLightParameters.intensity,
 							 ambientLightParameters.blue * ambientLightParameters.intensity);
-			if(shaderCorpo=="Texture" || shaderCassetti=="Texture"){
-				uniforms.textureRepeat.value = new THREE.Vector2( textureParameters.repeatS, textureParameters.repeatT);
-				uniforms.diffuseMap.value = diffuseMap;
-				uniforms.specularMap.value = specularMap;
-				uniforms.roughnessMap.value = roughnessMap;
-				uniforms.normalMap.value = normalMap;
-				uniforms.normalScale.value = new THREE.Vector2( textureParameters.normalScale, textureParameters.normalScale );
-				uniforms.aoMap.value = aoMap;
+
+				if(shaderCorpo=="Texture"){
+					uniforms.textureRepeat.value = new THREE.Vector2( textureParametersCorpo.repeatS, textureParametersCorpo.repeatT);
+					uniforms.diffuseMap.value = diffuseMapCorpo;
+					uniforms.specularMap.value = specularMapCorpo;
+					uniforms.roughnessMap.value = roughnessMapCorpo;
+					uniforms.normalMap.value = normalMapCorpo;
+					uniforms.normalScale.value = new THREE.Vector2( textureParametersCorpo.normalScale, textureParametersCorpo.normalScale );
+					uniforms.aoMap.value = aoMapCorpo;
+				}
+				else{
+					uniforms.cspec.value = new THREE.Vector3(materialParametersCorpo.cspec_red,materialParametersCorpo.cspec_green,materialParametersCorpo.cspec_blue);
+
+					uniforms.cdiff.value = new THREE.Vector3(materialParametersCorpo.cdiff_red,materialParametersCorpo.cdiff_green,materialParametersCorpo.cdiff_blue);
+
+					uniforms.roughness.value = materialParametersCorpo.roughness>0.0?materialParametersCorpo.roughness:0.01;
+					}
+				if(shaderCassetti=="Texture"){
+				uniforms.textureRepeat.value = new THREE.Vector2( textureParametersCassetti.repeatS, textureParametersCassetti.repeatT);
+				uniforms.diffuseMap.value = diffuseMapCassetti;
+				uniforms.specularMap.value = specularMapCassetti;
+				uniforms.roughnessMap.value = roughnessMapCassetti;
+				uniforms.normalMap.value = normalMapCassetti;
+				uniforms.normalScale.value = new THREE.Vector2( textureParametersCassetti.normalScale, textureParametersCassetti.normalScale );
+				uniforms.aoMap.value = aoMapCassetti;
 			}
-		}
+			else{
+				uniforms.cspec.value = new THREE.Vector3(materialParametersCassetti.cspec_red,materialParametersCassetti.cspec_green,materialParametersCassetti.cspec_blue);
+
+				uniforms.cdiff.value = new THREE.Vector3(materialParametersCassetti.cdiff_red,materialParametersCassetti.cdiff_green,materialParametersCassetti.cdiff_blue);
+
+				uniforms.roughness.value = materialParametersCassetti.roughness>0.0?materialParametersCassetti.roughness:0.01;
+				}
+			}
 
 					init();
 					update();
