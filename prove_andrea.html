@@ -554,7 +554,15 @@ function scegliMateriali(corpo, cassetti)
 			break;
 		default:
 		//legno pino
+
+			diffuseMap = diffuseMapLegnoPino;
+			specularMap = specularMapLegnoPino;
+			roughnessMap = roughnessMapLegnoPino;
+			normalMap = normalMapLegnoPino;
+			aoMap = aoMapLegnoPino;
+
 			uniforms = uniformLegnoPino;
+			shaderCorpo ="Texture";
 			textureParameters = {
 				material:"LegnoPino",
 				repeatS: 8.0,
@@ -611,8 +619,15 @@ function scegliMateriali(corpo, cassetti)
 			break;
 		default:
 		//legno pino
-			materialParameters = materialParametersPlastic;
+
+			diffuseMap = diffuseMapLegnoPino;
+			specularMap = specularMapLegnoPino;
+			roughnessMap = roughnessMapLegnoPino;
+			normalMap = normalMapLegnoPino;
+			aoMap = aoMapLegnoPino;
+
 			uniforms = uniformLegnoPino;
+			shaderCassetti ="Texture";
 			textureParameters = {
 				material:"LegnoPino",
 				repeatS: 8.0,
