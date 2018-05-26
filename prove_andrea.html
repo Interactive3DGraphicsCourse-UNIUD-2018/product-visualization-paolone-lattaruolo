@@ -212,7 +212,8 @@ var stats, controls;
 var camera, scene, renderer, light;
 var uniforms,textureParameters,materialParameters;
 var diffuseMap,specularMap, roughnessMap, normalMap,aoMap;
-var materialeCorpo = "LegnoEbano", materialeCassetti = "Oro";
+var materialeCorpo = "Plastica", materialeCassetti = "LegnoPino";
+var shaderCorpo, shaderCassetti;
 // default: white, 1.0 intensity
 var lightParameters = {
 	red: 1.0,
@@ -239,7 +240,7 @@ var materialParametersPlastic = {
 	roughness: 0.83
 }
 
-var materialParametersTitano = {
+var materialParametersTitanio = {
 	//titan metal cspec parameters
 	cdiff_red: 0.0,
 	cdiff_green: 0.0,
@@ -406,11 +407,44 @@ function init() {
 	loader.load( 'object/comodino/model.glb', function ( gltf ) {
 
 		//--------------------------    GESTIONE MATERIALI COMODINI ------------------------------------------------ //
+		if(shaderCorpo=="Texture"){
+			gltf.scene.children[0].children[0].traverse( function ( child ) {
+
+				if(child.isMesh){
+					//lati uguali dx - sx e gambe davanti
+					child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
+				}
+			});
+
+			gltf.scene.children[0].children[1].traverse( function ( child ) {
+
+				if(child.isMesh){
+					//lato sotto
+					child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
+				}
+			});
+
+			gltf.scene.children[0].children[2].traverse( function ( child ) {
+
+				if(child.isMesh){
+					//lato cassetti (superficie no casseti)
+					child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
+				}
+			});
+
+			gltf.scene.children[0].children[4].traverse( function ( child ) {
+
+				if(child.isMesh){
+					//lato dietro(opposto ai cassetti) e sopra (piano di appoggio)
+					child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
+				}
+			});
+	}else{
 		gltf.scene.children[0].children[0].traverse( function ( child ) {
 
 			if(child.isMesh){
 				//lati uguali dx - sx e gambe davanti
-				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
+				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
 			}
 		});
 
@@ -418,7 +452,7 @@ function init() {
 
 			if(child.isMesh){
 				//lato sotto
-				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
+				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
 			}
 		});
 
@@ -426,14 +460,6 @@ function init() {
 
 			if(child.isMesh){
 				//lato cassetti (superficie no casseti)
-				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
-			}
-		});
-
-		gltf.scene.children[0].children[3].traverse( function ( child ) {
-
-			if(child.isMesh){
-				//piedi e cassetti
 				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
 			}
 		});
@@ -442,9 +468,26 @@ function init() {
 
 			if(child.isMesh){
 				//lato dietro(opposto ai cassetti) e sopra (piano di appoggio)
+				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
+			}
+		});
+	}
+
+	if(shaderCassetti=="Texture"){
+		gltf.scene.children[0].children[3].traverse( function ( child ) {
+			if(child.isMesh){
+				//piedi e cassetti
 				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
 			}
 		});
+	}else{
+		gltf.scene.children[0].children[3].traverse( function ( child ) {
+			if(child.isMesh){
+				//piedi e cassetti
+				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
+			}
+		});
+	}
 
 		gltf.scene.scale.multiplyScalar( 0.01 );
 		gltf.scene.position.set(0,0,0);
@@ -472,6 +515,7 @@ function scegliMateriali(corpo, cassetti)
 			aoMap = aoMapLegnoPino;
 
 			uniforms = uniformLegnoPino;
+			shaderCorpo ="Texture";
 			textureParameters = {
 				material:"LegnoPino",
 				repeatS: 8.0,
@@ -488,6 +532,7 @@ function scegliMateriali(corpo, cassetti)
 			aoMap = aoMapLegnoEbano;
 
 			uniforms = uniformsLengoEbano;
+			shaderCorpo ="Texture";
 			textureParameters = {
 				material:"LegnoEbano",
 				repeatS: 3.0,
@@ -496,12 +541,15 @@ function scegliMateriali(corpo, cassetti)
 			};
 			break;
 		case "Titanio":
+			shaderCorpo ="Materiale";
 			materialParameters = materialParametersTitanio;
 			break;
 		case "Oro":
+			shaderCorpo ="Materiale";
 			materialParameters = materialParametersOro;
 			break;
 		case "Plastica":
+			shaderCorpo ="Materiale";
 			materialParameters = materialParametersPlastic;
 			break;
 		default:
@@ -524,6 +572,7 @@ function scegliMateriali(corpo, cassetti)
 			aoMap = aoMapLegnoPino;
 
 			uniforms = uniformLegnoPino;
+			shaderCassetti ="Texture";
 			textureParameters = {
 				material:"LegnoPino",
 				repeatS: 8.0,
@@ -540,6 +589,7 @@ function scegliMateriali(corpo, cassetti)
 			aoMap = aoMapLegnoEbano;
 
 			uniforms=uniformsLengoEbano;
+			shaderCassetti ="Texture";
 			textureParameters = {
 				material:"LegnoEbano",
 				repeatS: 3.0,
@@ -548,12 +598,15 @@ function scegliMateriali(corpo, cassetti)
 			};
 			break;
 		case "Titanio":
+			shaderCassetti ="Materiale";
 			materialParameters = materialParametersTitanio;
 			break;
 		case "Oro":
+			shaderCassetti ="Materiale";
 			materialParameters = materialParametersOro;
 			break;
 		case "Plastica":
+			shaderCassetti ="Materiale";
 			materialParameters = materialParametersPlastic;
 			break;
 		default:
