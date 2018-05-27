@@ -383,7 +383,7 @@ var textureParameters,materialParameters;
 var diffuseMap,specularMap, roughnessMap, normalMap,aoMap;
 var textureParametersCassetti,materialParametersCassetti;
 var diffuseMapCassetti,specularMapCassetti, roughnessMapCassetti, normalMapCassetti,aoMapCassetti;
-var materialeCorpo = "LegnoPino", materialeCassetti = "LegnoEbano";
+var materialeCorpo = "LegnoPino", materialeCassetti = "Oro";
 var shaderCorpo, shaderCassetti;
 // default: white, 1.0 intensity
 var lightParameters = {
@@ -822,13 +822,14 @@ function scegliMateriali(corpo, cassetti)
 		}
 
 		function updateUniforms() {
-			if(shaderCorpo=="Materiale" || shaderCassetti=="Materiale"){
+			if(shaderCorpo=="Materiale"){
 				uniforms.cspec.value = new THREE.Vector3(materialParameters.cspec_red,materialParameters.cspec_green,materialParameters.cspec_blue);
 
 				uniforms.cdiff.value = new THREE.Vector3(materialParameters.cdiff_red,materialParameters.cdiff_green,materialParameters.cdiff_blue);
 
 				uniforms.roughness.value = materialParameters.roughness>0.0?materialParameters.roughness:0.01;
-
+		}
+		if(shaderCassetti=="Materiale"){
 				uniformsCassetti.cspec.value = new THREE.Vector3(materialParametersCassetti.cspec_red,materialParametersCassetti.cspec_green,materialParametersCassetti.cspec_blue);
 
 				uniformsCassetti.cdiff.value = new THREE.Vector3(materialParametersCassetti.cdiff_red,materialParametersCassetti.cdiff_green,materialParametersCassetti.cdiff_blue);
@@ -853,7 +854,7 @@ function scegliMateriali(corpo, cassetti)
 							 ambientLightParameters.green * ambientLightParameters.intensity,
 							 ambientLightParameters.blue * ambientLightParameters.intensity);
 
-			if(shaderCorpo=="Texture" || shaderCassetti=="Texture"){
+			if(shaderCorpo=="Texture"){
 				uniforms.textureRepeat.value = new THREE.Vector2( textureParameters.repeatS, textureParameters.repeatT);
 				uniforms.diffuseMap.value = diffuseMap;
 				uniforms.specularMap.value = specularMap;
@@ -861,6 +862,8 @@ function scegliMateriali(corpo, cassetti)
 				uniforms.normalMap.value = normalMap;
 				uniforms.normalScale.value = new THREE.Vector2( textureParameters.normalScale, textureParameters.normalScale );
 				uniforms.aoMap.value = aoMap;
+			}
+			if(shaderCassetti=="Texture"){
 				uniformsCassetti.textureRepeat.value = new THREE.Vector2( textureParametersCassetti.repeatS, textureParametersCassetti.repeatT);
 				uniformsCassetti.diffuseMap.value = diffuseMapCassetti;
 				uniformsCassetti.specularMap.value = specularMapCassetti;
