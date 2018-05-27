@@ -70,6 +70,10 @@ h6 {
   font-family: 'Oswald', sans-serif;
 }
 
+p {
+    position: absolute;
+}
+
 li {
   color: #000000;
   font-family: "Georgia";
@@ -112,6 +116,7 @@ img{
   position: absolute;
   width: 45%;
   left: 53%;
+  top: 25%;
 }
 
 #facebook{
@@ -132,17 +137,27 @@ img{
 }
 
 #anteprimaComodino{
-  left: 60%;
+  left:0px;
+  width: 100px;
 }
 
 #anteprimaComodino2{
-  left: 75%;
+  left: 150px;
+  width: 120px;
 }
 
-#anteprimaComodino, #anteprimaComodino2{
+#anteprimaComodino3{
+  left: 300px;
+  width: 150px;
+}
+
+#anteprimaComodino, #anteprimaComodino2, #anteprimaComodino3
+{
   position: absolute;
-  width: 10%;
-  top: 700px;
+  top: 60px;
+  border: 2px solid gray;
+  border-radius: 5px;
+
 }
 
 
@@ -180,6 +195,61 @@ img{
   text-shadow: 1px 1px 2px black;
 }
 
+.anteprimaComodini{
+  position: relative;
+  width: 40%;
+  top: 480px;
+  height: 100px;
+  left:53%;
+}
+.anteprimaComodini p {
+  position: absolute;
+  font-size: 22px;
+  color: blue;
+  font-family: 'Times New Roman', sans-serif;
+  text-shadow: 1px 1px 2px blue;
+}
+
+.sceltaMateriali
+{
+  position: relative;
+  top: 700px;
+  left: 53%;
+}
+
+.sceltaMateriali p
+{
+  position: absolute;
+  font-size: 22px;
+  color: black;
+  font-family: 'Times New Roman', sans-serif;
+  text-shadow: 1px 1px 2px black;
+}
+
+#LegnoPino
+{
+  left: 0px;
+}
+
+#LegnoEbano
+{
+  left: 105px;
+}
+
+#Oro
+{
+  left: 210px;
+}
+
+#LegnoPino, #LegnoEbano, #Oro
+{
+  width: 100px;
+  position: absolute;
+  top: 50px;
+  border: 2px solid gray;
+  border-radius: 5px;
+}
+
 .Referenze{
   position: relative;
   margin: 1px;
@@ -213,7 +283,7 @@ img{
   height: 100px;
   display: inline-block;
   left: 45%;
-  top:100%;
+  top:1200px;
 }
 
 .contatti h6 {
@@ -237,4 +307,6 @@ iframe {
   width: 50%;
   height: 65%;
   top:280px;
+  border-radius: 5px;
+  border: 3px solid #e1e1e1;
 }
