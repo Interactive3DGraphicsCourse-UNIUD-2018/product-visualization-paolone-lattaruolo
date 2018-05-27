@@ -43,68 +43,105 @@
 	<script type="text/x-glsl" id="vertex">
 	varying vec3 vNormal;
 	varying vec3 vPosition;
+	varying vec2 uVv;
 
 	void main() {
 		vec4 vPos = modelViewMatrix * vec4( position, 1.0 );
 		vPosition = vPos.xyz;
 		vNormal = normalMatrix * normal;
+		uVv = uv;
 		gl_Position = projectionMatrix * vPos;
 	}
-</script>
+	</script>
 
-<script type="text/x-glsl" id="fragment">
-varying vec3 vNormal;
-varying vec3 vPosition;
-uniform vec3 pointLightPosition; // in world space
-uniform vec3 ambientLight;
-uniform vec3 clight;
-uniform vec3 cspec;
-uniform vec3 cdiff;
-uniform float roughness;
-const float PI = 3.14159;
+	<script type="text/x-glsl" id="fragment">
+	varying vec3 vNormal;
+	varying vec3 vPosition;
+	varying vec2 uVv;
+	uniform vec3 pointLightPosition; // in world space
+	uniform vec3 ambientLight;
+	uniform vec3 clight;
+	uniform sampler2D specularMap;
+	uniform sampler2D diffuseMap;
+	uniform sampler2D roughnessMap;
+	uniform sampler2D normalMap;
+	uniform sampler2D aoMap;
+	uniform vec2 normalScale;
+	uniform vec2 textureRepeat;
+	vec3 cdiff;
+	vec3 cspec;
+	float roughness;
+	const float PI = 3.14159;
 
-vec3 FSchlick(float lDoth) {
-	return (cspec + (vec3(1.0)-cspec)*pow(1.0 - lDoth,5.0));
-}
+	vec3 FSchlick(float lDoth) {
+		return (cspec + (vec3(1.0)-cspec)*pow(1.0 - lDoth,5.0));
+	}
 
-float DGGX(float nDoth, float alpha) {
-	float alpha2 = alpha*alpha;
-	float d = nDoth*nDoth*(alpha2-1.0)+1.0;
-	return (  alpha2 / (PI*d*d));
-}
+	float DGGX(float nDoth, float alpha) {
+		float alpha2 = alpha*alpha;
+		float d = nDoth*nDoth*(alpha2-1.0)+1.0;
+		return (  alpha2 / (PI*d*d));
+	}
 
-float G1(float dotProduct, float k) {
-	return (dotProduct / (dotProduct*(1.0-k) + k) );
-}
+	float G1(float dotProduct, float k) {
+		return (dotProduct / (dotProduct*(1.0-k) + k) );
+	}
 
-float GSmith(float nDotv, float nDotl) {
-	float k = roughness*roughness;
-	return G1(nDotl,k)*G1(nDotv,k);
-}
+	float GSmith(float nDotv, float nDotl) {
+		float k = roughness*roughness;
+		return G1(nDotl,k)*G1(nDotv,k);
+	}
 
-void main() {
+	#extension GL_OES_standard_derivatives : enable
 
-	// Luce 1
-	vec4 lPosition = viewMatrix * vec4( pointLightPosition, 1.0 );
-	vec3 l = normalize(lPosition.xyz - vPosition.xyz);
-	vec3 n = normalize( vNormal );  // interpolation destroys normalization, so we have to normalize
-	vec3 v = normalize( -vPosition);
-	vec3 h = normalize( v + l);
-	// small quantity to prevent divisions by 0
-	float nDotl = max(dot( n, l),0.000001);
-	float lDoth = max(dot( l , h ),0.000001);
-	float nDoth = max(dot( n, h ),0.000001);
-	float vDoth = max(dot( v, h ),0.000001);
-	float nDotv = max(dot( n, v ),0.000001);
-	vec3 fresnel = FSchlick(lDoth);
-	vec3 BRDF = (vec3(1.0)-fresnel)*cdiff/PI + fresnel*GSmith(nDotv,nDotl)*DGGX(nDoth,roughness*roughness)/
-	(4.0*nDotl*nDotv);
+	vec3 perturbNormal2Arb( vec3 eye_pos, vec3 surf_norm ) {
 
-	vec3 outRadiance = PI* clight * nDotl * BRDF;
-	// gamma encode the final value
-	gl_FragColor = vec4(pow( outRadiance, vec3(1.0/2.2)), 1.0);
-}
-</script>
+	vec3 q0 = dFdx( eye_pos.xyz );
+	vec3 q1 = dFdy( eye_pos.xyz );
+	vec2 st0 = dFdx( uVv.st );
+	vec2 st1 = dFdy( uVv.st );
+
+	vec3 S = normalize(  q0 * st1.t - q1 * st0.t );
+	vec3 T = normalize( -q0 * st1.s + q1 * st0.s );
+	vec3 N =  surf_norm ;
+
+	vec3 mapN = normalize(texture2D( normalMap, uVv ).xyz * 2.0 - 1.0);
+	mapN.xy = normalScale * mapN.xy;
+	mat3 tsn = mat3( S, T, N );
+	return normalize( tsn * mapN );
+
+	}
+
+	void main() {
+		vec4 lPosition = viewMatrix * vec4( pointLightPosition, 1.0 );
+		vec3 l = normalize(lPosition.xyz - vPosition.xyz);
+		vec3 n = perturbNormal2Arb( vPosition, normalize( vNormal ));
+		vec3 v = normalize( -vPosition);
+		vec3 h = normalize( v + l);
+		// small quantity to prevent divisions by 0
+		float nDotl = max(dot( n, l ),0.000001);
+		float lDoth = max(dot( l, h ),0.000001);
+		float nDoth = max(dot( n, h ),0.000001);
+		float vDoth = max(dot( v, h ),0.000001);
+		float nDotv = max(dot( n, v ),0.000001);
+
+		cdiff = texture2D( diffuseMap, uVv*textureRepeat ).rgb;
+		// texture in sRGB, linearize
+		cdiff = pow( cdiff, vec3(2.2));
+		cspec = texture2D( specularMap, uVv*textureRepeat ).rgb;
+		// texture in sRGB, linearize
+		cspec = pow( cspec, vec3(2.2));
+		roughness = texture2D( roughnessMap, uVv*textureRepeat).r; // no need to linearize roughness map
+
+		vec3 fresnel = FSchlick(lDoth);
+		vec3 BRDF = (vec3(1.0)-fresnel)*cdiff/PI + fresnel*GSmith(nDotv,nDotl)*DGGX(nDoth,roughness*roughness)/
+		(4.0*nDotl*nDotv);
+
+		vec3 outRadiance = PI* clight * nDotl * BRDF + ambientLight*texture2D( aoMap, uVv*textureRepeat).xyz*cdiff;
+		// gamma encode the final value
+		gl_FragColor = vec4(pow( outRadiance, vec3(1.0/2.2)), 1.0);
+	}
+	</script>
 
 <script type="text/x-glsl" id="vertexTexture1">
 varying vec3 vNormal;
@@ -127,11 +164,11 @@ varying vec2 uVv;
 uniform vec3 pointLightPosition; // in world space
 uniform vec3 ambientLight;
 uniform vec3 clight;
-uniform sampler2D specularMap;
-uniform sampler2D diffuseMap;
-uniform sampler2D roughnessMap;
-uniform sampler2D normalMap;
-uniform sampler2D aoMap;
+uniform sampler2D specularMap2;
+uniform sampler2D diffuseMap2;
+uniform sampler2D roughnessMap2;
+uniform sampler2D normalMap2;
+uniform sampler2D aoMap2;
 uniform vec2 normalScale;
 uniform vec2 textureRepeat;
 vec3 cdiff;
@@ -171,7 +208,7 @@ vec3 S = normalize(  q0 * st1.t - q1 * st0.t );
 vec3 T = normalize( -q0 * st1.s + q1 * st0.s );
 vec3 N =  surf_norm ;
 
-vec3 mapN = normalize(texture2D( normalMap, uVv ).xyz * 2.0 - 1.0);
+vec3 mapN = normalize(texture2D( normalMap2, uVv ).xyz * 2.0 - 1.0);
 mapN.xy = normalScale * mapN.xy;
 mat3 tsn = mat3( S, T, N );
 return normalize( tsn * mapN );
@@ -191,19 +228,19 @@ void main() {
 	float vDoth = max(dot( v, h ),0.000001);
 	float nDotv = max(dot( n, v ),0.000001);
 
-	cdiff = texture2D( diffuseMap, uVv*textureRepeat ).rgb;
+	cdiff = texture2D( diffuseMap2, uVv*textureRepeat ).rgb;
 	// texture in sRGB, linearize
 	cdiff = pow( cdiff, vec3(2.2));
-	cspec = texture2D( specularMap, uVv*textureRepeat ).rgb;
+	cspec = texture2D( specularMap2, uVv*textureRepeat ).rgb;
 	// texture in sRGB, linearize
 	cspec = pow( cspec, vec3(2.2));
-	roughness = texture2D( roughnessMap, uVv*textureRepeat).r; // no need to linearize roughness map
+	roughness = texture2D( roughnessMap2, uVv*textureRepeat).r; // no need to linearize roughness map
 
 	vec3 fresnel = FSchlick(lDoth);
 	vec3 BRDF = (vec3(1.0)-fresnel)*cdiff/PI + fresnel*GSmith(nDotv,nDotl)*DGGX(nDoth,roughness*roughness)/
 	(4.0*nDotl*nDotv);
 
-	vec3 outRadiance = PI* clight * nDotl * BRDF + ambientLight*texture2D( aoMap, uVv*textureRepeat).xyz*cdiff;
+	vec3 outRadiance = PI* clight * nDotl * BRDF + ambientLight*texture2D( aoMap2, uVv*textureRepeat).xyz*cdiff;
 	// gamma encode the final value
 	gl_FragColor = vec4(pow( outRadiance, vec3(1.0/2.2)), 1.0);
 }
@@ -243,7 +280,7 @@ var textureParameters = {
 	material:"Metallo1",
 	material1:"Metallo2",
 	material2: "TessutoBianco",
-	material3:"Wood1",
+	material3:"Oro",
 	material4:"LegnoPino",
 	material5:"LegnoEbano",
 	repeatS: 3.0,
@@ -257,11 +294,12 @@ var textureParameters = {
 // var roughnessMap = loadTexture( "texture/Metallo2/" + textureParameters.material1 + "_Roughness.png" );
 // var normalMap = loadTexture( "texture/Metallo2/" + textureParameters.material1 + "_Normal.png" );
 
-// // Texture legno
-// var diffuseMap = loadTexture( "texture/Wood1/" + textureParameters.material3 + "_Base_Color.jpg" );
-// var specularMap = loadTexture( "texture/Wood1/" + textureParameters.material3 + "_Specular.jpg" );
-// var roughnessMap = loadTexture( "texture/Wood1/" + textureParameters.material3 + "_Roughness.jpg" );
-// var normalMap = loadTexture( "texture/Wood1/" + textureParameters.material3 + "_Normal.jpg" );
+// Texture oro
+var diffuseMap = loadTexture( "texture/Oro/" + textureParameters.material3 + "_Base_Color.png" );
+var specularMap = loadTexture( "texture/Oro/" + textureParameters.material3 + "_Specular.png" );
+var roughnessMap = loadTexture( "texture/Oro/" + textureParameters.material3 + "_Roughness.png" );
+var normalMap = loadTexture( "texture/Oro/" + textureParameters.material3 + "_Normal.png" );
+var aoMap = loadTexture( "texture/Oro/" + textureParameters.material5 + "_Ambient_Occlusion.png" );
 
 // Texture legnoPino
 // var diffuseMap = loadTexture( "texture/legnoPino/" + textureParameters.material4 + "_Base_Color.png" );
@@ -271,11 +309,11 @@ var textureParameters = {
 // var aoMap = loadTexture( "texture/legnoPino/" + textureParameters.material4 + "_Ambient_Occlusion.png" );
 
 // Texture legnoEbano repeat wrapping 3-3
-var diffuseMap = loadTexture( "texture/LegnoEbano/" + textureParameters.material5 + "_Base_Color.jpg" );
-var specularMap = loadTexture( "texture/LegnoEbano/" + textureParameters.material5 + "_Specular.jpg" );
-var roughnessMap = loadTexture( "texture/LegnoEbano/" + textureParameters.material5 + "_Roughness.jpg" );
-var normalMap = loadTexture( "texture/LegnoEbano/" + textureParameters.material5 + "_Normal.jpg" );
-var aoMap = loadTexture( "texture/LegnoEbano/" + textureParameters.material5 + "_Ambient_Occlusion.jpg" );
+var diffuseMap2 = loadTexture( "texture/LegnoEbano/" + textureParameters.material5 + "_Base_Color.jpg" );
+var specularMap2 = loadTexture( "texture/LegnoEbano/" + textureParameters.material5 + "_Specular.jpg" );
+var roughnessMap2 = loadTexture( "texture/LegnoEbano/" + textureParameters.material5 + "_Roughness.jpg" );
+var normalMap2 = loadTexture( "texture/LegnoEbano/" + textureParameters.material5 + "_Normal.jpg" );
+var aoMap2 = loadTexture( "texture/LegnoEbano/" + textureParameters.material5 + "_Ambient_Occlusion.jpg" );
 
 // Texture TessutoBianco
 // var diffuseMap = loadTexture( "texture/TessutoBianco/" + textureParameters.material2 + "_Base_Color.png" );
@@ -289,6 +327,13 @@ var uniforms = {
 	roughnessMap:	{ type: "t", value: roughnessMap},
 	normalMap:	{ type: "t", value: normalMap},
 	aoMap:	{ type: "t", value: aoMap},
+
+	specularMap2: { type: "t", value: specularMap2},
+	diffuseMap2:	{ type: "t", value: diffuseMap2},
+	roughnessMap2:	{ type: "t", value: roughnessMap2},
+	normalMap2:	{ type: "t", value: normalMap2},
+	aoMap2:	{ type: "t", value: aoMap2},
+
 	normalScale: {type: "v2", value: new THREE.Vector2(1,1)},
 	textureRepeat: { type: "v2", value: new THREE.Vector2(2,2) },
 
@@ -437,6 +482,12 @@ function init() {
 			uniforms.normalMap.value = normalMap;
 			uniforms.normalScale.value = new THREE.Vector2( textureParameters.normalScale, textureParameters.normalScale );
 			uniforms.aoMap.value = aoMap;
+
+			uniforms.diffuseMap2.value = diffuseMap2;
+			uniforms.specularMap2.value = specularMap2;
+			uniforms.roughnessMap2.value = roughnessMap2;
+			uniforms.normalMap2.value = normalMap2;
+			uniforms.aoMap2.value = aoMap2;
 					}
 
 					init();
