@@ -43,11 +43,14 @@
 	<script type="text/x-glsl" id="vertex">
 	varying vec3 vNormal;
 	varying vec3 vPosition;
-
+	varying vec3 wPosition;
+	varying vec2 uVv;
 	void main() {
 		vec4 vPos = modelViewMatrix * vec4( position, 1.0 );
 		vPosition = vPos.xyz;
 		vNormal = normalMatrix * normal;
+		wPosition = (modelMatrix * vec4( position, 1.0 )).xyz;
+		uVv = uv;
 		gl_Position = projectionMatrix * vPos;
 	}
 </script>
@@ -55,11 +58,14 @@
 <script type="text/x-glsl" id="fragment">
 varying vec3 vNormal;
 varying vec3 vPosition;
+varying vec3 wPosition;
+varying vec2 uVv;
 uniform vec3 pointLightPosition; // in world space
 uniform vec3 ambientLight;
 uniform vec3 clight;
 uniform vec3 cspec;
 uniform vec3 cdiff;
+uniform samplerCube envMap;
 uniform float roughness;
 const float PI = 3.14159;
 
@@ -82,6 +88,10 @@ float GSmith(float nDotv, float nDotl) {
 	return G1(nDotl,k)*G1(nDotv,k);
 }
 
+vec3 inverseTransformDirection( in vec3 dir, in mat4 matrix ) {
+	return normalize( ( vec4( dir, 0.0 ) * matrix ).xyz );
+}
+
 void main() {
 
 	// Luce 1
@@ -90,6 +100,9 @@ void main() {
 	vec3 n = normalize( vNormal );  // interpolation destroys normalization, so we have to normalize
 	vec3 v = normalize( -vPosition);
 	vec3 h = normalize( v + l);
+	vec3 worldN = inverseTransformDirection( n, viewMatrix );
+	vec3 worldV = cameraPosition - wPosition ;
+	vec3 r = normalize( reflect(-worldV,worldN));
 	// small quantity to prevent divisions by 0
 	float nDotl = max(dot( n, l),0.000001);
 	float lDoth = max(dot( l , h ),0.000001);
@@ -99,7 +112,11 @@ void main() {
 	vec3 fresnel = FSchlick(lDoth);
 	vec3 BRDF = (vec3(1.0)-fresnel)*cdiff/PI + fresnel*GSmith(nDotv,nDotl)*DGGX(nDoth,roughness*roughness)/
 	(4.0*nDotl*nDotv);
-	vec3 outRadiance = PI* clight * nDotl * BRDF + (ambientLight*0.15);
+	vec3 envLight = textureCube( envMap, vec3(-r.x, r.yz)).rgb;
+	// texture in sRGB, linearize
+	envLight = pow( envLight, vec3(2.2));
+	//vec3 outRadiance = BRDF*envLight;
+	vec3 outRadiance = PI* clight * nDotl * BRDF + BRDF*envLight;
 	// gamma encode the final value
 	gl_FragColor = vec4(pow( outRadiance, vec3(1.0/2.2)), 1.0);
 }
@@ -126,6 +143,7 @@ varying vec2 uVv;
 uniform vec3 pointLightPosition; // in world space
 uniform vec3 ambientLight;
 uniform vec3 clight;
+uniform samplerCube envMap;
 uniform sampler2D specularMap;
 uniform sampler2D diffuseMap;
 uniform sampler2D roughnessMap;
@@ -198,78 +216,13 @@ void main() {
 	cspec = pow( cspec, vec3(2.2));
 	roughness = texture2D( roughnessMap, uVv*textureRepeat).r; // no need to linearize roughness map
 
+
 	vec3 fresnel = FSchlick(lDoth);
 	vec3 BRDF = (vec3(1.0)-fresnel)*cdiff/PI + fresnel*GSmith(nDotv,nDotl)*DGGX(nDoth,roughness*roughness)/
 	(4.0*nDotl*nDotv);
 	vec3 outRadiance = PI* clight * nDotl * BRDF + ambientLight*texture2D( aoMap, uVv*textureRepeat).xyz*cdiff;
 	// gamma encode the final value
 	gl_FragColor = vec4(pow( outRadiance, vec3(1.0/2.2)), 1.0);
-}
-</script>
-
-<!-- shader combinato: lambertian + microfacet; ORO -->
-<script type="text/x-glsl" id="vertex2">
-varying vec3 vNormal;
-varying vec3 vPosition;
-
-void main() {
-	vec4 vPos = modelViewMatrix * vec4( position, 1.0 );
-	vPosition = vPos.xyz;
-	vNormal = normalMatrix * normal;
-	gl_Position = projectionMatrix * vPos;
-}
-</script>
-
-<script type="text/x-glsl" id="fragment2">
-varying vec3 vNormal;
-varying vec3 vPosition;
-uniform vec3 pointLightPosition; // in world space
-uniform vec3 ambientLight;
-uniform vec3 clight;
-uniform vec3 cspec;
-uniform vec3 cdiff;
-uniform float roughness;
-const float PI = 3.14159;
-
-vec3 FSchlick(float lDoth) {
-return (cspec + (vec3(1.0)-cspec)*pow(1.0 - lDoth,5.0));
-}
-
-float DGGX(float nDoth, float alpha) {
-float alpha2 = alpha*alpha;
-float d = nDoth*nDoth*(alpha2-1.0)+1.0;
-return (  alpha2 / (PI*d*d));
-}
-
-float G1(float dotProduct, float k) {
-return (dotProduct / (dotProduct*(1.0-k) + k) );
-}
-
-float GSmith(float nDotv, float nDotl) {
-float k = roughness*roughness;
-return G1(nDotl,k)*G1(nDotv,k);
-}
-
-void main() {
-
-// Luce 1
-vec4 lPosition = viewMatrix * vec4( pointLightPosition, 1.0 );
-vec3 l = normalize(lPosition.xyz - vPosition.xyz);
-vec3 n = normalize( vNormal );  // interpolation destroys normalization, so we have to normalize
-vec3 v = normalize( -vPosition);
-vec3 h = normalize( v + l);
-// small quantity to prevent divisions by 0
-float nDotl = max(dot( n, l),0.000001);
-float lDoth = max(dot( l , h ),0.000001);
-float nDoth = max(dot( n, h ),0.000001);
-float vDoth = max(dot( v, h ),0.000001);
-float nDotv = max(dot( n, v ),0.000001);
-vec3 fresnel = FSchlick(lDoth);
-vec3 BRDF = (vec3(1.0)-fresnel)*cdiff/PI + fresnel*GSmith(nDotv,nDotl)*DGGX(nDoth,roughness*roughness)/
-(4.0*nDotl*nDotv);
-vec3 outRadiance = PI* clight * nDotl * BRDF + (ambientLight*0.15);
-// gamma encode the final value
-gl_FragColor = vec4(pow( outRadiance, vec3(1.0/2.2)), 1.0);
 }
 </script>
 
@@ -280,7 +233,11 @@ var textureParameters,materialParameters;
 var diffuseMap,specularMap, roughnessMap, normalMap,aoMap;
 var textureParametersCassetti,materialParametersCassetti;
 var diffuseMapCassetti,specularMapCassetti, roughnessMapCassetti, normalMapCassetti,aoMapCassetti;
+<<<<<<< HEAD
 var materialeCorpo = "LegnoEbano", materialeCassetti = "Oro";
+=======
+var materialeCorpo = "Plastica", materialeCassetti = "LegnoEbano";
+>>>>>>> 97fdfec7fea865ab60449754570c14b1423c0f83
 var shaderCorpo, shaderCassetti;
 // default: white, 1.0 intensity
 var lightParameters = {
@@ -348,10 +305,24 @@ var roughnessMapLegnoEbano = loadTexture( "texture/LegnoEbano/LegnoEbano_Roughne
 var normalMapLegnoEbano = loadTexture( "texture/LegnoEbano/LegnoEbano_Normal.jpg" );
 var aoMapLegnoEbano = loadTexture( "texture/LegnoEbano/LegnoEbano_Ambient_Occlusion.jpg" );
 
+var loader = new THREE.CubeTextureLoader();
+	loader.setPath( 'cube_map/cubemap/' );
+
+	var textureCube = loader.load( [
+		'posx.png', 'negx.png',
+		'posy.png', 'negy.png',
+		'posz.png', 'negz.png'
+	] );
+
+
+
+	textureCube.minFilter = THREE.LinearMipMapLinearFilter;
+
 var uniforms = {
 	cspec:	{ type: "v3", value: new THREE.Vector3() },
 	cdiff:	{ type: "v3", value: new THREE.Vector3() },
 	roughness: {type: "f", value: 0.5},
+	envMap:	{ type: "t", value: textureCube},
 
 	pointLightPosition:	{ type: "v3", value: new THREE.Vector3() },
 	ambientLight:	{ type: "v3", value: new THREE.Vector3() },
@@ -362,6 +333,7 @@ var uniformsCassetti = {
 	cspec:	{ type: "v3", value: new THREE.Vector3() },
 	cdiff:	{ type: "v3", value: new THREE.Vector3() },
 	roughness: {type: "f", value: 0.5},
+	envMap:	{ type: "t", value: textureCube},
 
 	pointLightPosition:	{ type: "v3", value: new THREE.Vector3() },
 	ambientLight:	{ type: "v3", value: new THREE.Vector3() },
@@ -381,6 +353,7 @@ var uniformLegnoPino = {
 	cdiff:	{ type: "v3", value: new THREE.Vector3() },
 	roughness: {type: "f", value: 0.5},
 
+	envMap:	{ type: "t", value: textureCube},
 	pointLightPosition:	{ type: "v3", value: new THREE.Vector3() },
 	ambientLight:	{ type: "v3", value: new THREE.Vector3() },
 	clight:	{ type: "v3", value: new THREE.Vector3() },
@@ -399,6 +372,7 @@ var uniformsLengoEbano = {
 	cdiff:	{ type: "v3", value: new THREE.Vector3() },
 	roughness: {type: "f", value: 0.5},
 
+	envMap:	{ type: "t", value: textureCube},
 	pointLightPosition:	{ type: "v3", value: new THREE.Vector3() },
 	ambientLight:	{ type: "v3", value: new THREE.Vector3() },
 	clight:	{ type: "v3", value: new THREE.Vector3() },
@@ -431,6 +405,7 @@ function init() {
 	controls.target.set( 0, -0.2, -0.2 );
 	controls.update();
 	scene = new THREE.Scene();
+	scene.background = textureCube;
 	renderer = new THREE.WebGLRenderer( { antialias: true } );
 	renderer.setPixelRatio( window.devicePixelRatio );
 	renderer.setSize( window.innerWidth, window.innerHeight );
