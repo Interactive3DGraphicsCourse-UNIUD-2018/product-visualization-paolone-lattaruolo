@@ -1,14 +1,16 @@
 body {
 
-  background-color:  hsl(0, 0%, 95%);
   margin: 0 auto;
   width: 100%;
 }
 
+body, .Referenze li, header{
+   background-color: hsl(0, 0%, 95%);
+}
+
 header {
-  background-color: #190e44;
-  border: 2px solid #ffffff;
-  border-bottom: 4px solid hsl(252, 100%, 54%);
+  border: 0px solid #190e44;
+  border-bottom: 4px solid hsl(0, 0%, 15%);
   border-radius: 10px;
   height: 150px;
   width: 100%;
@@ -16,40 +18,34 @@ header {
 }
 
 h1 {
-  position:absolute;
-  font-family: 'Oswald', sans-serif;
   font-size: 25px;
-  font-weight: 100;
   text-transform: uppercase;
   text-shadow: 1px 1px 2px white;
   top:10%;
-  color: white;
 }
 
 h2 {
-  position:absolute;
-  font-family: 'Oswald', sans-serif;
   font-size: 20px;
   top: 40%;
   text-transform: uppercase;
-  color: white;
 }
 
 h3 {
-  position:absolute;
-  font-family: 'Times New Roman';
-  font-style: oblique;
+
   font-size: 20px;
   text-transform: uppercase;
   top: 60%;
-  color: #ffae00;
 }
 
 h1, h2, h3 {
+  font-style: oblique;
+  font-family: 'Georgia', serif;
+  position: absolute;
   text-align: center;
   left: 25%;
   width: 50%;
   letter-spacing: 2px;
+  color: #hsl(0, 0%, 15%);
 }
 
 h4 {
@@ -72,18 +68,6 @@ h6 {
 
 p {
     position: absolute;
-}
-
-li {
-  color: #000000;
-  font-family: "Georgia";
-  font-size: 15px;
-  padding-left: 20px;
-  font-weight: 10;
-  text-align: center;
-  text-transform: capitalize;
-  padding-left: 200px;
-  padding-right: 200px;
 }
 
 img{
@@ -112,11 +96,22 @@ img{
   left:450px;
 }
 
-#commerce {
-  position: absolute;
-  width: 45%;
-  left: 53%;
-  top: 25%;
+.Pubblicita, .sceltaMateriali{
+  left: 58%;
+}
+
+.Pubblicita {
+  position: relative;
+  border: 0px solid;
+  border-radius: 5px;
+  width: 800px;
+  height: 400px;
+  bottom: 580px;
+}
+
+#mobilia1, #mobilia2, #mobilia3, #mobilia4 {
+  width: 49%;
+  height: 49%;
 }
 
 #facebook{
@@ -138,93 +133,100 @@ img{
 
 #anteprimaComodino{
   left:0px;
-  width: 100px;
 }
 
 #anteprimaComodino2{
-  left: 150px;
-  width: 120px;
+  left: 170px;
 }
 
 #anteprimaComodino3{
-  left: 300px;
-  width: 150px;
+  left: 340px;
 }
 
 #anteprimaComodino, #anteprimaComodino2, #anteprimaComodino3
 {
   position: absolute;
   top: 60px;
-  border: 2px solid gray;
+  width: 150px;
+  height: 150px;
+  border: 2px solid hsl(0, 0%, 95%);
   border-radius: 5px;
 
 }
 
-
-.Pubblicità {
-  border: 5px solid #ffffff;
-  border-radius: 10px;
-  padding: 0px;
-  text-align: center;
-  width: 99%;
-}
-
-.TitoloModello {
-  position: relative;
-  height: 50px;
-  width: 40%;
-}
-
-.TitoloModello h4, .TitoloModello h5{
-  position: absolute;
-  text-align: left;
-  left: 10px;
+#bandieraItaliana{
   display: none;
 }
 
-.TitoloModello h4 {
+#titolo, #sottotitolo, #titolo1, #sottotitolo1, #titolo2, #sottotitolo2, #frame{
+  display: none;
+}
+
+.Modelli {
+  position: relative;
+  top:120px;
+  left: 1%;
+  height: 500px;
+  width: 70%;
+}
+
+.Modelli h4, .Modelli h5 {
+  position: absolute;
+  text-align: left;
+  left: 10px;
+  color: hsl(0, 0%, 35%);
+}
+
+.Modelli h4 {
     top: 5px;
     font-size: 100%;
     text-transform: uppercase;
 }
 
-.TitoloModello h5 {
+.Modelli h5 {
   top:23px;
   font-size: 100%;
-  font-family: 'Times New Roman', sans-serif;
-  color: #ffae00;
-  text-shadow: 1px 1px 2px black;
+  font-family: 'Georgia', sans-serif;
+  text-shadow: 1px 1px 2px hsl(0, 0%, 35%);
+}
+
+iframe {
+  position: absolute;
+  margin-left: 2px;
+  width: 1100px;
+  height: 800px;
+  top:490px;
+  border-radius: 5px;
+  border: 0px solid hsl(0, 0%, 95%);
 }
 
 .anteprimaComodini{
   position: relative;
   width: 40%;
-  top: 480px;
+  top: 0px;
   height: 100px;
-  left:53%;
+  left:1%;
 }
 .anteprimaComodini p {
   position: absolute;
-  font-size: 22px;
-  color: blue;
-  font-family: 'Times New Roman', sans-serif;
-  text-shadow: 1px 1px 2px blue;
+  font-size: 24px;
+  color: hsl(0, 0%, 15%);
+  font-family: 'Georgia', serif;
+  text-shadow: 1px 1px 2px hsl(0, 0%, 15%);
 }
 
 .sceltaMateriali
 {
-  position: relative;
-  top: 700px;
-  left: 53%;
+  position: absolute;
+  top: 600px;
+  width: 300px;
 }
 
 .sceltaMateriali p
 {
-  position: absolute;
   font-size: 22px;
-  color: black;
+  color: hsl(0, 0%, 35%);
   font-family: 'Times New Roman', sans-serif;
-  text-shadow: 1px 1px 2px black;
 }
 
 #LegnoPino
@@ -247,7 +249,7 @@ img{
   width: 100px;
   position: absolute;
   top: 50px;
-  border: 2px solid gray;
+  border: 0px solid gray;
   border-radius: 5px;
 }
 
@@ -255,26 +257,23 @@ img{
   position: relative;
   margin: 1px;
   border-radius: 5px;
-  left:0px;
+  left:10%;
   width: 100%;
 }
 
 .Referenze li{
-  font-family: 'Times New Roman', sans-serif;
-  background-color: hsl(203, 100%, 50%);
-  border: 2px solid #ffffff;
-  border-top: 2px solid hsl(203, 100%, 50%);
-  border-left: 2px solid hsl(203, 100%, 50%);
-  border-right: 2px solid hsl(203, 100%, 50%);
-  border-bottom: 2px solid hsl(252, 100%, 54%);
+  font-family: 'Georgia', serif;
+  font-style: oblique;
+  border: 0px solid;
   border-radius: 5px;
-  color: white;
+  color: hsl(0, 0%, 15%);
   letter-spacing: 2px;
-  height: 25px;
+  height: 20px;
   margin: 0px;
   text-align: center;
   padding: 0px;
-  width: 19%;
+  width: 15%;
+  top: 10px;
   display: inline-block;
 }
 
@@ -300,15 +299,4 @@ img{
   bottom: 20px;
   border: 0px solid white;
   border-radius: 5px;
-}
-
-iframe {
-  position: absolute;
-  margin-left: 10px;
-  width: 50%;
-  height: 65%;
-  top:280px;
-  border-radius: 5px;
-  border: 3px solid #e1e1e1;
-  display: none;
 }

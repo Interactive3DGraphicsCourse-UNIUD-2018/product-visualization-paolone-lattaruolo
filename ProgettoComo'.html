@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 	<style>
 	body {
-		background-color: #f0f0f0;
+		background-color: #hsl(0, 0%, 95%);
 		margin: 0px;
 		overflow: hidden;
 	}
@@ -340,114 +340,122 @@ function init() {
 	document.body.appendChild( renderer.domElement );
 	// model
 	var loader = new THREE.GLTFLoader();
-	loader.load( 'object/cassettiera/model.glb', function ( gltf ) {
+	loader.load( 'object/comodinoGrande/model.glb', function ( gltf ) {
 
-    gltf.scene.children[0].children[0].traverse( function ( child ) {
+		gltf.scene.traverse( function ( child ) {
 
 			if(child.isMesh){
 				//??
-				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
-			}
-		});
-
-		gltf.scene.children[0].children[1].traverse( function ( child ) {
-
-			if(child.isMesh){
-				//parte sopra del comodino "ripiano"
-				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
-			}
-		});
-
-		gltf.scene.children[0].children[2].traverse( function ( child ) {
-
-			if(child.isMesh){
-				//parte sotto del comodino
-				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs, side: THREE.DoubleSside});
-			}
-		});
-
-		gltf.scene.children[0].children[3].traverse( function ( child ) {
-
-			if(child.isMesh){
-				//parte dietro del comodino opposto ai cassetti
 				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
 			}
 		});
 
-		gltf.scene.children[0].children[4].traverse( function ( child ) {
-
-			if(child.isMesh){
-				//cassetto sotto (no maniglia)
-				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
-			}
-		});
-
-		gltf.scene.children[0].children[5].traverse( function ( child ) {
-
-			if(child.isMesh){
-				//parte scocca sopra cassetto in alto
-				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs	 });
-			}
-		});
-
-		gltf.scene.children[0].children[6].traverse( function ( child ) {
-
-			if(child.isMesh){
-				//gambe davanti comodino
-				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
-			}
-		});
-
-		gltf.scene.children[0].children[7].traverse( function ( child ) {
-
-			if(child.isMesh){
-				//maniglia cassetto sopra
-				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
-			}
-		});
-
-		gltf.scene.children[0].children[8].traverse( function ( child ) {
-
-			if(child.isMesh){
-				//gambe dietro comodino
-				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
-			}
-		});
-
-		gltf.scene.children[0].children[9].traverse( function ( child ) {
-
-			if(child.isMesh){
-				//lato destro e sinistro del comodino (ai cassetti)
-				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
-			}
-		});
-
-		gltf.scene.children[0].children[10].traverse( function ( child ) {
-
-			if(child.isMesh){
-				//parte davanti comodino pezzo sotto i cassetti
-				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
-			}
-		});
-
-		gltf.scene.children[0].children[11].traverse( function ( child ) {
-
-			if(child.isMesh){
-				//maniglia cassetto sotto
-				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
-			}
-		});
-
-		gltf.scene.children[0].children[12].traverse( function ( child ) {
-
-			if(child.isMesh){
-				//cassetto sopra (no maniglia)
-				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
-			}
-		});
+    // gltf.scene.children[0].children[0].traverse( function ( child ) {
+		//
+		// 	if(child.isMesh){
+		// 		//??
+		// 		child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
+		// 	}
+		// });
+		//
+		// gltf.scene.children[0].children[1].traverse( function ( child ) {
+		//
+		// 	if(child.isMesh){
+		// 		//parte sopra del comodino "ripiano"
+		// 		child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
+		// 	}
+		// });
+		//
+		// gltf.scene.children[0].children[2].traverse( function ( child ) {
+		//
+		// 	if(child.isMesh){
+		// 		//parte sotto del comodino
+		// 		child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs, side: THREE.DoubleSside});
+		// 	}
+		// });
+		//
+		// gltf.scene.children[0].children[3].traverse( function ( child ) {
+		//
+		// 	if(child.isMesh){
+		// 		//parte dietro del comodino opposto ai cassetti
+		// 		child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
+		// 	}
+		// });
+		//
+		// gltf.scene.children[0].children[4].traverse( function ( child ) {
+		//
+		// 	if(child.isMesh){
+		// 		//cassetto sotto (no maniglia)
+		// 		child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
+		// 	}
+		// });
+		//
+		// gltf.scene.children[0].children[5].traverse( function ( child ) {
+		//
+		// 	if(child.isMesh){
+		// 		//parte scocca sopra cassetto in alto
+		// 		child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs	 });
+		// 	}
+		// });
+		//
+		// gltf.scene.children[0].children[6].traverse( function ( child ) {
+		//
+		// 	if(child.isMesh){
+		// 		//gambe davanti comodino
+		// 		child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
+		// 	}
+		// });
+		//
+		// gltf.scene.children[0].children[7].traverse( function ( child ) {
+		//
+		// 	if(child.isMesh){
+		// 		//maniglia cassetto sopra
+		// 		child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
+		// 	}
+		// });
+		//
+		// gltf.scene.children[0].children[8].traverse( function ( child ) {
+		//
+		// 	if(child.isMesh){
+		// 		//gambe dietro comodino
+		// 		child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
+		// 	}
+		// });
+		//
+		// gltf.scene.children[0].children[9].traverse( function ( child ) {
+		//
+		// 	if(child.isMesh){
+		// 		//lato destro e sinistro del comodino (ai cassetti)
+		// 		child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
+		// 	}
+		// });
+		//
+		// gltf.scene.children[0].children[10].traverse( function ( child ) {
+		//
+		// 	if(child.isMesh){
+		// 		//parte davanti comodino pezzo sotto i cassetti
+		// 		child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
+		// 	}
+		// });
+		//
+		// gltf.scene.children[0].children[11].traverse( function ( child ) {
+		//
+		// 	if(child.isMesh){
+		// 		//maniglia cassetto sotto
+		// 		child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
+		// 	}
+		// });
+		//
+		// gltf.scene.children[0].children[12].traverse( function ( child ) {
+		//
+		// 	if(child.isMesh){
+		// 		//cassetto sopra (no maniglia)
+		// 		child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
+		// 	}
+		// });
 
 		console.log(gltf.scene);
-		gltf.scene.scale.multiplyScalar( 0.01 );
+		gltf.scene.scale.multiplyScalar( 0.1 );
 		gltf.scene.position.set(0,0,0);
 		//gltf.scene.rotation.set(0, 240*Math.PI/360, 0);
 		scene.add( gltf.scene );

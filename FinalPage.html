@@ -7,53 +7,63 @@
 <body>
 
   <header>
-      <img  id="logo1" src="img/logo-azienda.png" alt="logo azienda">
-      <img  id="logo2" src="img/logo-azienda.png" alt="logo azienda">
+      <img  id="logo1" src="img/logo-azienda2.png" alt="logo azienda">
+      <img  id="logo2" src="img/logo-azienda2.png" alt="logo azienda">
       <h1>Max&Andrea_Furniture</h1>
       <h2>Benvenuti sul nostro E-Commerce</h2>
       <h3>mobili e arredo a prezzi imbattibili!!!</h3>
   </header>
 
   <div class="Referenze">
-    <li>HOME</li>
-    <li>CHI SIAMO</li>
-    <li>PRODOTTI</li>
-    <li>CONTATTI</li>
-    <li>ALTRO</li>
-  </div>
-
-  <div class="TitoloModello">
-    <h4>Comodino retro'</h4>
-    <h5>Fatto a mano, come una volta. 100% made in Italy</h5>
-
-    <img id="bandieraItaliana" src="img/bandieraItaliana.gif" alt="gif bandiera italiana">
+    <li><strong>HOME</strong></li>
+    <li><strong>CHI SIAMO</strong></li>
+    <li><strong>PRODOTTI</strong></li>
+    <li><strong>CONTATTI</strong></li>
+    <li><strong>ALTRO</strong></li>
   </div>
 
   <div class="anteprimaComodini">
   <p> Scegli il modello che vuoi: </p>
   <a href="ProgettoComodino.html" target="frameDirendering">
-  <img id="anteprimaComodino"  src="img/Comodino.png" alt="anteprima comodino">
-  </a>
+  <img id="anteprimaComodino"  src="img/Comodino.png" alt="anteprima comodino" onclick="onWindow()"></img>
+</a>
 
   <a  href="ProgettoComo'.html" target="frameDirendering">
-  <img id="anteprimaComodino2" src="img/Como'.png" alt="anteprima como'">
+  <img id="anteprimaComodino2" src="img/Como'.png" alt="anteprima como'" onclick="onWindow2()"></img>
   </a>
 
   <a  href="ProgettoComodinoRetro.html" target="frameDirendering">
-  <img id="anteprimaComodino3" src="img/comodinoRetro.png" alt="anteprima comodino retro'">
+  <img id="anteprimaComodino3" src="img/comodinoRetro.png" alt="anteprima comodino retro'" onclick="onWindow3()"></img>
   </a>
 </div>
 
+  <div class="Modelli">
+    <h4 id="titolo"> Comodino 1</h4>
+    <h5 id="sottotitolo"> Fatto a mano, come una volta. 100% made in Italy</h5>
+    <h4 id="titolo1"> Comodino 2</h4>
+    <h5 id="sottotitolo1">. comodino 2 renderizzato</h5>
+    <h4 id="titolo2"> Comodino 3</h4>
+    <h5 id="sottotitolo2"> comodino 3 renderizzato</h5>
+    <img id="bandieraItaliana" src="img/bandieraItaliana.gif" alt="gif bandiera italiana"></img>
+  </div>
+
+  <div class="Pubblicita">
+  <img  id="mobilia1" src="img/mobilia1.jpg" alt="immagine di E-Commerce">
+  <img  id="mobilia2" src="img/mobilia2.jpg" alt="immagine di E-Commerce">
+  <img  id="mobilia3" src="img/mobilia3.jfif" alt="immagine di E-Commerce">
+  <img  id="mobilia4" src="img/mobilia4.png" alt="immagine di E-Commerce">
+  </div>
+
   <div class="sceltaMateriali">
     <p> Personalizzane i materiali: </p>
+
     <img id="LegnoPino", src="img/LegnoPino.png" alt="texture legno di Pino">
     <img id="LegnoEbano", src="img/LegnoEbano.jpg" alt="texture legno di Ebano">
     <img id="Oro", src="img/Oro.png" alt="texture Oro">
     <img id="Plastica", src="img/xxx.png" alt="texture plastica">
 </div>
 
-  <iframe src="ProgettoComodino.html" name="frameDirendering"></iframe>
-  <img  id="commerce" src="img/E-Commerce3.png" alt="immagine di E-Commerce">
+  <iframe id="frame" src="ProgettoComodino.html" name="frameDirendering"></iframe>
 
     <div class="contatti">
       <h6>seguici anche su: </h6>
@@ -62,13 +72,53 @@
       <img id="twitter" src="img/twitter.png" alt="logo Twitter">
     </div>
 
-    <script>
-    function mostra{
-    document.getElementById('bandieraItaliana').display='';
-    }
-    function nascondi{
-    document.getElementById('bandieraItaliana').display='none';}
-    </script>
+  <script>
+  var visible1 = false;
+  var visible2 = false;
+  var visible3 = false;
+
+  function onWindow() {
+    if(visible1 == false){
+      document.getElementById("bandieraItaliana").style.display = "block";
+      document.getElementById("frame").style.display = "block";
+      document.getElementById("titolo").style.display = "block";
+      document.getElementById("sottotitolo").style.display = "block";
+      //visible1 = true;
+      nascondi("bandieraItaliana","titolo1","sottotitolo1", visible2);
+      nascondi("bandieraItaliana","titolo2","sottotitolo2", visible3);
+  }}
+
+  function onWindow2() {
+    if(visible2 == false){
+      document.getElementById("bandieraItaliana").style.display = "block";
+      document.getElementById("frame").style.display = "block";
+      document.getElementById("titolo1").style.display = "block";
+      document.getElementById("sottotitolo1").style.display = "block";
+      //visible2 = true;
+      nascondi("bandieraItaliana","titolo","sottotitolo", visible1);
+      nascondi("bandieraItaliana","titolo2","sottotitolo2", visible3);
+  }}
+
+  function onWindow3() {
+    if(visible3 == false){
+      document.getElementById("bandieraItaliana").style.display = "block";
+      document.getElementById("frame").style.display = "block";
+      document.getElementById("titolo2").style.display = "block";
+      document.getElementById("sottotitolo2").style.display = "block";
+      nascondi("bandieraItaliana","titolo","sottotitolo", visible1);
+      nascondi("bandieraItaliana","titolo1","sottotitolo1", visible2);
+      //visible3 = true;
+  }}
+
+  function nascondi(id1, id2, id3, vis) {
+      document.getElementById(id1).style.display = "none";
+      document.getElementById(id2).style.display = "none";
+      document.getElementById(id3).style.display = "none";
+      vis = false;
+  }
+
+
+  </script>
 
 </body>
 </html>
