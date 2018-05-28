@@ -179,6 +179,7 @@ img{
   position: absolute;
   text-align: left;
   left: 10px;
+  display: none;
 }
 
 .TitoloModello h4 {
@@ -309,4 +310,5 @@ iframe {
   top:280px;
   border-radius: 5px;
   border: 3px solid #e1e1e1;
+  display: none;
 }

@@ -354,7 +354,7 @@ function init() {
 
 			if(child.isMesh){
 				//parte sopra del comodino "ripiano"
-				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
+				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
 			}
 		});
 
@@ -362,7 +362,7 @@ function init() {
 
 			if(child.isMesh){
 				//parte sotto del comodino
-				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
+				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs, side: THREE.DoubleSside});
 			}
 		});
 
@@ -370,7 +370,7 @@ function init() {
 
 			if(child.isMesh){
 				//parte dietro del comodino opposto ai cassetti
-				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2	 });
+				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
 			}
 		});
 
