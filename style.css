@@ -5,7 +5,7 @@ body {
 }
 
 body, .Referenze li, header{
-   background-color: hsl(0, 0%, 95%);
+  background-color: white;
 }
 
 header {
@@ -158,7 +158,9 @@ img{
   display: none;
 }
 
-#titolo, #sottotitolo, #titolo1, #sottotitolo1, #titolo2, #sottotitolo2, #frame{
+#titolo, #sottotitolo, #titolo1, #sottotitolo1, #titolo2, #sottotitolo2,
+ #frame, #personalizzazione, #LegnoPinoCorpo, #LegnoEbanoCorpo, #LegnoPinoCassetti, #LegnoEbanoCassetti, #Oro,
+ #corpocomodino, #piedicassetti{
   display: none;
 }
 
@@ -219,7 +221,8 @@ iframe {
 {
   position: absolute;
   top: 600px;
-  width: 300px;
+  height: 450px;
+  width: 600px;
 }
 
 .sceltaMateriali p
@@ -229,28 +232,56 @@ iframe {
   font-family: 'Times New Roman', sans-serif;
 }
 
-#LegnoPino
+#LegnoPinoCorpo
 {
-  left: 0px;
+  left: 5px;
+  top: 100px;
 }
 
-#LegnoEbano
+#LegnoEbanoCorpo
 {
-  left: 105px;
+  left: 110px;
+  top: 100px;
+}
+
+#LegnoPinoCassetti
+{
+  left: 5px;
+  top: 250px;
+}
+
+#LegnoEbanoCassetti
+{
+  left: 110px;
+  top: 250px;
 }
 
 #Oro
 {
-  left: 210px;
+  left: 215px;
+  top: 250px;
 }
 
-#LegnoPino, #LegnoEbano, #Oro
+#LegnoPinoCorpo, #LegnoEbanoCorpo, #LegnoPinoCassetti, #LegnoEbanoCassetti, #Oro
 {
   width: 100px;
   position: absolute;
-  top: 50px;
   border: 0px solid gray;
   border-radius: 5px;
+}
+
+#corpocomodino, #piedicassetti{
+  font-size: 16px;
+  position: absolute;
+  left: 5px;
+}
+
+#piedicassetti{
+  top: 200px;
+}
+
+#corpocomodino{
+  top: 50px;
 }
 
 .Referenze{
@@ -283,7 +314,7 @@ iframe {
   height: 100px;
   display: inline-block;
   left: 45%;
-  top:1200px;
+  top:1400px;
 }
 
 .contatti h6 {

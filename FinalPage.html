@@ -55,10 +55,13 @@
   </div>
 
   <div class="sceltaMateriali">
-    <p> Personalizzane i materiali: </p>
-    
-    <img id="LegnoPino", src="img/LegnoPino.png" alt="texture legno di Pino">
-    <img id="LegnoEbano", src="img/LegnoEbano.jpg" alt="texture legno di Ebano">
+    <p id="personalizzazione"> Personalizzane i materiali: </p>
+    <p id="corpocomodino"> corpo comodino: </p>
+    <img id="LegnoPinoCorpo", src="img/LegnoPino.png" alt="texture legno di Pino">
+    <img id="LegnoEbanoCorpo", src="img/LegnoEbano.jpg" alt="texture legno di Ebano">
+    <p id="piedicassetti"> piedi e cassetti: </p>
+    <img id="LegnoPinoCassetti", src="img/LegnoPino.png" alt="texture legno di Pino">
+    <img id="LegnoEbanoCassetti", src="img/LegnoEbano.jpg" alt="texture legno di Ebano">
     <img id="Oro", src="img/Oro.png" alt="texture Oro">
 </div>
 
@@ -82,9 +85,16 @@
       document.getElementById("frame").style.display = "block";
       document.getElementById("titolo").style.display = "block";
       document.getElementById("sottotitolo").style.display = "block";
-      //visible1 = true;
-      nascondi("bandieraItaliana","titolo1","sottotitolo1", visible2);
-      nascondi("bandieraItaliana","titolo2","sottotitolo2", visible3);
+      document.getElementById("personalizzazione").style.display = "block";
+      document.getElementById("corpocomodino").style.display = "block";
+      document.getElementById("piedicassetti").style.display = "block";
+      document.getElementById("LegnoPinoCorpo").style.display = "block";
+      document.getElementById("LegnoEbanoCorpo").style.display = "block";
+      document.getElementById("LegnoPinoCassetti").style.display = "block";
+      document.getElementById("LegnoEbanoCassetti").style.display = "block";
+      document.getElementById("Oro").style.display = "block";
+      nascondi("bandieraItaliana","titolo1","sottotitolo1", "personalizzazione", visible2);
+      nascondi("bandieraItaliana","titolo1","sottotitolo1", "personalizzazione", visible3);
   }}
 
   function onWindow2() {
@@ -93,9 +103,16 @@
       document.getElementById("frame").style.display = "block";
       document.getElementById("titolo1").style.display = "block";
       document.getElementById("sottotitolo1").style.display = "block";
-      //visible2 = true;
-      nascondi("bandieraItaliana","titolo","sottotitolo", visible1);
-      nascondi("bandieraItaliana","titolo2","sottotitolo2", visible3);
+      document.getElementById("personalizzazione").style.display = "block";
+      document.getElementById("corpocomodino").style.display = "block";
+      document.getElementById("piedicassetti").style.display = "block";
+      document.getElementById("LegnoPinoCorpo").style.display = "block";
+      document.getElementById("LegnoEbanoCorpo").style.display = "block";
+      document.getElementById("LegnoPinoCassetti").style.display = "block";
+      document.getElementById("LegnoEbanoCassetti").style.display = "block";
+      document.getElementById("Oro").style.display = "block";
+      nascondi("bandieraItaliana","titolo","sottotitolo", "personalizzazione", visible1);
+      nascondi("bandieraItaliana","titolo2","sottotitolo2", "personalizzazione", visible3);
   }}
 
   function onWindow3() {
@@ -104,18 +121,40 @@
       document.getElementById("frame").style.display = "block";
       document.getElementById("titolo2").style.display = "block";
       document.getElementById("sottotitolo2").style.display = "block";
-      nascondi("bandieraItaliana","titolo","sottotitolo", visible1);
-      nascondi("bandieraItaliana","titolo1","sottotitolo1", visible2);
-      //visible3 = true;
+      document.getElementById("personalizzazione").style.display = "block";
+      document.getElementById("corpocomodino").style.display = "block";
+      document.getElementById("LegnoPinoCorpo").style.display = "block";
+      document.getElementById("LegnoEbanoCorpo").style.display = "block";
+      nascondiPlus("bandieraItaliana","titolo2","sottotitolo2", "piedicassetti", "LegnoPinoCassetti", "LegnoEbanoCassetti", "Oro", visible1);
+      nascondiplus("bandieraItaliana","titolo2","sottotitolo2", "piedicassetti", "LegnoPinoCassetti", "LegnoEbanoCassetti", "Oro", visible2);
   }}
 
-  function nascondi(id1, id2, id3, vis) {
-      document.getElementById(id1).style.display = "none";
-      document.getElementById(id2).style.display = "none";
-      document.getElementById(id3).style.display = "none";
-      vis = false;
+  function nascondiPlus(id1, id2, id3, id4, id5, id6, id7, vis) {
+    document.getElementById(id1).style.display = "none";
+    document.getElementById(id2).style.display = "none";
+    document.getElementById(id3).style.display = "none";
+    document.getElementById(id4).style.display = "none";
+    document.getElementById(id5).style.display = "none";
+    document.getElementById(id6).style.display = "none";
+    document.getElementById(id7).style.display = "none";
+    vis = false;
   }
 
+  function nascondi(id1, id2, id3, vis) {
+    document.getElementById(id1).style.display = "none";
+    document.getElementById(id2).style.display = "none";
+    document.getElementById(id3).style.display = "none";
+    vis = false;
+  }
+
+  function changeMaterial(file)
+  {
+      //TODO
+      /* Prendere la funzione scegliMateriali posta in prova_andrea come file singolo;
+      creare in questa uno switch con il risulato di due stringhe in relazione all'anteprima
+      del materiale cliccato; a questo punto rendere anche questa funzione esterna e chiamarla
+      nei file di rendering quando vanno attribuite le stringhe di materiali */
+  }
 
   </script>
 
