@@ -64,7 +64,7 @@ uniform vec3 clight;
 uniform vec3 cspec;
 uniform vec3 cdiff;
 uniform samplerCube envMap;
-uniform samplerCube irradianceMap;
+uniform samplerCube IrrEnvMap;
 uniform float roughness;
 const float PI = 3.14159;
 vec3 FSchlick(float lDoth) {
@@ -91,7 +91,6 @@ vec3 inverseTransformDirection( in vec3 dir, in mat4 matrix ) {
 }
 
 void main() {
-	// Luce 1
 	vec4 lPosition = viewMatrix * vec4( pointLightPosition, 1.0 );
 	vec3 l = normalize(lPosition.xyz - vPosition.xyz);
 	vec3 n = normalize( vNormal );  // interpolation destroys normalization, so we have to normalize
@@ -112,8 +111,7 @@ void main() {
 	vec3 envLight = textureCube( envMap, vec3(-r.x, r.yz)).rgb;
 	// texture in sRGB, linearize
 	envLight = pow( envLight, vec3(2.2));
-	vec3 outRadiance = PI* clight * nDotl * BRDF + 0.21*FSchlick(nDotv)*envLight;
-	//vec3 outRadiance = PI* clight * nDotl * BRDF + BRDF*envLight;
+	vec3 outRadiance = PI* clight * nDotl * BRDF+ FSchlick(nDotv)*envLight;//0.21*
 	// gamma encode the final value
 	gl_FragColor = vec4(pow( outRadiance, vec3(1.0/2.2)), 1.0);
 }
@@ -135,6 +133,7 @@ void main() {
 </script>
 
 <script type="text/x-glsl" id="fragmentPlastica">
+//shader plastica
 varying vec3 vNormal;
 varying vec3 vPosition;
 varying vec3 wPosition;
@@ -145,6 +144,7 @@ uniform vec3 clight;
 uniform vec3 cspec;
 uniform vec3 cdiff;
 uniform samplerCube envMap;
+uniform samplerCube IrrEnvMap;
 uniform float roughness;
 const float PI = 3.14159;
 
@@ -172,7 +172,6 @@ vec3 inverseTransformDirection( in vec3 dir, in mat4 matrix ) {
 }
 
 void main() {
-	// Luce 1
 	vec4 lPosition = viewMatrix * vec4( pointLightPosition, 1.0 );
 	vec3 l = normalize(lPosition.xyz - vPosition.xyz);
 	vec3 n = normalize( vNormal );  // interpolation destroys normalization, so we have to normalize
@@ -190,11 +189,13 @@ void main() {
 	vec3 fresnel = FSchlick(lDoth);
 	vec3 BRDF = (vec3(1.0)-fresnel)*cdiff/PI + fresnel*GSmith(nDotv,nDotl)*DGGX(nDoth,roughness*roughness)/
 	(4.0*nDotl*nDotv);
+
+	//vec3 envLight = textureCube( IrrEnvMap, vec3(-r.x, r.yz)).rgb;
 	vec3 envLight = textureCube( envMap, vec3(-r.x, r.yz)).rgb;
 	// texture in sRGB, linearize
 	envLight = pow( envLight, vec3(2.2));
 	//vec3 outRadiance = BRDF*envLight;
-	vec3 outRadiance = PI* clight * nDotl * BRDF + FSchlick(nDotv)*envLight;
+	vec3 outRadiance = PI* clight * nDotl * BRDF + 0.21*FSchlick(nDotv)*envLight;
 	// gamma encode the final value
 	gl_FragColor = vec4(pow( outRadiance, vec3(1.0/2.2)), 1.0);
 }
@@ -204,25 +205,30 @@ void main() {
 <script type="text/x-glsl" id="vertexTexture1">
 varying vec3 vNormal;
 varying vec3 vPosition;
+varying vec3 wPosition;
 varying vec2 uVv;
 
 void main() {
 	vec4 vPos = modelViewMatrix * vec4( position, 1.0 );
 	vPosition = vPos.xyz;
 	vNormal = normalMatrix * normal;
+	wPosition = (modelMatrix * vec4( position, 1.0 )).xyz;
 	uVv = uv;
 	gl_Position = projectionMatrix * vPos;
 }
 </script>
 
 <script type="text/x-glsl" id="fragmentTexture1">
+//shader texture
 varying vec3 vNormal;
 varying vec3 vPosition;
+varying vec3 wPosition;
 varying vec2 uVv;
 uniform vec3 pointLightPosition; // in world space
 uniform vec3 ambientLight;
 uniform vec3 clight;
 uniform samplerCube envMap;
+uniform samplerCube IrrEnvMap;
 uniform sampler2D specularMap;
 uniform sampler2D diffuseMap;
 uniform sampler2D roughnessMap;
@@ -234,41 +240,55 @@ vec3 cdiff;
 vec3 cspec;
 float roughness;
 const float PI = 3.14159;
+
 vec3 FSchlick(float lDoth) {
 	return (cspec + (vec3(1.0)-cspec)*pow(1.0 - lDoth,5.0));
 }
+
 float DGGX(float nDoth, float alpha) {
 	float alpha2 = alpha*alpha;
 	float d = nDoth*nDoth*(alpha2-1.0)+1.0;
 	return (  alpha2 / (PI*d*d));
 }
+
 float G1(float dotProduct, float k) {
 	return (dotProduct / (dotProduct*(1.0-k) + k) );
 }
+
 float GSmith(float nDotv, float nDotl) {
 	float k = roughness*roughness;
 	return G1(nDotl,k)*G1(nDotv,k);
 }
-#extension GL_OES_standard_derivatives : enable
-vec3 perturbNormal2Arb( vec3 eye_pos, vec3 surf_norm ) {
-vec3 q0 = dFdx( eye_pos.xyz );
-vec3 q1 = dFdy( eye_pos.xyz );
-vec2 st0 = dFdx( uVv.st );
-vec2 st1 = dFdy( uVv.st );
-vec3 S = normalize(  q0 * st1.t - q1 * st0.t );
-vec3 T = normalize( -q0 * st1.s + q1 * st0.s );
-vec3 N =  surf_norm ;
-vec3 mapN = normalize(texture2D( normalMap, uVv ).xyz * 2.0 - 1.0);
-mapN.xy = normalScale * mapN.xy;
-mat3 tsn = mat3( S, T, N );
-return normalize( tsn * mapN );
+
+vec3 inverseTransformDirection( in vec3 dir, in mat4 matrix ) {
+	return normalize( ( vec4( dir, 0.0 ) * matrix ).xyz );
 }
+
+#extension GL_OES_standard_derivatives : enable
+
+vec3 perturbNormal2Arb( vec3 eye_pos, vec3 surf_norm ) {
+	vec3 q0 = dFdx( eye_pos.xyz );
+	vec3 q1 = dFdy( eye_pos.xyz );
+	vec2 st0 = dFdx( uVv.st );
+	vec2 st1 = dFdy( uVv.st );
+	vec3 S = normalize(  q0 * st1.t - q1 * st0.t );
+	vec3 T = normalize( -q0 * st1.s + q1 * st0.s );
+	vec3 N =  surf_norm ;
+	vec3 mapN = normalize(texture2D( normalMap, uVv ).xyz * 2.0 - 1.0);
+	mapN.xy = normalScale * mapN.xy;
+	mat3 tsn = mat3( S, T, N );
+	return normalize( tsn * mapN );
+}
+
 void main() {
 	vec4 lPosition = viewMatrix * vec4( pointLightPosition, 1.0 );
 	vec3 l = normalize(lPosition.xyz - vPosition.xyz);
 	vec3 n = perturbNormal2Arb( vPosition, normalize( vNormal ));
 	vec3 v = normalize( -vPosition);
 	vec3 h = normalize( v + l);
+	vec3 worldN = inverseTransformDirection( n, viewMatrix );
+	vec3 worldV = cameraPosition - wPosition ;
+	vec3 r = normalize( reflect(-worldV,worldN));
 	// small quantity to prevent divisions by 0
 	float nDotl = max(dot( n, l ),0.000001);
 	float lDoth = max(dot( l, h ),0.000001);
@@ -283,9 +303,15 @@ void main() {
 	cspec = pow( cspec, vec3(2.2));
 	roughness = texture2D( roughnessMap, uVv*textureRepeat).r; // no need to linearize roughness map
 	vec3 fresnel = FSchlick(lDoth);
+
+	//vec3 envLight = textureCube( IrrEnvMap, vec3(-r.x, r.yz)).rgb;
+	vec3 envLight = textureCube( envMap, vec3(-r.x, r.yz)).rgb;
+	// texture in sRGB, linearize
+	envLight = pow( envLight, vec3(2.2));
+
 	vec3 BRDF = (vec3(1.0)-fresnel)*cdiff/PI + fresnel*GSmith(nDotv,nDotl)*DGGX(nDoth,roughness*roughness)/
 	(4.0*nDotl*nDotv);
-	vec3 outRadiance = PI* clight * nDotl * BRDF + ambientLight*texture2D( aoMap, uVv*textureRepeat).xyz*cdiff;
+	vec3 outRadiance = PI* clight * nDotl * BRDF + ambientLight*texture2D( aoMap, uVv*textureRepeat).xyz*cdiff+0.21*FSchlick(nDotv)*envLight;
 	// gamma encode the final value
 	gl_FragColor = vec4(pow( outRadiance, vec3(1.0/2.2)), 1.0);
 }
@@ -298,14 +324,14 @@ var textureParameters,materialParameters;
 var diffuseMap,specularMap, roughnessMap, normalMap,aoMap;
 var textureParametersCassetti,materialParametersCassetti;
 var diffuseMapCassetti,specularMapCassetti, roughnessMapCassetti, normalMapCassetti,aoMapCassetti;
-var materialeCorpo = "Oro", materialeCassetti = "LegnoEbano";
-var shaderCorpo, shaderCassetti;
+var materialeCorpo = "LegnoPino", materialeCassetti = "LegnoEbano";
+var shaderCorpo, shaderCassetti,sottomaterialeCorpo,sottomaterialeCassetti;
 // default: white, 1.0 intensity
 var lightParameters = {
 	red: 1.0,
 	green: 1.0,
 	blue: 1.0,
-	intensity: 0.8,
+	intensity: 0.4,
 }
 var ambientLightParameters = {
 	red: 0.8,
@@ -360,18 +386,25 @@ var roughnessMapLegnoEbano = loadTexture( "texture/LegnoEbano/LegnoEbano_Roughne
 var normalMapLegnoEbano = loadTexture( "texture/LegnoEbano/LegnoEbano_Normal.jpg" );
 var aoMapLegnoEbano = loadTexture( "texture/LegnoEbano/LegnoEbano_Ambient_Occlusion.jpg" );
 var loader = new THREE.CubeTextureLoader();
-	loader.setPath( 'cube_map/' );//cubemap/
+	loader.setPath( 'cube_map/casa/' );//cubemap/
+	// var textureCube = loader.load( [
+	// 	'posx.png', 'negx.png',
+	// 	'posy.png', 'negy.png',
+	// 	'posz.png', 'negz.png'
+	// ] );
 	var textureCube = loader.load( [
-		'posx.png', 'negx.png',
-		'posy.png', 'negy.png',
-		'posz.png', 'negz.png'
+		'posx.jpg', 'negx.jpg',
+		'posy.jpg', 'negy.jpg',
+		'posz.jpg', 'negz.jpg'
 	] );
 	textureCube.minFilter = THREE.LinearMipMapLinearFilter;
+
 var uniforms = {
 	cspec:	{ type: "v3", value: new THREE.Vector3() },
 	cdiff:	{ type: "v3", value: new THREE.Vector3() },
 	roughness: {type: "f", value: 0.5},
 	envMap:	{ type: "t", value: textureCube},
+	IrrEnvMap:	{ type: "t", value: textureCube},
 	pointLightPosition:	{ type: "v3", value: new THREE.Vector3() },
 	ambientLight:	{ type: "v3", value: new THREE.Vector3() },
 	clight:	{ type: "v3", value: new THREE.Vector3() },
@@ -381,6 +414,7 @@ var uniformsCassetti = {
 	cdiff:	{ type: "v3", value: new THREE.Vector3() },
 	roughness: {type: "f", value: 0.5},
 	envMap:	{ type: "t", value: textureCube},
+	IrrEnvMap:	{ type: "t", value: textureCube},
 	pointLightPosition:	{ type: "v3", value: new THREE.Vector3() },
 	ambientLight:	{ type: "v3", value: new THREE.Vector3() },
 	clight:	{ type: "v3", value: new THREE.Vector3() },
@@ -397,6 +431,7 @@ var uniformLegnoPino = {
 	cdiff:	{ type: "v3", value: new THREE.Vector3() },
 	roughness: {type: "f", value: 0.5},
 	envMap:	{ type: "t", value: textureCube},
+	IrrEnvMap:	{ type: "t", value: textureCube},
 	pointLightPosition:	{ type: "v3", value: new THREE.Vector3() },
 	ambientLight:	{ type: "v3", value: new THREE.Vector3() },
 	clight:	{ type: "v3", value: new THREE.Vector3() },
@@ -413,6 +448,7 @@ var uniformsLengoEbano = {
 	cdiff:	{ type: "v3", value: new THREE.Vector3() },
 	roughness: {type: "f", value: 0.5},
 	envMap:	{ type: "t", value: textureCube},
+	IrrEnvMap:	{ type: "t", value: textureCube},
 	pointLightPosition:	{ type: "v3", value: new THREE.Vector3() },
 	ambientLight:	{ type: "v3", value: new THREE.Vector3() },
 	clight:	{ type: "v3", value: new THREE.Vector3() },
@@ -432,6 +468,9 @@ vs = document.getElementById("vertex").textContent;
 fs = document.getElementById("fragment").textContent;
 vs2 = document.getElementById("vertexTexture1").textContent;
 fs2 = document.getElementById("fragmentTexture1").textContent;
+vs3 = document.getElementById("vertexPlastica").textContent;
+fs3 = document.getElementById("fragmentPlastica").textContent;
+
 function init() {
 	camera = new THREE.PerspectiveCamera( 35, window.innerWidth / window.innerHeight, 1, 1000 );
 	camera.position.set( 0, 0, -25 );
@@ -439,7 +478,7 @@ function init() {
 	controls.target.set( 0, -0.2, -0.2 );
 	controls.update();
 	scene = new THREE.Scene();
-	scene.background = textureCube;
+	//scene.background = textureCube;
 	renderer = new THREE.WebGLRenderer( { antialias: true } );
 	renderer.setPixelRatio( window.devicePixelRatio );
 	renderer.setSize( window.innerWidth, window.innerHeight );
@@ -447,6 +486,8 @@ function init() {
 	renderer.gammaOutput = true;
 	renderer.setClearColor( 0xf0f0f0 );
 	renderer.gammaOutput = true;
+	rendere.shadowMap.enabled = true;
+	render.shadowMap.type = THREE.PCFShadowMap;
 	window.addEventListener( 'resize', onWindowResize, false );
 	// stats
 	stats = new Stats();
@@ -455,76 +496,73 @@ function init() {
 	// model
 	scegliMateriali(materialeCorpo,materialeCassetti);//setta i parametri per gli shader
 	var loader = new THREE.GLTFLoader();
+	var vertexCorpo,fragmentCorpo,vertexCassetti,fragmentCassetti;
 	loader.load( 'object/comodino/model.glb', function ( gltf ) {
 		//--------------------------    GESTIONE MATERIALI COMODINI ------------------------------------------------ //
 		if(shaderCorpo=="Texture"){
+			vertexCorpo = vs2;
+			fragmentCorpo = fs2;
+		}else{
+			if(sottomaterialeCorpo == "Metallo"){
+				vertexCorpo = vs;
+				fragmentCorpo = fs;
+			}else{
+				//platica
+				vertexCorpo = vs3;
+				fragmentCorpo = fs3;
+			}}
+			if(shaderCassetti == "Texture"){
+				vertexCassetti = vs2;
+				fragmentCassetti = fs2;
+			}else{
+				if(sottomaterialeCassetti == "Metallo"){
+					vertexCassetti = vs;
+					fragmentCassetti = fs;
+				}else{
+					//plastica
+					vertexCassetti = vs3;
+					fragmentCassetti = fs3;
+				}
+			}
+			//------------------------------CORPO----------------------------------------------
 			gltf.scene.children[0].children[0].traverse( function ( child ) {
 				if(child.isMesh){
 					//lati uguali dx - sx e gambe davanti
-					child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
+					child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vertexCorpo, fragmentShader: fragmentCorpo });
 				}
 			});
 			gltf.scene.children[0].children[1].traverse( function ( child ) {
 				if(child.isMesh){
 					//lato sotto
-					child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
+					child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vertexCorpo, fragmentShader: fragmentCorpo });
 				}
 			});
 			gltf.scene.children[0].children[2].traverse( function ( child ) {
 				if(child.isMesh){
 					//lato cassetti (superficie no casseti)
-					child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
+					child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vertexCorpo, fragmentShader: fragmentCorpo });
 				}
 			});
 			gltf.scene.children[0].children[4].traverse( function ( child ) {
 				if(child.isMesh){
 					//lato dietro(opposto ai cassetti) e sopra (piano di appoggio)
-					child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs2, fragmentShader: fs2 });
+					child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vertexCorpo, fragmentShader: fragmentCorpo });
 				}
 			});
-	}else{
-		gltf.scene.children[0].children[0].traverse( function ( child ) {
-			if(child.isMesh){
-				//lati uguali dx - sx e gambe davanti
-				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
-			}
-		});
-		gltf.scene.children[0].children[1].traverse( function ( child ) {
-			if(child.isMesh){
-				//lato sotto
-				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
-			}
-		});
-		gltf.scene.children[0].children[2].traverse( function ( child ) {
-			if(child.isMesh){
-				//lato cassetti (superficie no casseti)
-				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
-			}
-		});
-		gltf.scene.children[0].children[4].traverse( function ( child ) {
-			if(child.isMesh){
-				//lato dietro(opposto ai cassetti) e sopra (piano di appoggio)
-				child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vs, fragmentShader: fs });
-			}
-		});
-	}
-	if(shaderCassetti=="Texture"){
+		//------------------------------CORPO----------------------------------------------
+
+		//------------------------------CASSETTI,PIEDINI----------------------------------------------
 		gltf.scene.children[0].children[3].traverse( function ( child ) {
 			if(child.isMesh){
 				//piedi e cassetti
-				child.material =  new THREE.ShaderMaterial({ uniforms: uniformsCassetti, vertexShader: vs2, fragmentShader: fs2 });
+				child.material =  new THREE.ShaderMaterial({ uniforms: uniformsCassetti, vertexShader: vertexCassetti, fragmentShader: fragmentCassetti });
 			}
 		});
-	}else{
-		gltf.scene.children[0].children[3].traverse( function ( child ) {
-			if(child.isMesh){
-				//piedi e cassetti
-				child.material =  new THREE.ShaderMaterial({ uniforms: uniformsCassetti, vertexShader: vs, fragmentShader: fs });
-			}
-		});
-	}
+		//------------------------------CASSETTI,PIEDINI----------------------------------------------
+
 		gltf.scene.scale.multiplyScalar( 0.01 );
 		gltf.scene.position.set(0,0,0);
+		gltf.scene.castShadow = true;
 		scene.add( gltf.scene );
 	} );
 	var lightMesh = new THREE.Mesh( new THREE.SphereGeometry( 1, 16, 16), new THREE.MeshBasicMaterial ({color: 0xffff00, wireframe:true}));
@@ -535,8 +573,20 @@ function init() {
 	uniformsCassetti.pointLightPosition.value = new THREE.Vector3(lightMesh.position.x,
 		lightMesh.position.y,
 		lightMesh.position.z);
+		lightMesh.castShadow = true;
+		//TODO leggi filea
 		scene.add( lightMesh );
+
+		//plane
+		var geometryPlane = new THREE.PlaneGeometry( 32, 32, 32 );
+		var materialPlane = new THREE.MeshBasicMaterial( {color: 0x402000, side: THREE.DoubleSide} );
+		var plane = new THREE.Mesh( geometryPlane, materialPlane );
+		plane.receiveShadow = true;
+		plane.rotation.x = Math.PI * 90/180;
+		plane.position.y = -1.68	;
+		scene.add( plane );
 }
+
 function scegliMateriali(corpo, cassetti)
 {
 	//cassetti comprende anche i piedini
@@ -573,14 +623,17 @@ function scegliMateriali(corpo, cassetti)
 			break;
 		case "Titanio":
 			shaderCorpo ="Materiale";
+			sottomaterialeCorpo = "Metallo";
 			materialParameters = materialParametersTitanio;
 			break;
 		case "Oro":
 			shaderCorpo ="Materiale";
+			sottomaterialeCorpo = "Metallo";
 			materialParameters = materialParametersOro;
 			break;
 		case "Plastica":
 			shaderCorpo ="Materiale";
+			sottomaterialeCorpo = "Plastica";
 			materialParameters = materialParametersPlastic;
 			break;
 		default:
@@ -632,14 +685,17 @@ function scegliMateriali(corpo, cassetti)
 			break;
 		case "Titanio":
 			shaderCassetti ="Materiale";
+			sottomaterialeCassetti = "Metallo";
 			materialParametersCassetti = materialParametersTitanio;
 			break;
 		case "Oro":
 			shaderCassetti ="Materiale";
+			sottomaterialeCassetti = "Metallo";
 			materialParametersCassetti = materialParametersOro;
 			break;
 		case "Plastica":
 			shaderCassetti ="Materiale";
+			sottomaterialeCassetti = "Plastica";
 			materialParametersCassetti = materialParametersPlastic;
 			break;
 		default:
