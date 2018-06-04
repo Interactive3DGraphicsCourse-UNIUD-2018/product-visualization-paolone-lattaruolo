@@ -36,6 +36,15 @@
 	<script src="lib/dat.gui.min.js"></script>
 	<script src="lib/GLTFLoader.js"></script>
 
+	<script src="lib/SSAOShader.js"></script>
+	<script src="lib/CopyShader.js"></script>
+
+	<script src="lib/EffectComposer.js"></script>
+	<script src="lib/RenderPass.js"></script>
+	<script src="lib/ShaderPass.js"></script>
+	<script src="lib/MaskPass.js"></script>
+	<script src="lib/SSAOPass.js"></script>
+
 	<!-- shader combinato: lambertian + microfacet; ORO -->
 	<script type="text/x-glsl" id="vertex">
 	varying vec3 vNormal;
@@ -326,6 +335,10 @@ void main() {
 var stats, controls;
 var camera, scene, renderer, light;
 var textureParameters,materialParameters;
+var effectComposer;
+var ssaoPass;
+var postprocessing = { enabled: true, onlyAO: false, radius: 32, aoClamp: 0.25, lumInfluence: 0.7 };
+
 var diffuseMap,specularMap, roughnessMap, normalMap,aoMap;
 var textureParametersCassetti,materialParametersCassetti;
 var diffuseMapCassetti,specularMapCassetti, roughnessMapCassetti, normalMapCassetti,aoMapCassetti;
@@ -645,6 +658,21 @@ function init() {
 		plane.rotation.x = -Math.PI * 90/180;
 		plane.position.y = -1.68	;
 		scene.add( plane );
+
+		// Init postprocessing
+		initPostprocessing();
+}
+
+function initPostprocessing() {
+	// Setup render pass
+	var renderPass = new THREE.RenderPass( scene, camera );
+	// Setup SSAO pass
+	ssaoPass = new THREE.SSAOPass( scene, camera );
+	ssaoPass.renderToScreen = true;
+	// Add pass to effect composer
+	effectComposer = new THREE.EffectComposer( renderer );
+	effectComposer.addPass( renderPass );
+	effectComposer.addPass( ssaoPass );
 }
 
 function scegliMateriali(corpo, cassetti)
@@ -818,6 +846,11 @@ function scegliMateriali(corpo, cassetti)
 		}
 		function render() {
 			updateUniforms();
+			// if ( postprocessing.enabled ) {
+			// 	effectComposer.render();
+			// } else {
+			// 	renderer.render( scene, camera );
+			// }
 			renderer.render( scene, camera );
 		}
 		function updateUniforms() {
