@@ -3,9 +3,10 @@
 <head>
   <title>E-Commerce</title>
   <link rel="stylesheet" type="text/css" href="style.css">
+
 </head>
 <body>
-
+<script src=changeMaterial.js ></script>
   <header>
       <img  id="logo1" src="img/logo-azienda2.png" alt="logo azienda">
       <img  id="logo2" src="img/logo-azienda2.png" alt="logo azienda">
@@ -57,12 +58,18 @@
   <div class="sceltaMateriali">
     <p id="personalizzazione"> Personalizzane i materiali: </p>
     <p id="corpocomodino"> corpo comodino: </p>
-    <img id="LegnoPinoCorpo", src="img/LegnoPino.png" alt="texture legno di Pino">
-    <img id="LegnoEbanoCorpo", src="img/LegnoEbano.jpg" alt="texture legno di Ebano">
+    <a href="ProgettoComodino.html" target="frameDirendering">
+      <img id="LegnoPinoCorpo" src="img/LegnoPino.png" alt="texture legno di Pino" onclick="changeMaterial('LegnoPino')"></img>
+    </a>
+
+    <a href="ProgettoComodino.html" target="frameDirendering">
+    <img id="LegnoEbanoCorpo" src="img/LegnoEbano.jpg" alt="texture legno di Ebano" onclick="changeMaterial('LegnoEbano')"></img>
+    </a>
+
     <p id="piedicassetti"> piedi e cassetti: </p>
-    <img id="LegnoPinoCassetti", src="img/LegnoPino.png" alt="texture legno di Pino">
-    <img id="LegnoEbanoCassetti", src="img/LegnoEbano.jpg" alt="texture legno di Ebano">
-    <img id="Oro", src="img/Oro.png" alt="texture Oro">
+    <img id="LegnoPinoCassetti" src="img/LegnoPino.png" alt="texture legno di Pino">
+    <img id="LegnoEbanoCassetti" src="img/LegnoEbano.jpg" alt="texture legno di Ebano">
+    <img id="Oro" src="img/Oro.png" alt="texture Oro">
 </div>
 
   <iframe id="frame" src="ProgettoComodino.html" name="frameDirendering"></iframe>
@@ -147,14 +154,10 @@
     vis = false;
   }
 
-  function changeMaterial(file)
-  {
-      //TODO
-      /* Prendere la funzione scegliMateriali posta in prova_andrea come file singolo;
-      creare in questa uno switch con il risulato di due stringhe in relazione all'anteprima
-      del materiale cliccato; a questo punto rendere anche questa funzione esterna e chiamarla
-      nei file di rendering quando vanno attribuite le stringhe di materiali */
-  }
+  // function changeMaterialLegnoPino(id)
+  // {
+  //   console.log(id);
+  // }
 
   </script>
 
