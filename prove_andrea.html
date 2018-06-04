@@ -329,7 +329,7 @@ var textureParameters,materialParameters;
 var diffuseMap,specularMap, roughnessMap, normalMap,aoMap;
 var textureParametersCassetti,materialParametersCassetti;
 var diffuseMapCassetti,specularMapCassetti, roughnessMapCassetti, normalMapCassetti,aoMapCassetti;
-var materialeCorpo = "LegnoEbano", materialeCassetti = "Titanio";
+var materialeCorpo = "Plastica", materialeCassetti = "Oro";
 var shaderCorpo, shaderCassetti,sottomaterialeCorpo,sottomaterialeCassetti;
 // default: white, 1.0 intensity
 var lightParameters = {
@@ -374,6 +374,17 @@ var materialParametersOro = {
 	cspec_blue: 0.344,
 	roughness: 0.5
 }
+
+var materialPavimento = {
+	//titan metal cspec parameters
+	cdiff_red: 0.0,
+	cdiff_green: 0.0,
+	cdiff_blue: 0.0,
+	cspec_red: 0.542,
+	cspec_green: 0.497,
+	cspec_blue: 0.449,
+	roughness: 0.83
+}
 // Texture metallo
 // var diffuseMap = loadTexture( "texture/Metallo2/" + textureParameters.material1 + "Base_Color.png" );
 // var specularMap = loadTexture( "texture/Metallo2/" + textureParameters.material1 + "_Specular.png" );
@@ -385,11 +396,11 @@ var roughnessMapLegnoPino = loadTexture( "texture/LegnoPino/LegnoPino_Roughness.
 var normalMapLegnoPino = loadTexture( "texture/LegnoPino/LegnoPino_Normal.png" );
 var aoMapLegnoPino = loadTexture( "texture/LegnoPino/LegnoPino_Ambient_Occlusion.png" );
 
-var diffuseMapLegnoEbano = loadTexture( "texture/LegnoEbano/LegnoEbano_Base_Color.jpg" );
-var specularMapLegnoEbano = loadTexture( "texture/LegnoEbano/LegnoEbano_Specular.jpg" );
-var roughnessMapLegnoEbano = loadTexture( "texture/LegnoEbano/LegnoEbano_Roughness.jpg" );
-var normalMapLegnoEbano = loadTexture( "texture/LegnoEbano/LegnoEbano_Normal.jpg" );
-var aoMapLegnoEbano = loadTexture( "texture/LegnoEbano/LegnoEbano_Ambient_Occlusion.jpg" );
+var diffuseMapLegnoEbano = loadTexture( "texture/LegnoNero/LegnoEbano_Base_Color.jpg" );
+var specularMapLegnoEbano = loadTexture( "texture/LegnoNero/LegnoEbano_Specular.jpg" );
+var roughnessMapLegnoEbano = loadTexture( "texture/LegnoNero/LegnoEbano_Roughness.jpg" );
+var normalMapLegnoEbano = loadTexture( "texture/LegnoNero/LegnoEbano_Normal.jpg" );
+var aoMapLegnoEbano = loadTexture( "texture/LegnoNero/LegnoEbano_Ambient_Occlusion.jpg" );
 
 var diffuseMapLegnoNoce = loadTexture( "texture/LegnoNoce/LegnoNoce_Base_Color.jpg" );
 var specularMapLegnoNoce = loadTexture( "texture/LegnoNoce/LegnoNoce_Specular.jpg" );
@@ -411,8 +422,10 @@ var loader = new THREE.CubeTextureLoader();
 		'posy.jpg', 'negy.jpg',
 		'posz.jpg', 'negz.jpg'
 	] );
+
 	textureCube.minFilter = THREE.LinearMipMapLinearFilter;
 	textureCubeIrr.minFilter = THREE.LinearMipMapLinearFilter;
+
 var uniforms = {
 	cspec:	{ type: "v3", value: new THREE.Vector3() },
 	cdiff:	{ type: "v3", value: new THREE.Vector3() },
@@ -423,6 +436,18 @@ var uniforms = {
 	ambientLight:	{ type: "v3", value: new THREE.Vector3() },
 	clight:	{ type: "v3", value: new THREE.Vector3() },
 }
+
+var uniformsPiano = {
+	cspec:	{ type: "v3", value: new THREE.Vector3() },
+	cdiff:	{ type: "v3", value: new THREE.Vector3() },
+	roughness: {type: "f", value: 0.5},
+	envMap:	{ type: "t", value: textureCube},
+	IrrEnvMap:	{ type: "t", value: textureCubeIrr},
+	pointLightPosition:	{ type: "v3", value: new THREE.Vector3() },
+	ambientLight:	{ type: "v3", value: new THREE.Vector3() },
+	clight:	{ type: "v3", value: new THREE.Vector3() },
+}
+
 var uniformsCassetti = {
 	cspec:	{ type: "v3", value: new THREE.Vector3() },
 	cdiff:	{ type: "v3", value: new THREE.Vector3() },
@@ -513,7 +538,7 @@ function init() {
 	controls.target.set( 0, -0.2, -0.2 );
 	controls.update();
 	scene = new THREE.Scene();
-	scene.background = textureCube;
+	//scene.background = textureCube;
 	renderer = new THREE.WebGLRenderer( { antialias: true } );
 	renderer.setPixelRatio( window.devicePixelRatio );
 	renderer.setSize( window.innerWidth, window.innerHeight );
@@ -613,10 +638,11 @@ function init() {
 
 		//plane
 		var geometryPlane = new THREE.PlaneGeometry( 32, 32, 32 );
-		var materialPlane = new THREE.MeshBasicMaterial( {color: 0x402000, side: THREE.DoubleSide} );
+		//var materialPlane = new THREE.ShaderMaterial( {side: THREE.FrontSide,uniforms: uniformsPiano, vertexShader: vs, fragmentShader: fs} );
+		var materialPlane = new THREE.MeshBasicMaterial( {color:0xffffff, side: THREE.DoubleSide} );
 		var plane = new THREE.Mesh( geometryPlane, materialPlane );
 		plane.receiveShadow = true;
-		plane.rotation.x = Math.PI * 90/180;
+		plane.rotation.x = -Math.PI * 90/180;
 		plane.position.y = -1.68	;
 		scene.add( plane );
 }
@@ -650,9 +676,9 @@ function scegliMateriali(corpo, cassetti)
 			shaderCorpo ="Texture";
 			textureParameters = {
 				material:"LegnoEbano",
-				repeatS: 3.0,
-				repeatT: 3.0,
-				normalScale: 0.2,
+				repeatS: 2.0,
+				repeatT: 2.0,
+				normalScale: 0.4,
 			};
 			break;
 		case "LegnoNoce":
@@ -732,6 +758,21 @@ function scegliMateriali(corpo, cassetti)
 				normalScale: 0.2,
 			};
 			break;
+			case "LegnoNoce":
+				diffuseMapCassetti = diffuseMapLegnoNoce;
+				specularMapCassetti = specularMapLegnoNoce;
+				roughnessMapCassetti = roughnessMapLegnoNoce;
+				normalMapCassetti = normalMapLegnoNoce;
+				aoMapCassetti = aoMapLegnoNoce;
+				uniformsCassetti = uniformsLengoNoce;
+				shaderCassetti ="Texture";
+				textureParametersCassetti = {
+					material:"LegnoNoce",
+					repeatS: 2.0,
+					repeatT: 2.0,
+					normalScale: 0.3,
+				};
+				break;
 		case "Titanio":
 			shaderCassetti ="Materiale";
 			sottomaterialeCassetti = "Metallo";
