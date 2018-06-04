@@ -295,8 +295,53 @@ void main() {
 
 <script>
 
+function getParameters(){
+
+var parametri = [];
+var para = document.cookie;
+//console.log("get " + para);
+var indiceCorpo = para.indexOf("materialeCorpo=");
+var indiceCassetti = para.indexOf("materialeCassetti=");
+var matCorpo = para.substring("materialeCorpo=".length,indiceCassetti);
+//console.log(para);
+var matCassetti = para.substring((indiceCassetti + "materialeCassetti=".length), para.length);
+// console.log("indiceCorpo: ",matCorpo);
+// console.log("indiceCassetti: ",matCassetti);
+parametri.push(matCorpo);
+parametri.push(matCassetti);
+return parametri;
+}
+
+function setParameters() {
+
+var paramData = [];
+var parameters = {};
+var param;
+var cookieValue = getParameters();
+var stringCookie ="";
+
+if (window.location.search.length > 0) {
+
+		paramData = window.location.search.split("?")[1].split("&");
+
+		if(paramData[0] == 'Corpo'){
+			// materialeCorpo = paramData[1];
+				if(cookieValue!=null){
+					stringCookie = "materialeCorpo=" + paramData[1] + "materialeCassetti=" + cookieValue[1];
+				}
+			} else if (paramData[0] == 'Cassetti'){
+				if(cookieValue!=null){
+					stringCookie = "materialeCorpo=" + cookieValue[0] + "materialeCassetti=" + paramData[1];
+				}
+			}
+			document.cookie = stringCookie;
+			cookieValue = getParameters();
+		}
+}
+
 materialeCorpo = null;
 materialeCassetti = null;
+var temp = null;
 var stats, controls;
 var camera, scene, renderer, light;
 var textureParameters,materialParameters;
@@ -432,16 +477,20 @@ function loadTexture(file) {
 	} )
 	return texture;
 }
-vs = document.getElementById("vertex").textContent;
-fs = document.getElementById("fragment").textContent;
+vs = 	document.getElementById("vertex").textContent;
+fs = 	document.getElementById("fragment").textContent;
 vs2 = document.getElementById("vertexTexture1").textContent;
 fs2 = document.getElementById("fragmentTexture1").textContent;
 function init() {
-	camera = new THREE.PerspectiveCamera( 35, window.innerWidth / window.innerHeight, 1, 1000 );
-	camera.position.set( 0, 0, -25 );
+	camera = new THREE.PerspectiveCamera( 35, window.innerWidth / window.innerHeight, 1, 100 );
+	camera.position.set( 0, 0, -10 );
+
 	controls = new THREE.OrbitControls( camera );
 	controls.target.set( 0, -0.2, -0.2 );
+	controls.minDistance = -40;
+	controls.maxDistance = 200;
 	controls.update();
+
 	scene = new THREE.Scene();
 	scene.background = textureCube;
 	renderer = new THREE.WebGLRenderer( { antialias: true } );
@@ -452,14 +501,12 @@ function init() {
 	renderer.setClearColor( 0xf0f0f0 );
 	renderer.gammaOutput = true;
 	window.addEventListener( 'resize', onWindowResize, false );
-	// stats
-	stats = new Stats();
+
 	document.body.appendChild( renderer.domElement );
-	document.body.appendChild( stats.domElement );
 	// model
-	scegliMateriali(materialeCorpo, materialeCassetti);
-	console.log(materialeCorpo);
-	console.log(materialeCassetti);
+	setParameters();
+	var materials = getParameters();
+	scegliMateriali(materials[0], materials[1]);
 	var loader = new THREE.GLTFLoader();
 	loader.load( 'object/comodino/model.glb', function ( gltf ) {
 		//--------------------------    GESTIONE MATERIALI COMODINI ------------------------------------------------ //
@@ -531,6 +578,7 @@ function init() {
 	}
 		gltf.scene.scale.multiplyScalar( 0.01 );
 		gltf.scene.position.set(0,0,0);
+		gltf.scene.rotation.set(0,200*Math.PI/180,0);
 		scene.add( gltf.scene );
 	} );
 	var lightMesh = new THREE.Mesh( new THREE.SphereGeometry( 1, 16, 16), new THREE.MeshBasicMaterial ({color: 0xffff00, wireframe:true}));
@@ -541,7 +589,6 @@ function init() {
 	uniformsCassetti.pointLightPosition.value = new THREE.Vector3(lightMesh.position.x,
 		lightMesh.position.y,
 		lightMesh.position.z);
-		scene.add( lightMesh );
 }
 
 		function onWindowResize() {
@@ -551,7 +598,6 @@ function init() {
 		}
 		function update() {
 			requestAnimationFrame( update );
-			stats.update();
 			render();
 		}
 		function render() {

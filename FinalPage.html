@@ -58,19 +58,27 @@
   <div class="sceltaMateriali">
     <p id="personalizzazione"> Personalizzane i materiali: </p>
     <p id="corpocomodino"> corpo comodino: </p>
-    <a href="ProgettoComodino.html" target="frameDirendering">
-      <img id="LegnoPinoCorpo" src="img/LegnoPino.png" alt="texture legno di Pino" onclick="changeMaterial('LegnoPino')"></img>
+    <!-- corpo comodino Modello1 LegnoPino -->
+    <a href="ProgettoComodino.html?Corpo&LegnoPino" target="frameDirendering">
+      <img id="LegnoPinoCorpo" src="img/LegnoPino.png" alt="texture legno di Pino"></img>
     </a>
-
-    <a href="ProgettoComodino.html" target="frameDirendering">
-    <img id="LegnoEbanoCorpo" src="img/LegnoEbano.jpg" alt="texture legno di Ebano" onclick="changeMaterial('LegnoEbano')"></img>
+    <!-- corpo comodino Modello1 LegnoEbano -->
+    <a href="ProgettoComodino.html?Corpo&LegnoEbano" target="frameDirendering">
+    <img id="LegnoEbanoCorpo" src="img/LegnoEbano.jpg" alt="texture legno di Ebano"></img>
     </a>
 
     <p id="piedicassetti"> piedi e cassetti: </p>
-    <img id="LegnoPinoCassetti" src="img/LegnoPino.png" alt="texture legno di Pino">
-    <img id="LegnoEbanoCassetti" src="img/LegnoEbano.jpg" alt="texture legno di Ebano">
-    <img id="Oro" src="img/Oro.png" alt="texture Oro">
-</div>
+    <!-- piedi e cassetti Modello1 LegnoPino -->
+    <a  href="ProgettoComodino.html?Cassetti&LegnoPino" target="frameDirendering">
+    <img id="LegnoPinoCassetti" src="img/LegnoPino.png" alt="texture legno di Pino"></img>
+    </a>
+    <a  href="ProgettoComodino.html?Cassetti&LegnoEbano" target="frameDirendering">
+    <img id="LegnoEbanoCassetti" src="img/LegnoEbano.jpg" alt="texture legno di Ebano"></img>
+    </a>
+    <a  href="ProgettoComodino.html?Cassetti&Oro" target="frameDirendering">
+    <img id="Oro" src="img/Oro.png" alt="texture Oro"></img>
+    </a>
+  </div>
 
   <iframe id="frame" src="ProgettoComodino.html" name="frameDirendering"></iframe>
 
@@ -153,11 +161,6 @@
     document.getElementById(id3).style.display = "none";
     vis = false;
   }
-
-  // function changeMaterialLegnoPino(id)
-  // {
-  //   console.log(id);
-  // }
 
   </script>
 
