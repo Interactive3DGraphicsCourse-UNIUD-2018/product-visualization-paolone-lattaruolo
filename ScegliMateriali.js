@@ -2,7 +2,7 @@ function scegliMateriali(corpo, cassetti)
 {
 	//cassetti comprende anche i piedini
 	switch(corpo){
-		case 'LegnoPino':
+		case "LegnoPino":
 			diffuseMap = diffuseMapLegnoPino;
 			specularMap = specularMapLegnoPino;
 			roughnessMap = roughnessMapLegnoPino;
@@ -14,10 +14,10 @@ function scegliMateriali(corpo, cassetti)
 				material:"LegnoPino",
 				repeatS: 8.0,
 				repeatT: 8.0,
-				normalScale: 0.2,
+				normalScale: 0.3,
 			};
 			break;
-		case 'LegnoEbano':
+		case "LegnoEbano":
 			diffuseMap = diffuseMapLegnoEbano;
 			specularMap = specularMapLegnoEbano;
 			roughnessMap = roughnessMapLegnoEbano;
@@ -27,21 +27,39 @@ function scegliMateriali(corpo, cassetti)
 			shaderCorpo ="Texture";
 			textureParameters = {
 				material:"LegnoEbano",
-				repeatS: 3.0,
-				repeatT: 3.0,
-				normalScale: 0.9,
+				repeatS: 2.0,
+				repeatT: 2.0,
+				normalScale: 0.4,
 			};
 			break;
-		case 'Titanio':
+		case "LegnoNoce":
+			diffuseMap = diffuseMapLegnoNoce;
+			specularMap = specularMapLegnoNoce;
+			roughnessMap = roughnessMapLegnoNoce;
+			normalMap = normalMapLegnoNoce;
+			aoMap = aoMapLegnoNoce;
+			uniforms = uniformsLengoNoce;
+			shaderCorpo ="Texture";
+			textureParameters = {
+				material:"LegnoNoce",
+				repeatS: 2.0,
+				repeatT: 2.0,
+				normalScale: 0.3,
+			};
+			break;
+		case "Titanio":
 			shaderCorpo ="Materiale";
+			sottomaterialeCorpo = "Metallo";
 			materialParameters = materialParametersTitanio;
 			break;
-		case 'Oro':
+		case "Oro":
 			shaderCorpo ="Materiale";
+			sottomaterialeCorpo = "Metallo";
 			materialParameters = materialParametersOro;
 			break;
-		case 'Plastica':
+		case "Plastica":
 			shaderCorpo ="Materiale";
+			sottomaterialeCorpo = "Plastica";
 			materialParameters = materialParametersPlastic;
 			break;
 		default:
@@ -57,11 +75,11 @@ function scegliMateriali(corpo, cassetti)
 				material:"LegnoPino",
 				repeatS: 8.0,
 				repeatT: 8.0,
-				normalScale: 0.2,
+				normalScale: 0.3,
 			};
 	}
 	switch (cassetti){
-		case  'LegnoPino':
+		case "LegnoPino":
 			diffuseMapCassetti = diffuseMapLegnoPino;
 			specularMapCassetti = specularMapLegnoPino;
 			roughnessMapCassetti = roughnessMapLegnoPino;
@@ -73,10 +91,10 @@ function scegliMateriali(corpo, cassetti)
 				material:"LegnoPino",
 				repeatS: 8.0,
 				repeatT: 8.0,
-				normalScale: 0.2,
+				normalScale: 0.3,
 			};
 			break;
-		case 'LegnoEbano':
+		case "LegnoEbano":
 			diffuseMapCassetti = diffuseMapLegnoEbano;
 			specularMapCassetti = specularMapLegnoEbano;
 			roughnessMapCassetti = roughnessMapLegnoEbano;
@@ -91,16 +109,34 @@ function scegliMateriali(corpo, cassetti)
 				normalScale: 0.2,
 			};
 			break;
-		case 'Titanio':
+			case "LegnoNoce":
+				diffuseMapCassetti = diffuseMapLegnoNoce;
+				specularMapCassetti = specularMapLegnoNoce;
+				roughnessMapCassetti = roughnessMapLegnoNoce;
+				normalMapCassetti = normalMapLegnoNoce;
+				aoMapCassetti = aoMapLegnoNoce;
+				uniformsCassetti = uniformsLengoNoce;
+				shaderCassetti ="Texture";
+				textureParametersCassetti = {
+					material:"LegnoNoce",
+					repeatS: 2.0,
+					repeatT: 2.0,
+					normalScale: 0.3,
+				};
+				break;
+		case "Titanio":
 			shaderCassetti ="Materiale";
+			sottomaterialeCassetti = "Metallo";
 			materialParametersCassetti = materialParametersTitanio;
 			break;
-		case  'Oro':
+		case "Oro":
 			shaderCassetti ="Materiale";
+			sottomaterialeCassetti = "Metallo";
 			materialParametersCassetti = materialParametersOro;
 			break;
-		case  'Plastica':
+		case "Plastica":
 			shaderCassetti ="Materiale";
+			sottomaterialeCassetti = "Plastica";
 			materialParametersCassetti = materialParametersPlastic;
 			break;
 		default:
@@ -117,7 +153,7 @@ function scegliMateriali(corpo, cassetti)
 				material:"LegnoPino",
 				repeatS: 8.0,
 				repeatT: 8.0,
-				normalScale: 0.2,
+				normalScale: 0.3,
 			};
 	}
 }
