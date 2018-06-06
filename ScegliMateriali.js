@@ -29,7 +29,7 @@ function scegliMateriali(corpo, cassetti)
 				material:"LegnoEbano",
 				repeatS: 3.0,
 				repeatT: 3.0,
-				normalScale: 0.2,
+				normalScale: 0.9,
 			};
 			break;
 		case 'Titanio':

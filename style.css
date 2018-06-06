@@ -154,12 +154,9 @@ img{
 
 }
 
-#bandieraItaliana{
-  display: none;
-}
-
-#titolo, #sottotitolo, #titolo1, #sottotitolo1, #titolo2, #sottotitolo2,
+#titolo, #sottotitolo, #titolo1, #sottotitolo1, #titolo2, #sottotitolo2, #bandieraItaliana,
  #frame, #personalizzazione, #LegnoPinoCorpo, #LegnoEbanoCorpo, #LegnoPinoCassetti, #LegnoEbanoCassetti, #Oro,
+ #LegnoPinoCorpo2, #LegnoEbanoCorpo2, #LegnoPinoCassetti2, #LegnoEbanoCassetti2, #Oro2,
  #corpocomodino, #piedicassetti{
   display: none;
 }
@@ -232,37 +229,38 @@ iframe {
   font-family: 'Times New Roman', sans-serif;
 }
 
-#LegnoPinoCorpo
+#LegnoPinoCorpo, #LegnoPinoCorpo2
 {
   left: 5px;
   top: 100px;
 }
 
-#LegnoEbanoCorpo
+#LegnoEbanoCorpo, #LegnoEbanoCorpo2
 {
   left: 110px;
   top: 100px;
 }
 
-#LegnoPinoCassetti
+#LegnoPinoCassetti, #LegnoPinoCassetti2
 {
   left: 5px;
   top: 250px;
 }
 
-#LegnoEbanoCassetti
+#LegnoEbanoCassetti, #LegnoEbanoCassetti2
 {
   left: 110px;
   top: 250px;
 }
 
-#Oro
+#Oro, #Oro2
 {
   left: 215px;
   top: 250px;
 }
 
-#LegnoPinoCorpo, #LegnoEbanoCorpo, #LegnoPinoCassetti, #LegnoEbanoCassetti, #Oro
+#LegnoPinoCorpo, #LegnoEbanoCorpo, #LegnoPinoCassetti, #LegnoEbanoCassetti, #Oro,
+#LegnoPinoCorpo2, #LegnoEbanoCorpo2, #LegnoPinoCassetti2, #LegnoEbanoCassetti2, #Oro2
 {
   width: 100px;
   position: absolute;

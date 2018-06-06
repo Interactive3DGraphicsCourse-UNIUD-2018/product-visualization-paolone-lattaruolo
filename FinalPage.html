@@ -29,13 +29,9 @@
   <img id="anteprimaComodino"  src="img/Comodino.png" alt="anteprima comodino" onclick="onWindow()"></img>
 </a>
 
-  <a  href="ProgettoComo'.html" target="frameDirendering">
+  <!-- <a  href="ProgettoComo'.html" target="frameDirendering">
   <img id="anteprimaComodino2" src="img/Como'.png" alt="anteprima como'" onclick="onWindow2()"></img>
-  </a>
-
-  <a  href="ProgettoComodinoRetro.html" target="frameDirendering">
-  <img id="anteprimaComodino3" src="img/comodinoRetro.png" alt="anteprima comodino retro'" onclick="onWindow3()"></img>
-  </a>
+</a> -->
 </div>
 
   <div class="Modelli">
@@ -43,8 +39,6 @@
     <h5 id="sottotitolo"> Fatto a mano, come una volta. 100% made in Italy</h5>
     <h4 id="titolo1"> Comodino Vittoriano</h4>
     <h5 id="sottotitolo1">. comodino 2 renderizzato</h5>
-    <h4 id="titolo2"> Comodino con specchiera</h4>
-    <h5 id="sottotitolo2"> comodino 3 renderizzato</h5>
     <img id="bandieraItaliana" src="img/bandieraItaliana.gif" alt="gif bandiera italiana"></img>
   </div>
 
@@ -78,6 +72,28 @@
     <a  href="ProgettoComodino.html?Cassetti&Oro" target="frameDirendering">
     <img id="Oro" src="img/Oro.png" alt="texture Oro"></img>
     </a>
+
+    <!-- MODELLO 2 -->
+    <!-- corpo comodino Modello2 LegnoPino -->
+    <a href="ProgettoComo'.html?Corpo1&LegnoPino" target="frameDirendering">
+      <img id="LegnoPinoCorpo2" src="img/LegnoPino.png" alt="texture legno di Pino"></img>
+    </a>
+    <!-- corpo comodino Modello2 LegnoEbano -->
+    <a href="ProgettoComo'.html?Corpo1&LegnoEbano" target="frameDirendering">
+    <img id="LegnoEbanoCorpo2" src="img/LegnoEbano.jpg" alt="texture legno di Ebano"></img>
+    </a>
+
+    <p id="piedicassetti"> piedi e cassetti: </p>
+    <!-- piedi e cassetti Modello2 LegnoPino -->
+    <a  href="ProgettoComo'.html?Cassetti1&LegnoPino" target="frameDirendering">
+    <img id="LegnoPinoCassetti2" src="img/LegnoPino.png" alt="texture legno di Pino"></img>
+    </a>
+    <a  href="ProgettoComo'.html?Cassetti1&LegnoEbano" target="frameDirendering">
+    <img id="LegnoEbanoCassetti2" src="img/LegnoEbano.jpg" alt="texture legno di Ebano"></img>
+    </a>
+    <a  href="ProgettoComo'.html?Cassetti1&Oro" target="frameDirendering">
+    <img id="Oro2" src="img/Oro.png" alt="texture Oro"></img>
+    </a>
   </div>
 
   <iframe id="frame" src="ProgettoComodino.html" name="frameDirendering"></iframe>
@@ -109,7 +125,6 @@
       document.getElementById("LegnoEbanoCassetti").style.display = "block";
       document.getElementById("Oro").style.display = "block";
       nascondi("bandieraItaliana","titolo1","sottotitolo1", "personalizzazione", visible2);
-      nascondi("bandieraItaliana","titolo1","sottotitolo1", "personalizzazione", visible3);
   }}
 
   function onWindow2() {
@@ -121,27 +136,12 @@
       document.getElementById("personalizzazione").style.display = "block";
       document.getElementById("corpocomodino").style.display = "block";
       document.getElementById("piedicassetti").style.display = "block";
-      document.getElementById("LegnoPinoCorpo").style.display = "block";
-      document.getElementById("LegnoEbanoCorpo").style.display = "block";
-      document.getElementById("LegnoPinoCassetti").style.display = "block";
-      document.getElementById("LegnoEbanoCassetti").style.display = "block";
-      document.getElementById("Oro").style.display = "block";
+      document.getElementById("LegnoPinoCorpo2").style.display = "block";
+      document.getElementById("LegnoEbanoCorpo2").style.display = "block";
+      document.getElementById("LegnoPinoCassetti2").style.display = "block";
+      document.getElementById("LegnoEbanoCassetti2").style.display = "block";
+      document.getElementById("Oro2").style.display = "block";
       nascondi("bandieraItaliana","titolo","sottotitolo", "personalizzazione", visible1);
-      nascondi("bandieraItaliana","titolo2","sottotitolo2", "personalizzazione", visible3);
-  }}
-
-  function onWindow3() {
-    if(visible3 == false){
-      document.getElementById("bandieraItaliana").style.display = "block";
-      document.getElementById("frame").style.display = "block";
-      document.getElementById("titolo2").style.display = "block";
-      document.getElementById("sottotitolo2").style.display = "block";
-      document.getElementById("personalizzazione").style.display = "block";
-      document.getElementById("corpocomodino").style.display = "block";
-      document.getElementById("LegnoPinoCorpo").style.display = "block";
-      document.getElementById("LegnoEbanoCorpo").style.display = "block";
-      nascondiPlus("bandieraItaliana","titolo2","sottotitolo2", "piedicassetti", "LegnoPinoCassetti", "LegnoEbanoCassetti", "Oro", visible1);
-      nascondiplus("bandieraItaliana","titolo2","sottotitolo2", "piedicassetti", "LegnoPinoCassetti", "LegnoEbanoCassetti", "Oro", visible2);
   }}
 
   function nascondiPlus(id1, id2, id3, id4, id5, id6, id7, vis) {

@@ -36,7 +36,6 @@
 	<script src="lib/dat.gui.min.js"></script>
 	<script src="lib/GLTFLoader.js"></script>
 	<script src="scegliMateriali.js"></script>
-  <script src=changeMaterial.js ></script>
 
 	<!-- shader combinato: lambertian + microfacet; ORO -->
 	<script type="text/x-glsl" id="vertex">
@@ -341,7 +340,6 @@ if (window.location.search.length > 0) {
 
 materialeCorpo = null;
 materialeCassetti = null;
-var temp = null;
 var stats, controls;
 var camera, scene, renderer, light;
 var textureParameters,materialParameters;
@@ -409,7 +407,7 @@ var roughnessMapLegnoEbano = loadTexture( "texture/LegnoEbano/LegnoEbano_Roughne
 var normalMapLegnoEbano = loadTexture( "texture/LegnoEbano/LegnoEbano_Normal.jpg" );
 var aoMapLegnoEbano = loadTexture( "texture/LegnoEbano/LegnoEbano_Ambient_Occlusion.jpg" );
 var loader = new THREE.CubeTextureLoader();
-	loader.setPath( 'cube_map/' );//cubemap/
+	loader.setPath( 'cube_map/cubemap/' );//cubemap/
 	var textureCube = loader.load( [
 		'posx.png', 'negx.png',
 		'posy.png', 'negy.png',
