@@ -44,6 +44,8 @@
 	<script src="lib/ShaderPass.js"></script>
 	<script src="lib/MaskPass.js"></script>
 	<script src="lib/SSAOPass.js"></script>
+	<script src="lib/Reflector.js"></script>
+
 
 	<!-- shader combinato: lambertian + microfacet; ORO -->
 	<script type="text/x-glsl" id="vertex">
@@ -337,12 +339,12 @@ var camera, scene, renderer, light;
 var textureParameters,materialParameters;
 var effectComposer;
 var ssaoPass;
-var postprocessing = { enabled: true, onlyAO: false, radius: 32, aoClamp: 0.25, lumInfluence: 0.7 };
+var postprocessing = { enabled: true, onlyAO: false, radius: 32, aoClamp: 0.25, lumInfluence: 0.1 };
 
 var diffuseMap,specularMap, roughnessMap, normalMap,aoMap;
 var textureParametersCassetti,materialParametersCassetti;
 var diffuseMapCassetti,specularMapCassetti, roughnessMapCassetti, normalMapCassetti,aoMapCassetti;
-var materialeCorpo = "Plastica", materialeCassetti = "Oro";
+var materialeCorpo = "LegnoNoce", materialeCassetti = "Plastica";
 var shaderCorpo, shaderCassetti,sottomaterialeCorpo,sottomaterialeCassetti;
 // default: white, 1.0 intensity
 var lightParameters = {
@@ -546,8 +548,11 @@ fs3 = document.getElementById("fragmentPlastica").textContent;
 
 function init() {
 	camera = new THREE.PerspectiveCamera( 35, window.innerWidth / window.innerHeight, 1, 1000 );
-	camera.position.set( 0, 0, -25 );
+	camera.position.set( 0, 8, -19 );
+	//camera.lookAt(5,5,5);
 	controls = new THREE.OrbitControls( camera );
+	controls.minDistance = 4;
+	controls.maxDistance = 13;
 	controls.target.set( 0, -0.2, -0.2 );
 	controls.update();
 	scene = new THREE.Scene();
@@ -633,31 +638,41 @@ function init() {
 		//------------------------------CASSETTI,PIEDINI----------------------------------------------
 
 		gltf.scene.scale.multiplyScalar( 0.01 );
-		gltf.scene.position.set(0,0,0);
-		gltf.scene.children.castShadow = true;
+		gltf.scene.position.set(0,1.68,0);
+		gltf.scene.rotation.set(0,Math.PI/180*210,0);
+		//gltf.scene.children.castShadow = true;
 		scene.add( gltf.scene );
 	} );
 	var lightMesh = new THREE.Mesh( new THREE.SphereGeometry( 1, 16, 16), new THREE.MeshBasicMaterial ({color: 0xffff00, wireframe:true}));
-	lightMesh.position.set( -10, 10.0, 10.0 );
+	lightMesh.position.set( 10, 10.0, -10.0 );
 	uniforms.pointLightPosition.value = new THREE.Vector3(lightMesh.position.x,
 		lightMesh.position.y,
 		lightMesh.position.z);
 	uniformsCassetti.pointLightPosition.value = new THREE.Vector3(lightMesh.position.x,
 		lightMesh.position.y,
 		lightMesh.position.z);
-		lightMesh.castShadow = true;
-		//TODO leggi filea
-		scene.add( lightMesh );
-
+		//lightMesh.castShadow = true;
 		//plane
-		var geometryPlane = new THREE.PlaneGeometry( 32, 32, 32 );
+		var geometryPlane = new THREE.PlaneGeometry( 500, 500, 500 );
+		var materialPlane = new THREE.MeshBasicMaterial( {color:0xFFF5EE, side: THREE.DoubleSide} );
 		//var materialPlane = new THREE.ShaderMaterial( {side: THREE.FrontSide,uniforms: uniformsPiano, vertexShader: vs, fragmentShader: fs} );
-		var materialPlane = new THREE.MeshBasicMaterial( {color:0xffffff, side: THREE.DoubleSide} );
 		var plane = new THREE.Mesh( geometryPlane, materialPlane );
-		plane.receiveShadow = true;
+		//plane.receiveShadow = true;
 		plane.rotation.x = -Math.PI * 90/180;
-		plane.position.y = -1.68	;
-		scene.add( plane );
+		var boxGeo = new THREE.BoxGeometry(5,5,5);
+		var materialbox = new THREE.MeshBasicMaterial( {color:0xFFF5EE, side: THREE.DoubleSide} );
+		var cubo = new THREE.Mesh(boxGeo,materialbox);
+		cubo.position.set(5,5,0);
+
+		var groundMirror = new THREE.Reflector( geometryPlane, {
+			clipBias: 0.003,
+			textureWidth: window.innerWidth * window.devicePixelRatio,
+			textureHeight: window.innerHeight * window.devicePixelRatio,
+			color: 0xbbbbbb,
+			recursion: 1
+		} );
+		groundMirror.rotation.x = -Math.PI * 90/180;
+		scene.add( plane);
 
 		// Init postprocessing
 		initPostprocessing();
@@ -673,7 +688,7 @@ function initPostprocessing() {
 	effectComposer = new THREE.EffectComposer( renderer );
 	effectComposer.addPass( renderPass );
 	effectComposer.addPass( ssaoPass );
-}
+	}
 
 function scegliMateriali(corpo, cassetti)
 {
@@ -691,7 +706,7 @@ function scegliMateriali(corpo, cassetti)
 				material:"LegnoPino",
 				repeatS: 8.0,
 				repeatT: 8.0,
-				normalScale: 0.2,
+				normalScale: 0.3,
 			};
 			break;
 		case "LegnoEbano":
@@ -752,7 +767,7 @@ function scegliMateriali(corpo, cassetti)
 				material:"LegnoPino",
 				repeatS: 8.0,
 				repeatT: 8.0,
-				normalScale: 0.2,
+				normalScale: 0.3,
 			};
 	}
 	switch (cassetti){
@@ -768,7 +783,7 @@ function scegliMateriali(corpo, cassetti)
 				material:"LegnoPino",
 				repeatS: 8.0,
 				repeatT: 8.0,
-				normalScale: 0.2,
+				normalScale: 0.3,
 			};
 			break;
 		case "LegnoEbano":
@@ -830,16 +845,21 @@ function scegliMateriali(corpo, cassetti)
 				material:"LegnoPino",
 				repeatS: 8.0,
 				repeatT: 8.0,
-				normalScale: 0.2,
+				normalScale: 0.3,
 			};
 	}
 }
+
 		function onWindowResize() {
 			camera.aspect = window.innerWidth / window.innerHeight;
 			camera.updateProjectionMatrix();
 			renderer.setSize( window.innerWidth, window.innerHeight );
 		}
+
 		function update() {
+			if(camera.position.y<=0.4){
+				camera.position.y=0.4;
+			}
 			requestAnimationFrame( update );
 			stats.update();
 			render();
