@@ -98,15 +98,14 @@ img{
 
 .Pubblicita, .sceltaMateriali{
   left: 58%;
+
 }
 
 .Pubblicita {
-  position: relative;
+  position: absolute;
   border: 0px solid;
   border-radius: 5px;
-  width: 800px;
-  height: 400px;
-  bottom: 580px;
+  top: 20%;
 }
 
 #mobilia1, #mobilia2, #mobilia3, #mobilia4 {
@@ -156,17 +155,15 @@ img{
 
 #titolo, #sottotitolo, #titolo1, #sottotitolo1, #titolo2, #sottotitolo2, #bandieraItaliana,
  #frame, #personalizzazione, #LegnoPinoCorpo, #LegnoEbanoCorpo, #LegnoPinoCassetti, #LegnoEbanoCassetti, #Oro,
- #LegnoPinoCorpo2, #LegnoEbanoCorpo2, #LegnoPinoCassetti2, #LegnoEbanoCassetti2, #Oro2,
  #corpocomodino, #piedicassetti{
   display: none;
 }
 
 .Modelli {
-  position: relative;
-  top:120px;
+  position: absolute;
   left: 1%;
-  height: 500px;
-  width: 70%;
+  height: 85px;
+  width: 30%;
 }
 
 .Modelli h4, .Modelli h5 {
@@ -189,21 +186,27 @@ img{
   text-shadow: 1px 1px 2px hsl(0, 0%, 35%);
 }
 
-iframe {
+.comodino{
   position: absolute;
+  height: 100%;
+  width: 57%;
+  top: 490px;
   margin-left: 2px;
-  width: 1100px;
-  height: 800px;
-  top:490px;
+}
+
+.comodino iframe {
+
+  width: 100%;
+  height: 100%;
   border-radius: 5px;
   border: 0px solid hsl(0, 0%, 95%);
 }
 
 .anteprimaComodini{
   position: relative;
-  width: 40%;
+  width: 30%;
   top: 0px;
-  height: 100px;
+  height: 223px;
   left:1%;
 }
 .anteprimaComodini p {
@@ -217,9 +220,9 @@ iframe {
 .sceltaMateriali
 {
   position: absolute;
-  top: 600px;
-  height: 450px;
-  width: 600px;
+  height: 350px;
+  width: 30%;
+  top: 720px;
 }
 
 .sceltaMateriali p
@@ -229,40 +232,51 @@ iframe {
   font-family: 'Times New Roman', sans-serif;
 }
 
-#LegnoPinoCorpo, #LegnoPinoCorpo2
+#LegnoPinoCorpo
 {
-  left: 5px;
-  top: 100px;
+  left: 1%;
+  width: 20%;
+  top: 25%;
+  position: absolute;
+  border: 0px solid gray;
+  border-radius: 5px;
 }
 
-#LegnoEbanoCorpo, #LegnoEbanoCorpo2
+#LegnoEbanoCorpo
 {
-  left: 110px;
-  top: 100px;
+  left: 22%;
+  width: 20%;
+  top: 25%;
+  position: absolute;
+  border: 0px solid gray;
+  border-radius: 5px;
 }
 
-#LegnoPinoCassetti, #LegnoPinoCassetti2
+#LegnoPinoCassetti
 {
-  left: 5px;
-  top: 250px;
+  left: 1%;
+  width: 20%;
+  top: 70%;
+  position: absolute;
+  border: 0px solid gray;
+  border-radius: 5px;
 }
 
-#LegnoEbanoCassetti, #LegnoEbanoCassetti2
+#LegnoEbanoCassetti
 {
-  left: 110px;
-  top: 250px;
+  left: 22%;
+  width: 20%;
+  top: 70%;
+  position: absolute;
+  border: 0px solid gray;
+  border-radius: 5px;
 }
 
-#Oro, #Oro2
+#Oro
 {
-  left: 215px;
-  top: 250px;
-}
-
-#LegnoPinoCorpo, #LegnoEbanoCorpo, #LegnoPinoCassetti, #LegnoEbanoCassetti, #Oro,
-#LegnoPinoCorpo2, #LegnoEbanoCorpo2, #LegnoPinoCassetti2, #LegnoEbanoCassetti2, #Oro2
-{
-  width: 100px;
+  left: 43%;
+  width: 20%;
+  top: 70%;
   position: absolute;
   border: 0px solid gray;
   border-radius: 5px;

@@ -23,22 +23,16 @@
     <li><strong>ALTRO</strong></li>
   </div>
 
-  <div class="anteprimaComodini">
-  <p> Scegli il modello che vuoi: </p>
-  <a href="ProgettoComodino.html" target="frameDirendering">
-  <img id="anteprimaComodino"  src="img/Comodino.png" alt="anteprima comodino" onclick="onWindow()"></img>
-</a>
-
-  <!-- <a  href="ProgettoComo'.html" target="frameDirendering">
-  <img id="anteprimaComodino2" src="img/Como'.png" alt="anteprima como'" onclick="onWindow2()"></img>
-</a> -->
-</div>
+    <div class="anteprimaComodini">
+    <p> Scegli il modello che vuoi: </p>
+    <a href="ProgettoComodino.html" target="frameDirendering">
+    <img id="anteprimaComodino"  src="img/Comodino.png" alt="anteprima comodino" onclick="onWindow()"></img>
+    </a>
+  </div>
 
   <div class="Modelli">
     <h4 id="titolo"> Comodino retro'</h4>
     <h5 id="sottotitolo"> Fatto a mano, come una volta. 100% made in Italy</h5>
-    <h4 id="titolo1"> Comodino Vittoriano</h4>
-    <h5 id="sottotitolo1">. comodino 2 renderizzato</h5>
     <img id="bandieraItaliana" src="img/bandieraItaliana.gif" alt="gif bandiera italiana"></img>
   </div>
 
@@ -72,31 +66,11 @@
     <a  href="ProgettoComodino.html?Cassetti&Oro" target="frameDirendering">
     <img id="Oro" src="img/Oro.png" alt="texture Oro"></img>
     </a>
-
-    <!-- MODELLO 2 -->
-    <!-- corpo comodino Modello2 LegnoPino -->
-    <a href="ProgettoComo'.html?Corpo1&LegnoPino" target="frameDirendering">
-      <img id="LegnoPinoCorpo2" src="img/LegnoPino.png" alt="texture legno di Pino"></img>
-    </a>
-    <!-- corpo comodino Modello2 LegnoEbano -->
-    <a href="ProgettoComo'.html?Corpo1&LegnoEbano" target="frameDirendering">
-    <img id="LegnoEbanoCorpo2" src="img/LegnoEbano.jpg" alt="texture legno di Ebano"></img>
-    </a>
-
-    <p id="piedicassetti"> piedi e cassetti: </p>
-    <!-- piedi e cassetti Modello2 LegnoPino -->
-    <a  href="ProgettoComo'.html?Cassetti1&LegnoPino" target="frameDirendering">
-    <img id="LegnoPinoCassetti2" src="img/LegnoPino.png" alt="texture legno di Pino"></img>
-    </a>
-    <a  href="ProgettoComo'.html?Cassetti1&LegnoEbano" target="frameDirendering">
-    <img id="LegnoEbanoCassetti2" src="img/LegnoEbano.jpg" alt="texture legno di Ebano"></img>
-    </a>
-    <a  href="ProgettoComo'.html?Cassetti1&Oro" target="frameDirendering">
-    <img id="Oro2" src="img/Oro.png" alt="texture Oro"></img>
-    </a>
   </div>
 
+  <div class="comodino">
   <iframe id="frame" src="ProgettoComodino.html" name="frameDirendering"></iframe>
+  </div>
 
     <div class="contatti">
       <h6>seguici anche su: </h6>
@@ -125,23 +99,6 @@
       document.getElementById("LegnoEbanoCassetti").style.display = "block";
       document.getElementById("Oro").style.display = "block";
       nascondi("bandieraItaliana","titolo1","sottotitolo1", "personalizzazione", visible2);
-  }}
-
-  function onWindow2() {
-    if(visible2 == false){
-      document.getElementById("bandieraItaliana").style.display = "block";
-      document.getElementById("frame").style.display = "block";
-      document.getElementById("titolo1").style.display = "block";
-      document.getElementById("sottotitolo1").style.display = "block";
-      document.getElementById("personalizzazione").style.display = "block";
-      document.getElementById("corpocomodino").style.display = "block";
-      document.getElementById("piedicassetti").style.display = "block";
-      document.getElementById("LegnoPinoCorpo2").style.display = "block";
-      document.getElementById("LegnoEbanoCorpo2").style.display = "block";
-      document.getElementById("LegnoPinoCassetti2").style.display = "block";
-      document.getElementById("LegnoEbanoCassetti2").style.display = "block";
-      document.getElementById("Oro2").style.display = "block";
-      nascondi("bandieraItaliana","titolo","sottotitolo", "personalizzazione", visible1);
   }}
 
   function nascondiPlus(id1, id2, id3, id4, id5, id6, id7, vis) {
