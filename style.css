@@ -235,6 +235,18 @@ img{
   font-family: 'Times New Roman', sans-serif;
 }
 
+.descrizioneProdotto{
+    position: absolute;
+    width: 30%;
+    top:1500px;
+    left: 1%;
+}
+
+.descrizioneProdotto h6{
+    font-size: 20px;
+    color: red;
+}
+
 #LegnoPinoCorpo
 {
   left: 1%;
