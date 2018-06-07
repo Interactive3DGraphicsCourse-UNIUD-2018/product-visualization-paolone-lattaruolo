@@ -60,10 +60,28 @@ uniform vec3 ambientLight;
 uniform vec3 clight;
 uniform vec3 cspec;
 uniform vec3 cdiff;
+precision highp float;
+precision highp int;
 uniform samplerCube envMap;
 uniform samplerCube IrrEnvMap;
 uniform float roughness;
+uniform vec2 normalScale;
+
 const float PI = 3.14159;
+#define saturate(a) clamp( a, 0.0, 1.0 )
+
+float pow2( const in float x ) { return x*x; }
+
+float getSpecularMIPLevel( const in float blinnShininessExponent, const in int maxMIPLevel ) {
+	float maxMIPLevelScalar = float( maxMIPLevel );
+	float desiredMIPLevel = maxMIPLevelScalar - 0.79248 - 0.5 * log2( pow2( blinnShininessExponent ) + 1.0 );
+	return clamp( desiredMIPLevel, 0.0, maxMIPLevelScalar );
+}
+
+float GGXRoughnessToBlinnExponent( const in float ggxRoughness ) {
+	return ( 2.0 / pow2( ggxRoughness + 0.0001 ) - 2.0 );
+}
+
 vec3 FSchlick(float lDoth) {
 	return (cspec + (vec3(1.0)-cspec)*pow(1.0 - lDoth,5.0));
 }
@@ -87,6 +105,18 @@ vec3 inverseTransformDirection( in vec3 dir, in mat4 matrix ) {
 	return normalize( ( vec4( dir, 0.0 ) * matrix ).xyz );
 }
 
+vec3 BRDF_Specular_GGX_Environment( vec3 normal, vec3 viewDir, const in vec3 cspec, const in float roughness ) {
+
+	float dotNV = saturate( dot( normal, viewDir ) );
+	const vec4 c0 = vec4( - 1, - 0.0275, - 0.572, 0.022 );
+	const vec4 c1 = vec4( 1, 0.0425, 1.04, - 0.04 );
+	vec4 r = roughness * c0 + c1;
+	float a004 = min( r.x * r.x, exp2( - 9.28 * dotNV ) ) * r.x + r.y;
+	vec2 AB = vec2( -1.04, 1.04 ) * a004 + r.zw;
+	return cspec * AB.x + AB.y;
+
+}
+
 void main() {
 	vec4 lPosition = viewMatrix * vec4( pointLightPosition, 1.0 );
 	vec3 l = normalize(lPosition.xyz - vPosition.xyz);
@@ -103,12 +133,16 @@ void main() {
 	float vDoth = max(dot( v, h ),0.000001);
 	float nDotv = max(dot( n, v ),0.000001);
 	vec3 fresnel = FSchlick(lDoth);
+
+	float blinnShininessExponent = GGXRoughnessToBlinnExponent(roughness);
+	float specularMIPLevel = getSpecularMIPLevel(blinnShininessExponent ,8 );
+
 	vec3 BRDF = (vec3(1.0)-fresnel)*cdiff/PI + fresnel*GSmith(nDotv,nDotl)*DGGX(nDoth,roughness*roughness)/
 	(4.0*nDotl*nDotv);
-	vec3 envLight = textureCube( envMap, vec3(-r.x, r.yz)).rgb;
+	vec3 envLight = textureCubeLodEXT( envMap, vec3(-r.x, r.yz), specularMIPLevel ).rgb;
 	// texture in sRGB, linearize
 	envLight = pow( envLight, vec3(2.2));
-	vec3 outRadiance = PI* clight * nDotl * BRDF+ FSchlick(nDotv)*envLight;//0.21*
+	vec3 outRadiance = PI* clight * nDotl * BRDF+ envLight*BRDF_Specular_GGX_Environment(n, v, cspec, roughness);//0.21*
 	// gamma encode the final value
 	gl_FragColor = vec4(pow( outRadiance, vec3(1.0/2.2)), 1.0);
 }
@@ -354,6 +388,7 @@ var materialParametersPlastic = {
 	cspec_red: 0.04,
 	cspec_green: 0.04,
 	cspec_blue: 0.04,
+	normalScale:0.0,
 	roughness: 0.83
 }
 var materialParametersTitanio = {
@@ -364,6 +399,7 @@ var materialParametersTitanio = {
 	cspec_red: 0.542,
 	cspec_green: 0.497,
 	cspec_blue: 0.449,
+	normalScale:0.0,
 	roughness: 0.83
 }
 var materialParametersOro = {
@@ -374,6 +410,7 @@ var materialParametersOro = {
 	cspec_red: 1.022,
 	cspec_green: 0.782,
 	cspec_blue: 0.344,
+	normalScale:0.0,
 	roughness: 0.5
 }
 
@@ -515,6 +552,11 @@ var uniformsLengoNoce = {
 	clight:	{ type: "v3", value: new THREE.Vector3() },
 };
 
+materialExtensions = {
+	derivatives: true, // set to use derivatives
+	shaderTextureLOD: true // set to use shader texture LOD
+};
+
 function loadTexture(file) {
 	var texture = new THREE.TextureLoader().load( file , function ( texture ) {
 		texture.minFilter = THREE.LinearMipMapLinearFilter;
@@ -537,14 +579,10 @@ function getParameters(){
 
 	var parametri = [];
 	var para = document.cookie;
-	//console.log("get " + para);
 	var indiceCorpo = para.indexOf("materialeCorpo=");
 	var indiceCassetti = para.indexOf("materialeCassetti=");
 	var matCorpo = para.substring("materialeCorpo=".length,indiceCassetti);
-	//console.log(para);
 	var matCassetti = para.substring((indiceCassetti + "materialeCassetti=".length), para.length);
-	// console.log("indiceCorpo: ",matCorpo);
-	// console.log("indiceCassetti: ",matCassetti);
 	parametri.push(matCorpo);
 	parametri.push(matCassetti);
 	return parametri;
@@ -602,9 +640,9 @@ function init() {
 	setParameters();
 	var materials = getParameters();
 	scegliMateriali(materials[0], materials[1]);//setta i parametri per gli shader
-	// materialeCorpo = "LegnoNoce";//TODO da togliere dopo dopo
-	// materialeCassetti = "Plastica";//TODO da togliere dopo dopo
-	// scegliMateriali(materialeCorpo , materialeCassetti);//TODO da togliere dopo dopo
+	materialeCorpo = "LegnoNoce";//TODO da togliere dopo dopo
+	materialeCassetti = "Oro";//TODO da togliere dopo dopo
+	scegliMateriali(materialeCorpo , materialeCassetti);//TODO da togliere dopo dopo
 
 	var loader = new THREE.GLTFLoader();
 	var vertexCorpo,fragmentCorpo,vertexCassetti,fragmentCassetti;
@@ -639,25 +677,29 @@ function init() {
 			gltf.scene.children[0].children[0].traverse( function ( child ) {
 				if(child.isMesh){
 					//lati uguali dx - sx e gambe davanti
-					child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vertexCorpo, fragmentShader: fragmentCorpo });
+					child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vertexCorpo, fragmentShader: fragmentCorpo,
+					 extensions: materialExtensions  });
 				}
 			});
 			gltf.scene.children[0].children[1].traverse( function ( child ) {
 				if(child.isMesh){
 					//lato sotto
-					child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vertexCorpo, fragmentShader: fragmentCorpo });
+					child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vertexCorpo, fragmentShader: fragmentCorpo,
+					 extensions: materialExtensions  });
 				}
 			});
 			gltf.scene.children[0].children[2].traverse( function ( child ) {
 				if(child.isMesh){
 					//lato cassetti (superficie no casseti)
-					child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vertexCorpo, fragmentShader: fragmentCorpo });
+					child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vertexCorpo, fragmentShader: fragmentCorpo,
+					 extensions: materialExtensions  });
 				}
 			});
 			gltf.scene.children[0].children[4].traverse( function ( child ) {
 				if(child.isMesh){
 					//lato dietro(opposto ai cassetti) e sopra (piano di appoggio)
-					child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vertexCorpo, fragmentShader: fragmentCorpo });
+					child.material =  new THREE.ShaderMaterial({ uniforms: uniforms, vertexShader: vertexCorpo, fragmentShader: fragmentCorpo,
+					 extensions: materialExtensions  });
 				}
 			});
 		//------------------------------CORPO----------------------------------------------
@@ -666,7 +708,8 @@ function init() {
 		gltf.scene.children[0].children[3].traverse( function ( child ) {
 			if(child.isMesh){
 				//piedi e cassetti
-				child.material =  new THREE.ShaderMaterial({ uniforms: uniformsCassetti, vertexShader: vertexCassetti, fragmentShader: fragmentCassetti });
+				child.material =  new THREE.ShaderMaterial({ uniforms: uniformsCassetti, vertexShader: vertexCassetti, fragmentShader: fragmentCassetti,
+				 extensions: materialExtensions  });
 			}
 		});
 		//------------------------------CASSETTI,PIEDINI----------------------------------------------
@@ -893,7 +936,7 @@ function initPostprocessing() {
 
 		function update() {
 			if(camera.position.y<=0.4){
-				camera.position.y=0.4;
+				//camera.position.y=0.4;
 			}
 			requestAnimationFrame( update );
 			render();
@@ -912,11 +955,13 @@ function initPostprocessing() {
 				uniforms.cspec.value = new THREE.Vector3(materialParameters.cspec_red,materialParameters.cspec_green,materialParameters.cspec_blue);
 				uniforms.cdiff.value = new THREE.Vector3(materialParameters.cdiff_red,materialParameters.cdiff_green,materialParameters.cdiff_blue);
 				uniforms.roughness.value = materialParameters.roughness>0.0?materialParameters.roughness:0.01;
+				uniforms.normalScale.value = new THREE.Vector2( materialParameters.normalScale, materialParameters.normalScale );
 		}
 		if(shaderCassetti=="Materiale"){
 				uniformsCassetti.cspec.value = new THREE.Vector3(materialParametersCassetti.cspec_red,materialParametersCassetti.cspec_green,materialParametersCassetti.cspec_blue);
 				uniformsCassetti.cdiff.value = new THREE.Vector3(materialParametersCassetti.cdiff_red,materialParametersCassetti.cdiff_green,materialParametersCassetti.cdiff_blue);
 				uniformsCassetti.roughness.value = materialParametersCassetti.roughness>0.0?materialParametersCassetti.roughness:0.01;
+				uniformsCassetti.normalScale.value = new THREE.Vector2( materialParametersCassetti.normalScale, materialParametersCassetti.normalScale );
 			}
 			uniforms.clight.value = new THREE.Vector3(	lightParameters.red * lightParameters.intensity,
 																									lightParameters.green * lightParameters.intensity,
