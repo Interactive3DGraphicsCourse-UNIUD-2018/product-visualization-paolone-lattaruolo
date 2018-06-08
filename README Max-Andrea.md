@@ -1,7 +1,7 @@
 # Inizio progetto
 Il progetto definitivo prevede la costruzione di una pagina Web legata alla fornitura di mobili e al rendering di un comodino da letto.
 
-<a href="https://ibb.co/jhOt3T"><img src="https://image.ibb.co/g0MfiT/Screenshot_66.png" alt="Screenshot_66" border="0"></a>
+<img src="https://image.ibb.co/g0MfiT/Screenshot_66.png" alt="Screenshot 66" border="0" />
 
 <a href="https://ibb.co/njUpco"><img src="https://image.ibb.co/hEQ6OT/Screenshot_67.png" alt="Screenshot_67" border="0"></a>
 
