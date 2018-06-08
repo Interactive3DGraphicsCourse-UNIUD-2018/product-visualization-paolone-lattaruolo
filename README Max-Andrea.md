@@ -1,15 +1,15 @@
 # Inizio progetto
 Il progetto definitivo prevede la costruzione di una pagina Web legata alla fornitura di mobili e al rendering di un comodino da letto.
 
+<a href="https://ibb.co/jhOt3T"><img src="https://image.ibb.co/g0MfiT/Screenshot_66.png" alt="Screenshot_66" border="0"></a>
+<a href="https://ibb.co/njUpco"><img src="https://image.ibb.co/hEQ6OT/Screenshot_67.png" alt="Screenshot_67" border="0"></a>
 
-<img src="https://image.ibb.co/hEQ6OT/Screenshot_67.png" alt="Screenshot_67" border="0">
 ## Costruzione generale
 La creazione della pagina web è nata  inizialmente dalla scelta del modello, basata su un comodino da letto appunto. Una volta deciso il modello da renderizzare, abbiamo iniziato a suddividere il lavoro creando alternativamente la pagina web legata alla sua visualizzazione e alla sua personalizzazione e gli shader legati ai materiali che più ci sembravano consoni al rendering di quest'ultimo.
 
 ### Costruzione della pagina web.
 La pagina web è nata in seguito alla scelta del modello: abbiamo voluto personalizzarla affinchè desse l'idea di essere all ínterno din e-commerce legato in questo caso però alla sola vendita di mobilia. La personalizzazione riguarda principalmente la scelta delle immagini pubblicitarie poste all'interno della pagina e i titoli con il "logo ufficiale" dell'azienda, con evidenti richiami al settore.
 Il modello in vendita è inizialmente non visibile:
-<img src="https://image.ibb.co/g0MfiT/Screenshot_66.png" alt="Screenshot_66" border="0">
 
 
 sarà il cliente, in una ipotetica scelta personale (qui resa fasulla poichè di fronte ad un solo modello) a scegliere l'oggetto di cui necessita, il quale viene poi successivamente messo a schermo con la sua descrizione e la sua relativa personalizzazione.
