@@ -2,6 +2,7 @@
 Il progetto definitivo prevede la costruzione di una pagina Web legata alla fornitura di mobili e al rendering di un comodino da letto.
 
 <a href="https://ibb.co/jhOt3T"><img src="https://image.ibb.co/g0MfiT/Screenshot_66.png" alt="Screenshot_66" border="0"></a>
+
 <a href="https://ibb.co/njUpco"><img src="https://image.ibb.co/hEQ6OT/Screenshot_67.png" alt="Screenshot_67" border="0"></a>
 
 ## Costruzione generale
@@ -17,12 +18,12 @@ sarà il cliente, in una ipotetica scelta personale (qui resa fasulla poichè di
 #### Modello
 Per il modello da renderizzare la nostra scelta è ricaduta su un comodino: dopo averlo scaricato da sketchfab, lo abbiamo convertito in formato glb tramite clay viewer e poi usato all'interno del nostro progetto. Una volta fatto ciò, ci siamo adoperati per scegliere gli shader che più risaltassero il corpo da un lato e i piedini più i cassetti di quest'ultimo dall'altro.
 Le scelte sono ricadute nelle seguenti asssociazioni:
-- Per il corpo del comodino sono stati scelti 3 diversi tipi di legno:
+Per il corpo del comodino sono stati scelti 3 diversi tipi di legno:
 -
 -
 -
 e una plastica grigia.
-- Per i piedini e i cassetti sono invece stati scelti  l'oro e i precedenti legni già uitlizzati per il corpo.
+Per i piedini e i cassetti sono invece stati scelti  l'oro e i precedenti legni già uitlizzati per il corpo.
 N.B: 
 
 ##### CubeMap
