@@ -46,4 +46,6 @@
 ## Day 6
   Revisione progetto ultime modiche.
   ### Problemi
+  Riscontrato un problema per cui le immagini della cubemap non venivano più visualizzate da threejs e dagli shader.
   ### Soluzioni
+  Per risolvere il problema riscontrato è stato necessario ricaricare le immagini all'interno di un'altra cartella adesso la cartella     con le immagini della cubemap è "em" e quella per l' IEM è "IEM".
