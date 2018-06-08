@@ -359,10 +359,6 @@ void main() {
 var stats, controls;
 var camera, scene, renderer, light;
 var textureParameters,materialParameters;
-var effectComposer;
-var ssaoPass;
-var postprocessing = { enabled: true, onlyAO: false, radius: 32, aoClamp: 0.25, lumInfluence: 0.1 };
-
 var diffuseMap,specularMap, roughnessMap, normalMap,aoMap;
 var textureParametersCassetti,materialParametersCassetti;
 var diffuseMapCassetti,specularMapCassetti, roughnessMapCassetti, normalMapCassetti,aoMapCassetti;
@@ -430,11 +426,7 @@ var materialPavimento = {
 	cspec_blue: 0.449,
 	roughness: 0.83
 };
-// Texture metallo
-// var diffuseMap = loadTexture( "texture/Metallo2/" + textureParameters.material1 + "Base_Color.png" );
-// var specularMap = loadTexture( "texture/Metallo2/" + textureParameters.material1 + "_Specular.png" );
-// var roughnessMap = loadTexture( "texture/Metallo2/" + textureParameters.material1 + "_Roughness.png" );
-// var normalMap = loadTexture( "texture/Metallo2/" + textureParameters.material1 + "_Normal.png" );
+
 var diffuseMapLegnoPino = loadTexture( "texture/LegnoPino/LegnoPino_Base_Color.png" );
 var specularMapLegnoPino = loadTexture( "texture/LegnoPino/LegnoPino_Specular.png" );
 var roughnessMapLegnoPino = loadTexture( "texture/LegnoPino/LegnoPino_Roughness.png" );
@@ -648,8 +640,8 @@ function init() {
 	setParameters();
 	var materials = getParameters();
 	scegliMateriali(materials[0], materials[1]);//setta i parametri per gli shader
-	materialeCorpo = "Plastica";//TODO da togliere dopo dopo
-	materialeCassetti = "Plastica";//TODO da togliere dopo dopo
+	materialeCorpo = "LegnoPino";//TODO da togliere dopo dopo
+	materialeCassetti = "Oro";//TODO da togliere dopo dopo
 	scegliMateriali(materialeCorpo , materialeCassetti);//TODO da togliere dopo dopo
 
 	var loader = new THREE.GLTFLoader();
@@ -730,7 +722,6 @@ function init() {
 		gltf.scene.scale.multiplyScalar( 0.01 );
 		gltf.scene.position.set(0,0,0);
 		gltf.scene.rotation.set(0,Math.PI/180*210,0);
-		//gltf.scene.children.castShadow = true;
 		scene.add( gltf.scene );
 	} );
 	var lightMesh = new THREE.Mesh( new THREE.SphereGeometry( 1, 16, 16), new THREE.MeshBasicMaterial ({color: 0xffff00, wireframe:true}));
@@ -741,205 +732,7 @@ function init() {
 	uniformsCassetti.pointLightPosition.value = new THREE.Vector3(lightMesh.position.x,
 		lightMesh.position.y,
 		lightMesh.position.z);
-		//lightMesh.castShadow = true;
-		//plane
-		var geometryPlane = new THREE.PlaneGeometry( 500, 500, 500 );
-		var materialPlane = new THREE.MeshBasicMaterial( {color:0xffffff, side: THREE.DoubleSide} );
-		//var materialPlane = new THREE.ShaderMaterial( {side: THREE.FrontSide,uniforms: uniformsPiano, vertexShader: vs, fragmentShader: fs} );
-		var plane = new THREE.Mesh( geometryPlane, materialPlane );
-		//plane.receiveShadow = true;
-		plane.rotation.x = -Math.PI * 90/180;
-		plane.position.set(0,-2,0);
-		var boxGeo = new THREE.BoxGeometry(5,5,5);
-		var materialbox = new THREE.MeshBasicMaterial( {color: 0xffffff, side: THREE.DoubleSide} );
-		var cubo = new THREE.Mesh(boxGeo,materialbox);
-		cubo.position.set(5,5,0);
-
-		var groundMirror = new THREE.Reflector( geometryPlane, {
-			clipBias: 0.003,
-			textureWidth: window.innerWidth * window.devicePixelRatio,
-			textureHeight: window.innerHeight * window.devicePixelRatio,
-			color: 0xbbbbbb,
-			recursion: 1
-		} );
-		groundMirror.rotation.x = -Math.PI * 90/180;
-		//scene.add( plane);
-
-		// Init postprocessing
-		//initPostprocessing();
 }
-
-function initPostprocessing() {
-	// Setup render pass
-	var renderPass = new THREE.RenderPass( scene, camera );
-	// Setup SSAO pass
-	ssaoPass = new THREE.SSAOPass( scene, camera );
-	ssaoPass.renderToScreen = true;
-	// Add pass to effect composer
-	effectComposer = new THREE.EffectComposer( renderer );
-	effectComposer.addPass( renderPass );
-	effectComposer.addPass( ssaoPass );
-	}
-
-	// function scegliMateriali(corpo, cassetti)
-	// {
-	// 	//cassetti comprende anche i piedini
-	// 	switch(corpo){
-	// 		case "LegnoPino":
-	// 			diffuseMap = diffuseMapLegnoPino;
-	// 			specularMap = specularMapLegnoPino;
-	// 			roughnessMap = roughnessMapLegnoPino;
-	// 			normalMap = normalMapLegnoPino;
-	// 			aoMap = aoMapLegnoPino;
-	// 			uniforms = uniformLegnoPino;
-	// 			shaderCorpo ="Texture";
-	// 			textureParameters = {
-	// 				material:"LegnoPino",
-	// 				repeatS: 8.0,
-	// 				repeatT: 8.0,
-	// 				normalScale: 0.3,
-	// 			};
-	// 			break;
-	// 		case "LegnoEbano":
-	// 			diffuseMap = diffuseMapLegnoEbano;
-	// 			specularMap = specularMapLegnoEbano;
-	// 			roughnessMap = roughnessMapLegnoEbano;
-	// 			normalMap = normalMapLegnoEbano;
-	// 			aoMap = aoMapLegnoEbano;
-	// 			uniforms = uniformsLengoEbano;
-	// 			shaderCorpo ="Texture";
-	// 			textureParameters = {
-	// 				material:"LegnoEbano",
-	// 				repeatS: 2.0,
-	// 				repeatT: 2.0,
-	// 				normalScale: 0.4,
-	// 			};
-	// 			break;
-	// 		case "LegnoNoce":
-	// 			diffuseMap = diffuseMapLegnoNoce;
-	// 			specularMap = specularMapLegnoNoce;
-	// 			roughnessMap = roughnessMapLegnoNoce;
-	// 			normalMap = normalMapLegnoNoce;
-	// 			aoMap = aoMapLegnoNoce;
-	// 			uniforms = uniformsLengoNoce;
-	// 			shaderCorpo ="Texture";
-	// 			textureParameters = {
-	// 				material:"LegnoNoce",
-	// 				repeatS: 2.0,
-	// 				repeatT: 2.0,
-	// 				normalScale: 0.3,
-	// 			};
-	// 			break;
-	// 		case "Titanio":
-	// 			shaderCorpo ="Materiale";
-	// 			sottomaterialeCorpo = "Metallo";
-	// 			materialParameters = materialParametersTitanio;
-	// 			break;
-	// 		case "Oro":
-	// 			shaderCorpo ="Materiale";
-	// 			sottomaterialeCorpo = "Metallo";
-	// 			materialParameters = materialParametersOro;
-	// 			break;
-	// 		case "Plastica":
-	// 			shaderCorpo ="Materiale";
-	// 			sottomaterialeCorpo = "Plastica";
-	// 			materialParameters = materialParametersPlastic;
-	// 			break;
-	// 		default:
-	// 		//legno pino
-	// 			diffuseMap = diffuseMapLegnoPino;
-	// 			specularMap = specularMapLegnoPino;
-	// 			roughnessMap = roughnessMapLegnoPino;
-	// 			normalMap = normalMapLegnoPino;
-	// 			aoMap = aoMapLegnoPino;
-	// 			uniforms = uniformLegnoPino;
-	// 			shaderCorpo ="Texture";
-	// 			textureParameters = {
-	// 				material:"LegnoPino",
-	// 				repeatS: 8.0,
-	// 				repeatT: 8.0,
-	// 				normalScale: 0.3,
-	// 			};
-	// 	}
-	// 	switch (cassetti){
-	// 		case "LegnoPino":
-	// 			diffuseMapCassetti = diffuseMapLegnoPino;
-	// 			specularMapCassetti = specularMapLegnoPino;
-	// 			roughnessMapCassetti = roughnessMapLegnoPino;
-	// 			normalMapCassetti = normalMapLegnoPino;
-	// 			aoMapCassetti = aoMapLegnoPino;
-	// 			uniformsCassetti = uniformLegnoPino;
-	// 			shaderCassetti ="Texture";
-	// 			textureParametersCassetti = {
-	// 				material:"LegnoPino",
-	// 				repeatS: 8.0,
-	// 				repeatT: 8.0,
-	// 				normalScale: 0.3,
-	// 			};
-	// 			break;
-	// 		case "LegnoEbano":
-	// 			diffuseMapCassetti = diffuseMapLegnoEbano;
-	// 			specularMapCassetti = specularMapLegnoEbano;
-	// 			roughnessMapCassetti = roughnessMapLegnoEbano;
-	// 			normalMapCassetti = normalMapLegnoEbano;
-	// 			aoMapCassetti = aoMapLegnoEbano;
-	// 			uniformsCassetti = uniformsLengoEbano;
-	// 			shaderCassetti ="Texture";
-	// 			textureParametersCassetti = {
-	// 				material:"LegnoEbano",
-	// 				repeatS: 3.0,
-	// 				repeatT: 3.0,
-	// 				normalScale: 0.2,
-	// 			};
-	// 			break;
-	// 			case "LegnoNoce":
-	// 				diffuseMapCassetti = diffuseMapLegnoNoce;
-	// 				specularMapCassetti = specularMapLegnoNoce;
-	// 				roughnessMapCassetti = roughnessMapLegnoNoce;
-	// 				normalMapCassetti = normalMapLegnoNoce;
-	// 				aoMapCassetti = aoMapLegnoNoce;
-	// 				uniformsCassetti = uniformsLengoNoce;
-	// 				shaderCassetti ="Texture";
-	// 				textureParametersCassetti = {
-	// 					material:"LegnoNoce",
-	// 					repeatS: 2.0,
-	// 					repeatT: 2.0,
-	// 					normalScale: 0.3,
-	// 				};
-	// 				break;
-	// 		case "Titanio":
-	// 			shaderCassetti ="Materiale";
-	// 			sottomaterialeCassetti = "Metallo";
-	// 			materialParametersCassetti = materialParametersTitanio;
-	// 			break;
-	// 		case "Oro":
-	// 			shaderCassetti ="Materiale";
-	// 			sottomaterialeCassetti = "Metallo";
-	// 			materialParametersCassetti = materialParametersOro;
-	// 			break;
-	// 		case "Plastica":
-	// 			shaderCassetti ="Materiale";
-	// 			sottomaterialeCassetti = "Plastica";
-	// 			materialParametersCassetti = materialParametersPlastic;
-	// 			break;
-	// 		default:
-	// 		//legno pino
-	// 			diffuseMapCassetti = diffuseMapLegnoPino;
-	// 			specularMapCassetti = specularMapLegnoPino;
-	// 			roughnessMapCassetti = roughnessMapLegnoPino;
-	// 			normalMapCassetti = normalMapLegnoPino;
-	// 			aoMapCassetti = aoMapLegnoPino;
-	// 			materialParametersCassetti = materialParametersPlastic;
-	// 			uniformsCassetti = uniformLegnoPino;
-	// 			shaderCassetti ="Texture";
-	// 			textureParametersCassetti = {
-	// 				material:"LegnoPino",
-	// 				repeatS: 8.0,
-	// 				repeatT: 8.0,
-	// 				normalScale: 0.3,
-	// 			};
-	// 	}
-	// }
 
 		function onWindowResize() {
 			camera.aspect = window.innerWidth / window.innerHeight;
@@ -948,19 +741,11 @@ function initPostprocessing() {
 		}
 
 		function update() {
-			if(camera.position.y<=0.4){
-				//camera.position.y=0.4;
-			}
 			requestAnimationFrame( update );
 			render();
 		}
 		function render() {
 			updateUniforms();
-			// if ( postprocessing.enabled ) {
-			// 	effectComposer.render();
-			// } else {
-			// 	renderer.render( scene, camera );
-			// }
 			renderer.render( scene, camera );
 		}
 		function updateUniforms() {
