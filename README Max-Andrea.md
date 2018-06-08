@@ -17,11 +17,12 @@ sarà il cliente, in una ipotetica scelta personale (qui resa fasulla poichè di
 
 #### Modello.
 Per il modello da renderizzare la nostra scelta è ricaduta su un comodino: dopo averlo scaricato da sketchfab, lo abbiamo convertito in formato glb tramite clay viewer e poi usato all'interno del nostro progetto. Una volta fatto ciò, ci siamo adoperati per scegliere gli shader che più risaltassero il corpo da un lato e i piedini più i cassetti di quest'ultimo dall'altro. Le scelte sono ricadute nelle seguenti associazioni: 
-- Per il corpo del comodino sono stati scelti 3 diversi tipi di legno:
+Per il corpo del comodino sono stati scelti 3 diversi tipi di legno:
 - Pino
 - Ebano
 - Noce
 e una plastica grigia.
+
 Per i piedini e i cassetti sono invece stati scelti  l'oro e i precedenti legni già utilizzati per il corpo.
 
 ##### CubeMap
