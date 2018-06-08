@@ -3,7 +3,7 @@
 <head>
   <title>E-Commerce</title>
   <link rel="stylesheet" type="text/css" href="style.css">
-
+  <script src="parameters.js"></script>
 </head>
 <body>
   <header>
@@ -47,11 +47,11 @@
     <p id="corpocomodino"> corpo comodino: </p>
     <!-- corpo comodino Modello1 LegnoPino -->
     <a href="prove_andrea.html?Corpo&LegnoPino" target="frameDirendering">
-      <img id="LegnoPinoCorpo" src="img/LegnoPino.png" alt="texture legno di Pino"></img>
+      <img id="LegnoPinoCorpo" src="img/LegnoPino.png" alt="texture legno di Pino" onclick="stampaPrezzi()"></img>
     </a>
     <!-- corpo comodino Modello1 LegnoEbano -->
     <a href="prove_andrea.html?Corpo&LegnoEbano" target="frameDirendering">
-    <img id="LegnoEbanoCorpo" src="img/LegnoEbano.jpg" alt="texture legno di Ebano"></img>
+    <img id="LegnoEbanoCorpo" src="img/LegnoEbano.jpg" alt="texture legno di Ebano" onclick="stampaPrezzi()"></img>
     </a>
 
     <p id="piedicassetti"> piedi e cassetti: </p>
@@ -72,7 +72,7 @@
   </div>
 
     <div class="descrizioneProdotto">
-    <h6> <strong>PREZZO: 240 $</strong> </h6>
+    <h6> <strong>PREZZO:  </strong> </h6>
     <p id="dimensioniProdotto"> Dimensioni: Larghezza: 81,3 cm,
                                 Altezza: 105,2 cm,
                                 Profondita': 39,6 cm </p>
@@ -103,6 +103,60 @@
       document.getElementById("LegnoEbanoCassetti").style.display = "block";
       document.getElementById("Oro").style.display = "block";
   }}
+
+  function changePrize() {
+    setParameters();
+     prezzi = getParameters();
+      console.log(prezzi[0], prezzi[1]);
+
+      switch (prezzi[0]) {
+        case "LegnoPino":
+        switch (prezzi[1]) {
+          case "LegnoPino":
+          return "240$";
+          break;
+          case "LegnoEbano":
+            return "270$";
+            break;
+          case "Oro":
+            return "300$";
+            break;
+          default:
+        }
+        case "LegnoEbano":
+        switch (prezzi[1]) {
+          case "LegnoPino":
+          return "260$";
+          break;
+          case "LegnoEbano":
+            return "300$";
+            break;
+          case "Oro":
+            return "350$";
+            break;
+          default:
+        }
+        case "LegnoNoce":
+        switch (prezzi[1]) {
+          case "LegnoPino":
+          return "240$";
+          break;
+          case "LegnoEbano":
+            return "300$";
+            break;
+          case "Oro":
+            return "280$";
+            break;
+          default:
+        }
+
+        default: "250$";
+      }
+  }
+
+  function stampaPrezzi(){
+    console.log(changePrize());
+  }
 
   </script>
 

@@ -238,13 +238,17 @@ img{
 .descrizioneProdotto{
     position: absolute;
     width: 30%;
-    top:1500px;
+    top:1350px;
     left: 1%;
 }
 
 .descrizioneProdotto h6{
     font-size: 20px;
     color: red;
+}
+
+.descrizioneProdotto p {
+  top: 60px;
 }
 
 #LegnoPinoCorpo
