@@ -6,7 +6,7 @@ body {
 }
 
 body, .Referenze li, header{
-  background-color: white;
+  background-color: hsl(0, 0%, 94%);
 }
 
 header {
@@ -155,9 +155,9 @@ img{
 
 }
 
-#titolo, #sottotitolo, #titolo1, #sottotitolo1, #titolo2, #sottotitolo2, #bandieraItaliana,
- #frame, #personalizzazione, #LegnoPinoCorpo, #LegnoEbanoCorpo, #LegnoPinoCassetti, #LegnoEbanoCassetti, #Oro,
- #corpocomodino, #piedicassetti{
+#titolo, #sottotitolo, #titolo1, #sottotitolo1, #titolo2, #sottotitolo2, #bandieraItaliana, #Plastica,
+ #frame, #personalizzazione, #LegnoPinoCorpo, #LegnoEbanoCorpo, #LegnoPinoCassetti, #LegnoEbanoCassetti, #LegnoNoceCorpo, #LegnoNoceCassetti, #Oro,
+ #corpocomodino, #piedicassetti, #dimensioniProdotto{
   display: none;
 }
 
@@ -271,6 +271,26 @@ img{
   border-radius: 5px;
 }
 
+#LegnoNoceCorpo
+{
+  left: 43%;
+  width: 20%;
+  top: 25%;
+  position: absolute;
+  border: 0px solid gray;
+  border-radius: 5px;
+}
+
+#Plastica
+{
+  left: 64%;
+  width: 20%;
+  top: 25%;
+  position: absolute;
+  border: 0px solid gray;
+  border-radius: 5px;
+}
+
 #LegnoPinoCassetti
 {
   left: 1%;
@@ -291,9 +311,19 @@ img{
   border-radius: 5px;
 }
 
-#Oro
+#LegnoNoceCassetti
 {
   left: 43%;
+  width: 20%;
+  top: 70%;
+  position: absolute;
+  border: 0px solid gray;
+  border-radius: 5px;
+}
+
+#Oro
+{
+  left: 64%;
   width: 20%;
   top: 70%;
   position: absolute;

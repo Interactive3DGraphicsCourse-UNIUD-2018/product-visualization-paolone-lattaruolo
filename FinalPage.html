@@ -24,7 +24,7 @@
 
     <div class="anteprimaComodini">
     <p> Scegli il modello che vuoi: </p>
-    <a href="prove_andrea.html" target="frameDirendering">
+    <a href="comodino_page.html" target="frameDirendering">
     <img id="anteprimaComodino"  src="img/Comodino.png" alt="anteprima comodino" onclick="onWindow()"></img>
     </a>
   </div>
@@ -46,36 +46,47 @@
     <p id="personalizzazione"> Personalizzane i materiali: </p>
     <p id="corpocomodino"> corpo comodino: </p>
     <!-- corpo comodino Modello1 LegnoPino -->
-    <a href="prove_andrea.html?Corpo&LegnoPino" target="frameDirendering">
-      <img id="LegnoPinoCorpo" src="img/LegnoPino.png" alt="texture legno di Pino" onclick="stampaPrezzi()"></img>
+    <a href="comodino_page.html?Corpo&LegnoPino" target="frameDirendering">
+      <img id="LegnoPinoCorpo" src="img/LegnoPino.png" alt="texture legno di Pino"></img>
     </a>
     <!-- corpo comodino Modello1 LegnoEbano -->
-    <a href="prove_andrea.html?Corpo&LegnoEbano" target="frameDirendering">
-    <img id="LegnoEbanoCorpo" src="img/LegnoEbano.jpg" alt="texture legno di Ebano" onclick="stampaPrezzi()"></img>
+    <a href="comodino_page.html?Corpo&LegnoEbano" target="frameDirendering">
+    <img id="LegnoEbanoCorpo" src="img/LegnoEbano.jpg" alt="texture legno di Ebano"></img>
+    </a>
+
+    <a href="comodino_page.html?Corpo&LegnoNoce" target="frameDirendering">
+    <img id="LegnoNoceCorpo" src="img/LegnoNoce.jpg" alt="texture legno di Noce"></img>
+    </a>
+
+    <a href="comodino_page.html?Corpo&Plastica" target="frameDirendering">
+    <img id="Plastica" src="img/LegnoNoce.png" alt="texture Plastica"></img>
     </a>
 
     <p id="piedicassetti"> piedi e cassetti: </p>
     <!-- piedi e cassetti Modello1 LegnoPino -->
-    <a  href="prove_andrea.html?Cassetti&LegnoPino" target="frameDirendering">
+    <a  href="comodino_page.html?Cassetti&LegnoPino" target="frameDirendering">
     <img id="LegnoPinoCassetti" src="img/LegnoPino.png" alt="texture legno di Pino"></img>
     </a>
-    <a  href="prove_andrea.html?Cassetti&LegnoEbano" target="frameDirendering">
+    <a  href="comodino_page.html?Cassetti&LegnoEbano" target="frameDirendering">
     <img id="LegnoEbanoCassetti" src="img/LegnoEbano.jpg" alt="texture legno di Ebano"></img>
     </a>
-    <a  href="prove_andrea.html?Cassetti&Oro" target="frameDirendering">
+    <a  href="comodino_page.html?Cassetti&LegnoNoce" target="frameDirendering">
+    <img id="LegnoNoceCassetti" src="img/LegnoNoce.jpg" alt="texture LegnoNoce"></img>
+    </a>
+    <a  href="comodino_page.html?Cassetti&Oro" target="frameDirendering">
     <img id="Oro" src="img/Oro.png" alt="texture Oro"></img>
     </a>
+
   </div>
 
   <div class="comodino">
-  <iframe id="frame" src="prove_andrea.html" name="frameDirendering"></iframe>
+  <iframe id="frame" src="comodino_page.html" name="frameDirendering"></iframe>
   </div>
 
     <div class="descrizioneProdotto">
-    <h6> <strong>PREZZO:  </strong> </h6>
-    <p id="dimensioniProdotto"> Dimensioni: Larghezza: 81,3 cm,
-                                Altezza: 105,2 cm,
-                                Profondita': 39,6 cm </p>
+    <p id="dimensioniProdotto"> Dimensioni: Larghezza: 60,3 cm,
+                                Altezza: 115,2 cm,
+                                Profondita': 80,6 cm </p>
     </div>
 
     <div class="contatti">
@@ -101,62 +112,12 @@
       document.getElementById("LegnoEbanoCorpo").style.display = "block";
       document.getElementById("LegnoPinoCassetti").style.display = "block";
       document.getElementById("LegnoEbanoCassetti").style.display = "block";
+      document.getElementById("LegnoNoceCassetti").style.display = "block";
+      document.getElementById("LegnoNoceCorpo").style.display = "block";
       document.getElementById("Oro").style.display = "block";
+      document.getElementById("Plastica").style.display = "block";
+      document.getElementById("dimensioniProdotto").style.display = "block";
   }}
-
-  function changePrize() {
-    setParameters();
-     prezzi = getParameters();
-      console.log(prezzi[0], prezzi[1]);
-
-      switch (prezzi[0]) {
-        case "LegnoPino":
-        switch (prezzi[1]) {
-          case "LegnoPino":
-          return "240$";
-          break;
-          case "LegnoEbano":
-            return "270$";
-            break;
-          case "Oro":
-            return "300$";
-            break;
-          default:
-        }
-        case "LegnoEbano":
-        switch (prezzi[1]) {
-          case "LegnoPino":
-          return "260$";
-          break;
-          case "LegnoEbano":
-            return "300$";
-            break;
-          case "Oro":
-            return "350$";
-            break;
-          default:
-        }
-        case "LegnoNoce":
-        switch (prezzi[1]) {
-          case "LegnoPino":
-          return "240$";
-          break;
-          case "LegnoEbano":
-            return "300$";
-            break;
-          case "Oro":
-            return "280$";
-            break;
-          default:
-        }
-
-        default: "250$";
-      }
-  }
-
-  function stampaPrezzi(){
-    console.log(changePrize());
-  }
 
   </script>
 
