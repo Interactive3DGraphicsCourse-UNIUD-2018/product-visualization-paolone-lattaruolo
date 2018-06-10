@@ -1,6 +1,6 @@
 # Inizio progetto
 Il progetto definitivo prevede la costruzione di una pagina Web legata alla fornitura di mobili e al rendering di un comodino da letto.
-
+###### N.B. : Il File del progetto è "ProgettoMax&Andrea.html, il quale fa uso del file "comodino_page.html" per l'iframe interno alla pagina web che mostra il comodino.
 
 <a href="https://ibb.co/njUpco"><img src="https://image.ibb.co/hEQ6OT/Screenshot_67.png" alt="Screenshot_67" border="0"></a>
 
