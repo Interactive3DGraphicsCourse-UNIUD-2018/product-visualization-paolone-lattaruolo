@@ -27,4 +27,7 @@ e una plastica grigia.
 Per i piedini e i cassetti sono invece stati scelti  l'oro e i precedenti legni già utilizzati per il corpo.
 
 ##### CubeMap
-All'interno del file del comodino abbiamo inserito una cubemap accompagnata da una IEM per risaltare magggiormente il riflesso, in particolare dell'oro: la cubemap in questione rappresenta una stanza di hotel e si può trovare nella directory cubemap/im. 
+All'interno del file del comodino abbiamo inserito una cubemap accompagnata da una IEM per risaltare magggiormente il riflesso, in particolare dell'oro: la cubemap in questione rappresenta una stanza di hotel e si può trovare nella directory cubemap/im.
+
+##### Luci modello
+Per quanto riguarda le luci usate sul modello sono state usate una pointlight posta leggermente davanti al modello più un'ambient light per gli shader relativi alle texture. Inoltre abbiamo usato un'irradiance map per simulare gli effetti della luce ambientale sulla plastica; mentre per i metalli (oro) abbiamo usato una EM basato sulla modifica della variabile roughness.
